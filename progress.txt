@@ -1,0 +1,10 @@
+
+[Phase 4 - 2026-10-22] COMPLETED
+- diamond-viewer.tsx: DiamondViewer with gallery, 360-spin drag stage, forensic loupe zoom modal
+- certificate-modal.tsx: GIA/IGI report panel (PDF embed + fallback grading data table + external verify link)
+- buy-box.tsx: price, availability badge, Add-to-Cart, wishlist, PIN checker with mockPincode, trust strip, WhatsApp message pre-fill
+- four-cs-breakdown.tsx: animated scale bars per 4C, collapsible proportions/finish metrology panel
+- app/(shop)/diamonds/[type]/[slug]/page.tsx: two-column PDP route (media left, buy-box right), breadcrumbs, quick grade bar, similar stones strip, trust footer
+- DiamondCard link fixed: /diamonds/[origin]/[slug] PDP route
+- pdp.test.tsx: 44 new tests (DiamondViewer:7, CertificateModal:9, FourCsBreakdown:6, mockDiamond:3, mockSimilar:4, PDP integrity:9 + 6 catalog data)
+- Total passing: 78/78 across 8 test files, 0 failures
