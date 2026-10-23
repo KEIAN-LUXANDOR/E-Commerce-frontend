@@ -43,7 +43,7 @@ export function FilterControls({ value, onChange, hide = [] }: Props) {
                     className={cn(
                       "flex w-full flex-col items-center gap-1.5 border p-2 text-[10px] uppercase font-mono tracking-wider transition-all rounded-none",
                       on
-                        ? "border-[var(--canvas-dark,#0D0D0D)] bg-[#F6F4EF] text-[var(--color-ink)] font-bold ring-1 ring-[var(--brand-accent,#D4AF37)] shadow-2xs"
+                        ? "border-[var(--canvas-dark,#0A192F)] bg-[#F1F5F9] text-[var(--color-ink)] font-bold ring-1 ring-[var(--brand-accent,#8FA9C4)] shadow-2xs"
                         : "border-[var(--color-line)] bg-white hover:border-[var(--color-ink)] text-[var(--color-slate)]"
                     )}
                   >
@@ -148,7 +148,7 @@ function Group({
       <summary className="flex cursor-pointer list-none items-center justify-between font-mono text-xs uppercase tracking-wider text-[var(--color-ink)] font-semibold select-none">
         <span>
           {title}
-          {!!count && <span className="ml-2 font-mono text-[11px] text-[var(--brand-accent,#D4AF37)] font-bold">[{count}]</span>}
+          {!!count && <span className="ml-2 font-mono text-[11px] text-[var(--brand-accent,#8FA9C4)] font-bold">[{count}]</span>}
         </span>
         <span aria-hidden className="text-[var(--color-slate)] transition-transform group-open:rotate-45 font-mono text-sm">
           +
@@ -169,7 +169,7 @@ function Pill({ on, onClick, children }: { on: boolean; onClick: () => void; chi
       className={cn(
         "border px-2.5 py-1 text-xs font-mono uppercase tracking-wider transition-colors rounded-none",
         on
-          ? "border-[var(--canvas-dark,#0D0D0D)] bg-[var(--canvas-dark,#0D0D0D)] text-white font-medium"
+          ? "border-[var(--canvas-dark,#0A192F)] bg-[var(--canvas-dark,#0A192F)] text-white font-medium"
           : "border-[var(--color-line)] bg-white text-[var(--color-slate)] hover:border-[var(--color-ink)] hover:text-[var(--color-ink)]"
       )}
     >
@@ -204,7 +204,7 @@ function Checks<T extends string>({
                 className={cn(
                   "grid size-4 place-items-center border rounded-none transition-colors",
                   on
-                    ? "border-[var(--canvas-dark,#0D0D0D)] bg-[var(--canvas-dark,#0D0D0D)] text-white"
+                    ? "border-[var(--canvas-dark,#0A192F)] bg-[var(--canvas-dark,#0A192F)] text-white"
                     : "border-[var(--color-line)] bg-white"
                 )}
               >
@@ -244,7 +244,7 @@ function Scale<T extends string>({
               className={cn(
                 "w-full py-1.5 text-[11px] font-mono text-center border transition-colors rounded-none",
                 on
-                  ? "border-[var(--canvas-dark,#0D0D0D)] bg-[var(--canvas-dark,#0D0D0D)] text-white font-bold"
+                  ? "border-[var(--canvas-dark,#0A192F)] bg-[var(--canvas-dark,#0A192F)] text-white font-bold"
                   : "border-[var(--color-line)] bg-white text-[var(--color-slate)] hover:border-[var(--color-ink)]"
               )}
             >

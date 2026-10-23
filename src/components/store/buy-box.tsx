@@ -303,7 +303,7 @@ export function BuyBox({
     <>
       <div className="flex flex-col">
         {/* 4 Key Grades Row matching mockup */}
-        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-[#F6F4EF] p-2 border border-[var(--color-line)] mb-6">
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-[#F1F5F9] p-2 border border-[var(--color-line)] mb-6">
           <div className="bg-white p-3 border border-[var(--color-line)] flex flex-col justify-between">
             <div className="flex items-center justify-between text-[var(--color-slate)]">
               <span className="font-mono text-[10px] uppercase tracking-wider">Carat</span>
@@ -383,7 +383,7 @@ export function BuyBox({
                 available
                   ? addedToCart
                     ? "bg-[#2F6B4F]"
-                    : "bg-[var(--canvas-dark,#0D0D0D)] hover:bg-black shadow-xs"
+                    : "bg-[var(--canvas-dark,#0A192F)] hover:bg-black shadow-xs"
                   : "bg-[var(--color-stone)] text-[var(--color-muted)] cursor-not-allowed"
               )}
               aria-disabled={!available}
@@ -403,7 +403,7 @@ export function BuyBox({
               type="button"
               onClick={handleBuyNow}
               disabled={!available}
-              className="w-full h-12 bg-white text-[var(--color-ink)] border border-[var(--color-ink)] hover:bg-[#F6F4EF] font-mono text-xs uppercase tracking-widest transition-colors flex items-center justify-center rounded-none"
+              className="w-full h-12 bg-white text-[var(--color-ink)] border border-[var(--color-ink)] hover:bg-[#F1F5F9] font-mono text-xs uppercase tracking-widest transition-colors flex items-center justify-center rounded-none"
             >
               Buy Now
             </button>
@@ -548,7 +548,7 @@ export function BuyBox({
         </div>
 
         {/* 3 Trust Strip Cards */}
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 bg-[#F6F4EF] p-2.5 border border-[var(--color-line)] mb-6">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 bg-[#F1F5F9] p-2.5 border border-[var(--color-line)] mb-6">
           <div className="flex items-start gap-2 p-1">
             <ShieldCheck className="size-4 text-[var(--color-ink)] shrink-0 mt-0.5" />
             <div className="flex flex-col">

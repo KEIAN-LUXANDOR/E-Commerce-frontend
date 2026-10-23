@@ -341,7 +341,7 @@ function SearchContent() {
       </section>
 
       {/* 10 Shape Selector Row (Stitch All Diamonds Parity) */}
-      <section className="w-full bg-[#F6F4EF] border-b border-[var(--color-line)] px-6 md:px-12 py-5">
+      <section className="w-full bg-[#F1F5F9] border-b border-[var(--color-line)] px-6 md:px-12 py-5">
         <div className="max-w-[1360px] mx-auto">
           <div className="flex items-center justify-between mb-3">
             <span className="text-[12px] uppercase tracking-wider text-[var(--color-slate)] font-medium font-mono">
@@ -369,7 +369,7 @@ function SearchContent() {
                   onClick={() => setActiveShape(isActive ? "ALL" : s.value)}
                   className={`flex flex-col items-center justify-center py-3 px-2 border transition-all rounded-none group text-center cursor-pointer ${
                     isActive
-                      ? "border-[var(--canvas-dark,#0D0D0D)] bg-white font-medium text-[var(--color-ink)] shadow-xs ring-1 ring-[var(--brand-accent,#D4AF37)]"
+                      ? "border-[var(--canvas-dark,#0A192F)] bg-white font-medium text-[var(--color-ink)] shadow-xs ring-1 ring-[var(--brand-accent,#8FA9C4)]"
                       : "border-[var(--color-line)] bg-white/70 hover:border-[var(--color-ink)] hover:bg-white text-[var(--color-slate)]"
                   }`}
                 >
@@ -398,7 +398,7 @@ function SearchContent() {
                 onClick={() => setOriginFilter("ALL")}
                 className={`px-3.5 py-1.5 text-xs uppercase tracking-wider transition-colors cursor-pointer ${
                   originFilter === "ALL"
-                    ? "bg-[var(--canvas-dark,#0D0D0D)] text-white font-medium"
+                    ? "bg-[var(--canvas-dark,#0A192F)] text-white font-medium"
                     : "text-[var(--color-ink)] hover:text-black"
                 }`}
               >
@@ -409,7 +409,7 @@ function SearchContent() {
                 onClick={() => setOriginFilter("NATURAL")}
                 className={`px-3.5 py-1.5 text-xs uppercase tracking-wider transition-colors cursor-pointer ${
                   originFilter === "NATURAL"
-                    ? "bg-[var(--canvas-dark,#0D0D0D)] text-white font-medium"
+                    ? "bg-[var(--canvas-dark,#0A192F)] text-white font-medium"
                     : "text-[var(--color-ink)] hover:text-black"
                 }`}
               >
@@ -420,7 +420,7 @@ function SearchContent() {
                 onClick={() => setOriginFilter("LAB_GROWN")}
                 className={`px-3.5 py-1.5 text-xs uppercase tracking-wider transition-colors cursor-pointer ${
                   originFilter === "LAB_GROWN"
-                    ? "bg-[var(--canvas-dark,#0D0D0D)] text-white font-medium"
+                    ? "bg-[var(--canvas-dark,#0A192F)] text-white font-medium"
                     : "text-[var(--color-ink)] hover:text-black"
                 }`}
               >
@@ -641,7 +641,7 @@ function SearchContent() {
                 </button>
                 <Link
                   href="/shop"
-                  className="bg-[var(--canvas-dark,#0D0D0D)] px-5 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-white hover:bg-black transition-colors"
+                  className="bg-[var(--canvas-dark,#0A192F)] px-5 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-white hover:bg-black transition-colors"
                 >
                   Browse Full Catalog
                 </Link>
@@ -659,7 +659,7 @@ function SearchContent() {
                 return (
                   <article
                     key={diamond.id}
-                    className="group relative flex flex-col bg-white border border-[var(--color-line)] transition-all duration-300 hover:border-[var(--canvas-dark,#0D0D0D)]"
+                    className="group relative flex flex-col bg-white border border-[var(--color-line)] transition-all duration-300 hover:border-[var(--canvas-dark,#0A192F)]"
                   >
                     {/* Top Badges */}
                     <div className="absolute top-3 left-3 z-10 flex flex-col gap-1 items-start pointer-events-none">
@@ -681,10 +681,10 @@ function SearchContent() {
                       <Heart className={`size-4 ${isWishlisted ? "fill-red-600 text-red-600" : ""}`} />
                     </button>
 
-                    {/* Square Photo / Specimen Well (#F6F4EF Stone) */}
+                    {/* Square Photo / Specimen Well (#F1F5F9 Stone) */}
                     <Link
                       href={certLink}
-                      className="relative w-full aspect-square bg-[#F6F4EF] overflow-hidden flex items-center justify-center p-6 block cursor-pointer"
+                      className="relative w-full aspect-square bg-[#F1F5F9] overflow-hidden flex items-center justify-center p-6 block cursor-pointer"
                     >
                       {diamond.media[0]?.url ? (
                         <>
@@ -784,7 +784,7 @@ function SearchContent() {
                         <button
                           type="button"
                           onClick={() => handleAddToCart(diamond)}
-                          className="px-3.5 py-2 bg-[var(--canvas-dark,#0D0D0D)] text-white text-[11px] font-medium uppercase tracking-wider hover:bg-black transition-colors rounded-none cursor-pointer"
+                          className="px-3.5 py-2 bg-[var(--canvas-dark,#0A192F)] text-white text-[11px] font-medium uppercase tracking-wider hover:bg-black transition-colors rounded-none cursor-pointer"
                         >
                           Reserve
                         </button>
@@ -799,7 +799,7 @@ function SearchContent() {
             <div className="w-full overflow-x-auto border border-[var(--color-line)] bg-white">
               <table className="w-full text-left border-collapse text-sm">
                 <thead>
-                  <tr className="bg-[#F6F4EF] border-b border-[var(--color-line)] text-[11px] uppercase tracking-wider font-mono text-[var(--color-muted)]">
+                  <tr className="bg-[#F1F5F9] border-b border-[var(--color-line)] text-[11px] uppercase tracking-wider font-mono text-[var(--color-muted)]">
                     <th className="py-3 px-4">Specimen</th>
                     <th className="py-3 px-4">Shape</th>
                     <th className="py-3 px-4">Carat</th>
@@ -821,7 +821,7 @@ function SearchContent() {
                       <td className="py-3 px-4">
                         <Link
                           href={`/diamonds/${diamond.origin === "NATURAL" ? "natural" : "lab-grown"}/${diamond.slug}`}
-                          className="relative block size-12 bg-[#F6F4EF] border border-[var(--color-line)] overflow-hidden"
+                          className="relative block size-12 bg-[#F1F5F9] border border-[var(--color-line)] overflow-hidden"
                         >
                           {diamond.media[0]?.url ? (
                             <Image
@@ -870,7 +870,7 @@ function SearchContent() {
                         <button
                           type="button"
                           onClick={() => handleAddToCart(diamond)}
-                          className="px-3 py-1.5 bg-[var(--canvas-dark,#0D0D0D)] text-white text-[11px] uppercase tracking-wider font-medium hover:bg-black transition-colors rounded-none cursor-pointer"
+                          className="px-3 py-1.5 bg-[var(--canvas-dark,#0A192F)] text-white text-[11px] uppercase tracking-wider font-medium hover:bg-black transition-colors rounded-none cursor-pointer"
                         >
                           Reserve
                         </button>

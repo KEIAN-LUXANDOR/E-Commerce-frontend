@@ -66,13 +66,13 @@ export function ProductCard({
   return (
     <article
       className={cn(
-        "group relative flex flex-col border border-[var(--color-line)] bg-white transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--brand-accent)] hover:shadow-[0_16px_32px_rgba(212,175,55,0.10)]",
+        "group relative flex flex-col border border-[var(--color-line)] bg-white transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--brand-accent)] hover:shadow-[0_16px_32px_rgba(10,25,47,0.10)]",
         className
       )}
     >
       <Link href={`/product/${encodeURIComponent(product.slug)}`} className="flex flex-col flex-1">
         {/* Media Container: Archival Deep Stone Well */}
-        <div className="relative aspect-square w-full overflow-hidden bg-[#F6F4EF] border-b border-[var(--color-line)]">
+        <div className="relative aspect-square w-full overflow-hidden bg-[#F1F5F9] border-b border-[var(--color-line)]">
           {image ? (
             <Image
               src={image.url}
@@ -97,7 +97,7 @@ export function ProductCard({
                 "px-2 py-0.5 text-[10px] font-mono uppercase tracking-wider border",
                 isLabGrown
                   ? "bg-gradient-to-r from-[#EAF3ED] to-white text-[#2F6B4F] border-[#9FC6AA]"
-                  : "bg-gradient-to-r from-[#FCF8E9] to-white text-[var(--color-ink)] border-[var(--brand-accent)]/60"
+                  : "bg-gradient-to-r from-[#E8EEF5] to-white text-[var(--color-ink)] border-[var(--brand-accent)]/60"
               )}
             >
               {originLabel}

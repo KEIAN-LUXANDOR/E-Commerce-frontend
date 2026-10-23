@@ -58,7 +58,7 @@ export function CuratedPills() {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   STAT STRIP  — Obsidian dark band with champagne-gold icons
+   STAT STRIP  — Anchor navy band with cool silver-blue icons
    ───────────────────────────────────────────────────────────── */
 export function StatStrip() {
   const stats = [
@@ -68,7 +68,7 @@ export function StatStrip() {
     { icon: Sparkles, label: "Surat precision atelier" },
   ];
   return (
-    <section className="w-full bg-[var(--canvas-dark)] border-b border-[#2A2A2A] py-5">
+    <section className="w-full bg-[var(--canvas-dark)] border-b border-[#23344D] py-5">
       <div className="max-w-7xl mx-auto px-6 lg:px-12 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
         {stats.map((s, i) => {
           const Icon = s.icon;
@@ -206,13 +206,13 @@ const SHAPE_ITEMS = [
 ];
 
 /* ─────────────────────────────────────────────────────────────
-   SHOP BY SHAPE — warm stone band with gold hover
+   SHOP BY SHAPE — cool white band with restrained blue hover
    ───────────────────────────────────────────────────────────── */
 export function ShopByShape() {
   return (
     <section
       aria-labelledby="shapes-heading"
-      className="w-full bg-[#F6F4EF] border-b border-line py-16 lg:py-20"
+      className="w-full bg-[#F1F5F9] border-b border-line py-16 lg:py-20"
       id="shapes"
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -259,7 +259,7 @@ export function ShopByShape() {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   ORIGIN COMPARE — asymmetric: warm cream vs deep navy
+   ORIGIN COMPARE — asymmetric: clean white vs deep navy
    ───────────────────────────────────────────────────────────── */
 export function OriginCompare({
   naturalHref = "/shop?q=natural",
@@ -272,8 +272,8 @@ export function OriginCompare({
     <section className="w-full bg-white border-b border-line py-16 lg:py-20" id="origin">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-          {/* Natural Diamonds — warm cream */}
-          <div className="relative bg-[#FAF8F4] p-8 sm:p-12 flex flex-col justify-between min-h-[360px] border border-line overflow-hidden group hover:border-[var(--brand-accent)] transition-colors duration-300">
+          {/* Natural diamonds — clean white */}
+          <div className="relative bg-[#F8FAFC] p-8 sm:p-12 flex flex-col justify-between min-h-[360px] border border-line overflow-hidden group hover:border-[var(--brand-accent)] transition-colors duration-300">
             {/* Decorative circle */}
             <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full border border-[var(--color-line-dark)] opacity-20 pointer-events-none" />
             <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full border border-[var(--brand-accent)] opacity-10 pointer-events-none" />
@@ -356,7 +356,7 @@ export function OriginCompare({
 }
 
 /* ─────────────────────────────────────────────────────────────
-   CHOOSE BY SIZE — concentric circles, gold hover
+   CHOOSE BY SIZE — concentric circles, restrained blue hover
    ───────────────────────────────────────────────────────────── */
 export function ChooseBySize() {
   const tiers = [
@@ -386,7 +386,7 @@ export function ChooseBySize() {
 
   return (
     <section
-      className="w-full bg-[#F6F4EF] border-b border-line py-16 lg:py-20"
+      className="w-full bg-[#F1F5F9] border-b border-line py-16 lg:py-20"
       id="proportions"
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -402,7 +402,7 @@ export function ChooseBySize() {
             <Link
               key={t.title}
               href={t.href}
-              className="relative bg-white p-8 border border-line hover:border-[var(--brand-accent)] hover:shadow-[0_8px_24px_rgba(212,175,55,0.1)] transition-all duration-300 flex flex-col justify-between min-h-[240px] group animate-fade-up"
+              className="relative bg-white p-8 border border-line hover:border-[var(--brand-accent)] hover:shadow-[0_8px_24px_rgba(10, 25, 47,0.1)] transition-all duration-300 flex flex-col justify-between min-h-[240px] group animate-fade-up"
               style={{ animationDelay: `${i * 100}ms` }}
             >
               {t.badge && (
@@ -433,7 +433,7 @@ export function ChooseBySize() {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   HOW IT WORKS — numbered steps with gold accent numbers
+   HOW IT WORKS — numbered steps with silver-blue accents
    ───────────────────────────────────────────────────────────── */
 export function HowItWorks() {
   const steps = [
@@ -490,12 +490,12 @@ export function HowItWorks() {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   GRADES MADE SIMPLE — 4Cs cards with gold top accent
+   GRADES MADE SIMPLE — 4Cs cards with silver-blue top accent
    ───────────────────────────────────────────────────────────── */
 export function GradesMadeSimple() {
   return (
     <section
-      className="w-full bg-[#F6F4EF] border-b border-line py-16 lg:py-20"
+      className="w-full bg-[#F1F5F9] border-b border-line py-16 lg:py-20"
       id="grades"
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -517,10 +517,10 @@ export function GradesMadeSimple() {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {/* Carat */}
-          <div className="bg-white border border-line hover:border-[var(--brand-accent)] hover:shadow-[0_8px_20px_rgba(212,175,55,0.08)] transition-all duration-300 flex flex-col min-h-[280px] group animate-fade-up">
+          <div className="bg-white border border-line hover:border-[var(--brand-accent)] hover:shadow-[0_8px_20px_rgba(10,25,47,0.08)] transition-all duration-300 flex flex-col min-h-[280px] group animate-fade-up">
             <div className="h-1 bg-[var(--brand-accent)]" />
             <div className="p-6 flex flex-col flex-1">
-              <div className="w-full h-24 bg-[#F1EFEA] mb-5 flex items-center justify-around px-4">
+              <div className="w-full h-24 bg-[#E8EEF5] mb-5 flex items-center justify-around px-4">
                 <div className="w-2.5 h-2.5 rounded-full bg-ink group-hover:bg-[var(--brand-accent)] transition-colors" />
                 <div className="w-4 h-4 rounded-full bg-ink group-hover:bg-[var(--brand-accent)] transition-colors" />
                 <div className="w-5 h-5 rounded-full bg-ink group-hover:bg-[var(--brand-accent)] transition-colors" />
@@ -537,13 +537,13 @@ export function GradesMadeSimple() {
           </div>
 
           {/* Colour */}
-          <div className="bg-white border border-line hover:border-[var(--brand-accent)] hover:shadow-[0_8px_20px_rgba(212,175,55,0.08)] transition-all duration-300 flex flex-col min-h-[280px] group animate-fade-up delay-100">
+          <div className="bg-white border border-line hover:border-[var(--brand-accent)] hover:shadow-[0_8px_20px_rgba(10,25,47,0.08)] transition-all duration-300 flex flex-col min-h-[280px] group animate-fade-up delay-100">
             <div className="h-1 bg-[var(--brand-accent)]" />
             <div className="p-6 flex flex-col flex-1">
-              <div className="w-full h-24 bg-[#F1EFEA] mb-5 flex items-center justify-center px-4">
+              <div className="w-full h-24 bg-[#E8EEF5] mb-5 flex items-center justify-center px-4">
                 <div className="w-full flex h-5 border border-line overflow-hidden rounded-sm">
                   <div className="flex-1 bg-white" />
-                  <div className="flex-1 bg-[#FAF9F5]" />
+                  <div className="flex-1 bg-[#F8FAFC]" />
                   <div className="flex-1 bg-[#F5F2E6]" />
                   <div className="flex-1 bg-[#EEEAD5]" />
                   <div className="flex-1 bg-[#E8E0C0]" />
@@ -560,10 +560,10 @@ export function GradesMadeSimple() {
           </div>
 
           {/* Clarity */}
-          <div className="bg-white border border-line hover:border-[var(--brand-accent)] hover:shadow-[0_8px_20px_rgba(212,175,55,0.08)] transition-all duration-300 flex flex-col min-h-[280px] group animate-fade-up delay-200">
+          <div className="bg-white border border-line hover:border-[var(--brand-accent)] hover:shadow-[0_8px_20px_rgba(10,25,47,0.08)] transition-all duration-300 flex flex-col min-h-[280px] group animate-fade-up delay-200">
             <div className="h-1 bg-[var(--brand-accent)]" />
             <div className="p-6 flex flex-col flex-1">
-              <div className="w-full h-24 bg-[#F1EFEA] mb-5 flex items-center justify-center px-4">
+              <div className="w-full h-24 bg-[#E8EEF5] mb-5 flex items-center justify-center px-4">
                 <div className="relative w-16 h-16 rounded-full border border-ink/30 flex items-center justify-center">
                   <div className="w-1 h-1 rounded-full bg-ink" />
                   <div className="w-1.5 h-1.5 rounded-full bg-ink/30 absolute top-4 right-4" />
@@ -580,10 +580,10 @@ export function GradesMadeSimple() {
           </div>
 
           {/* Cut */}
-          <div className="bg-white border border-line hover:border-[var(--brand-accent)] hover:shadow-[0_8px_20px_rgba(212,175,55,0.08)] transition-all duration-300 flex flex-col min-h-[280px] group animate-fade-up delay-300">
+          <div className="bg-white border border-line hover:border-[var(--brand-accent)] hover:shadow-[0_8px_20px_rgba(10,25,47,0.08)] transition-all duration-300 flex flex-col min-h-[280px] group animate-fade-up delay-300">
             <div className="h-1 bg-[var(--brand-accent)]" />
             <div className="p-6 flex flex-col flex-1">
-              <div className="w-full h-24 bg-[#F1EFEA] mb-5 flex items-center justify-center px-4">
+              <div className="w-full h-24 bg-[#E8EEF5] mb-5 flex items-center justify-center px-4">
                 <svg className="h-14 w-24 text-ink" fill="none" stroke="currentColor" viewBox="0 0 100 50">
                   <polygon points="15,15 85,15 92,22 50,45 8,22" strokeWidth="1" />
                   <path d="M30,0 L38,15 L70,36 L80,15 L90,0" stroke="#1E4A6D" strokeWidth="1" />
@@ -605,7 +605,7 @@ export function GradesMadeSimple() {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   HOME FAQ — collapsible details with gold left accent
+   HOME FAQ — collapsible details with navy left accent
    ───────────────────────────────────────────────────────────── */
 export function HomeFAQ() {
   const faqs = [
@@ -890,7 +890,7 @@ export function Journey() {
             return (
               <div
                 key={s.title}
-                className="border border-line bg-stone/20 p-6 flex flex-col justify-between hover:border-[var(--brand-accent)] hover:shadow-[0_4px_16px_rgba(212,175,55,0.08)] transition-all duration-300"
+                className="border border-line bg-stone/20 p-6 flex flex-col justify-between hover:border-[var(--brand-accent)] hover:shadow-[0_4px_16px_rgba(10,25,47,0.08)] transition-all duration-300"
               >
                 <div>
                   <div className="flex items-center justify-between mb-4">
@@ -912,7 +912,7 @@ export function Journey() {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   CLIENT REVIEWS — dark obsidian bg, gold quote marks
+   CLIENT REVIEWS — dark navy background, silver-blue quote marks
    ───────────────────────────────────────────────────────────── */
 export function ClientReviews() {
   const reviews = [
@@ -943,7 +943,7 @@ export function ClientReviews() {
   ];
 
   return (
-    <section aria-labelledby="reviews" className="border-t border-[#2A2A2A] bg-[var(--canvas-dark)] py-20">
+    <section aria-labelledby="reviews" className="border-t border-[#23344D] bg-[var(--canvas-dark)] py-20">
       <div className="page">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
           <div>
@@ -973,7 +973,7 @@ export function ClientReviews() {
               className="bg-white/5 border border-white/10 p-6 hover:border-[var(--brand-accent)]/40 hover:bg-white/8 transition-all duration-300 flex flex-col animate-fade-up"
               style={{ animationDelay: `${i * 100}ms` }}
             >
-              {/* Large gold opening quote */}
+              {/* Large opening quote */}
               <div className="text-[56px] leading-none text-[var(--brand-accent)] opacity-40 font-serif mb-2 select-none">&ldquo;</div>
 
               <p className="text-sm text-white/75 italic leading-relaxed mb-5 flex-1 font-sans">
@@ -1008,7 +1008,7 @@ export function ClientReviews() {
 }
 
 /* ─────────────────────────────────────────────────────────────
-   GEMOLOGIST CONCIERGE BAND — dark with gold CTA
+   GEMOLOGIST CONCIERGE BAND — dark navy with a silver-blue CTA
    ───────────────────────────────────────────────────────────── */
 export function GemologistConciergeBand() {
   return (

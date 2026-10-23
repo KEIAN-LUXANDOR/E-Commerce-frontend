@@ -555,8 +555,8 @@ export function DiamondViewer({
                   className={cn(
                     "relative flex-shrink-0 w-20 h-20 bg-white border p-1 flex flex-col items-center justify-between transition-all rounded-none",
                     isActive
-                      ? "border-[var(--color-ink)] ring-1 ring-[var(--brand-accent,#D4AF37)] shadow-xs"
-                      : "border-[var(--color-line)] bg-[#F6F4EF] hover:border-[var(--color-ink)]"
+                      ? "border-[var(--color-ink)] ring-1 ring-[var(--brand-accent,#8FA9C4)] shadow-xs"
+                      : "border-[var(--color-line)] bg-[#F1F5F9] hover:border-[var(--color-ink)]"
                   )}
                   aria-label={`View ${media.type === "SPIN_360" ? "360° spin" : `image ${i + 1}`}`}
                   aria-pressed={isActive}

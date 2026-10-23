@@ -199,8 +199,8 @@ export function StoreProductView({ product }: { product: StoreProduct }) {
                   className={cn(
                     "w-16 h-16 p-1 border transition-all duration-150 flex flex-col items-center justify-center relative rounded-none",
                     isActive
-                      ? "border-[var(--color-ink)] bg-white ring-1 ring-[var(--brand-accent,#D4AF37)] shadow-xs"
-                      : "border-[var(--color-line)] bg-[#F6F4EF] hover:border-[var(--color-ink)]"
+                      ? "border-[var(--color-ink)] bg-white ring-1 ring-[var(--brand-accent,#8FA9C4)] shadow-xs"
+                      : "border-[var(--color-line)] bg-[#F1F5F9] hover:border-[var(--color-ink)]"
                   )}
                 >
                   <span className="absolute top-1 left-1 font-mono text-[8px] text-[var(--color-slate)] uppercase leading-none">
@@ -228,7 +228,7 @@ export function StoreProductView({ product }: { product: StoreProduct }) {
 
           {/* Main Platinum/Stone Inspection Well */}
           <div
-            className="relative flex-1 order-1 md:order-2 bg-[#F6F4EF] border border-[var(--color-line)] overflow-hidden shadow-xs aspect-square select-none group"
+            className="relative flex-1 order-1 md:order-2 bg-[#F1F5F9] border border-[var(--color-line)] overflow-hidden shadow-xs aspect-square select-none group"
             onPointerMove={moveSpotlight}
             onPointerLeave={() => setSpotlight((current) => ({ ...current, active: false }))}
           >
@@ -237,7 +237,7 @@ export function StoreProductView({ product }: { product: StoreProduct }) {
               className="pointer-events-none absolute inset-0 z-[1] transition-opacity duration-200"
               style={{
                 opacity: spotlight.active ? 1 : 0,
-                background: `radial-gradient(520px circle at ${spotlight.x}px ${spotlight.y}px, rgba(212, 175, 55, 0.17), transparent 48%)`,
+                background: `radial-gradient(520px circle at ${spotlight.x}px ${spotlight.y}px, rgba(10, 25, 47, 0.17), transparent 48%)`,
               }}
             />
             {/* Corner Indicators */}
@@ -309,7 +309,7 @@ export function StoreProductView({ product }: { product: StoreProduct }) {
           </div>
 
           {/* 4 Key Grades Grid */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-[#F6F4EF] p-2 border border-[var(--color-line)]">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 bg-[#F1F5F9] p-2 border border-[var(--color-line)]">
             <div className="bg-white p-3 border border-[var(--color-line)] flex flex-col justify-between">
               <div className="flex items-center justify-between text-[var(--color-slate)]">
                 <span className="font-mono text-[10px] uppercase tracking-wider">Carat</span>
@@ -435,7 +435,7 @@ export function StoreProductView({ product }: { product: StoreProduct }) {
                   variant?.inStock
                     ? added
                       ? "bg-[#2F6B4F] text-white"
-                      : "bg-[var(--brand-accent)] text-[var(--canvas-dark)] hover:bg-[var(--brand-accent-muted)] shadow-[0_4px_16px_rgba(212,175,55,0.18)]"
+                      : "bg-[var(--brand-accent)] text-[var(--canvas-dark)] hover:bg-[var(--brand-accent-muted)] shadow-[0_4px_16px_rgba(10, 25, 47,0.18)]"
                     : "bg-[var(--color-stone)] text-[var(--color-muted)] cursor-not-allowed"
                 )}
               >
@@ -579,7 +579,7 @@ export function StoreProductView({ product }: { product: StoreProduct }) {
           </div>
 
           {/* 3 Trust Strip Cards */}
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 bg-[#F6F4EF] p-2.5 border border-[var(--color-line)]">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 bg-[#F1F5F9] p-2.5 border border-[var(--color-line)]">
             <div className="flex items-start gap-2 p-1">
               <ShieldCheck className="size-4 text-[var(--color-ink)] shrink-0 mt-0.5" />
               <div className="flex flex-col">
@@ -685,7 +685,7 @@ export function StoreProductView({ product }: { product: StoreProduct }) {
         {/* Tab 1: Overview */}
         {activeTab === "overview" && (
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-            <div className="flex flex-col gap-4 bg-[#F6F4EF] p-5 border border-[var(--color-line)]">
+            <div className="flex flex-col gap-4 bg-[#F1F5F9] p-5 border border-[var(--color-line)]">
               <div className="flex justify-between items-center">
                 <span className="font-mono text-xs uppercase tracking-widest text-[var(--color-ink)] font-semibold">
                   Proportions Blueprint
@@ -701,7 +701,7 @@ export function StoreProductView({ product }: { product: StoreProduct }) {
                   <line stroke="#172033" strokeWidth="2" x1="160" x2="340" y1="40" y2="40" />
                   <line stroke="#172033" strokeWidth="1.8" x1="160" x2="80" y1="40" y2="105" />
                   <line stroke="#172033" strokeWidth="1.8" x1="340" x2="420" y1="40" y2="105" />
-                  <rect fill="#F6F4EF" height="8" stroke="#172033" strokeWidth="1.5" width="340" x="80" y="105" />
+                  <rect fill="#F1F5F9" height="8" stroke="#172033" strokeWidth="1.5" width="340" x="80" y="105" />
                   <line stroke="#172033" strokeWidth="1.8" x1="80" x2="250" y1="113" y2="210" />
                   <line stroke="#172033" strokeWidth="1.8" x1="420" x2="250" y1="113" y2="210" />
                   <text fill="#172033" fontSize="11" fontWeight="600" textAnchor="middle" x="250" y="25">
@@ -747,8 +747,8 @@ export function StoreProductView({ product }: { product: StoreProduct }) {
                           className={cn(
                             "w-full h-8 flex items-center justify-center font-mono text-xs",
                             isStone
-                              ? "bg-[var(--canvas-dark,#0D0D0D)] text-white font-bold"
-                              : "bg-[#F6F4EF] text-[var(--color-slate)]"
+                              ? "bg-[var(--canvas-dark,#0A192F)] text-white font-bold"
+                              : "bg-[#F1F5F9] text-[var(--color-slate)]"
                           )}
                         >
                           {c}
@@ -779,8 +779,8 @@ export function StoreProductView({ product }: { product: StoreProduct }) {
                           className={cn(
                             "w-full h-8 flex items-center justify-center font-mono text-[10px]",
                             isStone
-                              ? "bg-[var(--canvas-dark,#0D0D0D)] text-white font-bold"
-                              : "bg-[#F6F4EF] text-[var(--color-slate)]"
+                              ? "bg-[var(--canvas-dark,#0A192F)] text-white font-bold"
+                              : "bg-[#F1F5F9] text-[var(--color-slate)]"
                           )}
                         >
                           {cl}
@@ -795,7 +795,7 @@ export function StoreProductView({ product }: { product: StoreProduct }) {
               </div>
 
               {/* Growth summary note */}
-              <div className="bg-[#F6F4EF] p-4 text-xs text-[var(--color-slate)] leading-relaxed border border-[var(--color-line)]">
+              <div className="bg-[#F1F5F9] p-4 text-xs text-[var(--color-slate)] leading-relaxed border border-[var(--color-line)]">
                 <strong className="text-[var(--color-ink)] font-medium">Diamond Pedigree: </strong>
                 {isLabGrown
                   ? "Created through Chemical Vapour Deposition (CVD), this Type IIa diamond exhibits 100% identical carbon lattice crystallization, optical brilliance, and hardness to mined diamonds."
@@ -809,7 +809,7 @@ export function StoreProductView({ product }: { product: StoreProduct }) {
         {activeTab === "grading" && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-3">
             <div className="flex flex-col divide-y divide-[var(--color-line)] border border-[var(--color-line)]">
-              <div className="flex justify-between p-3 bg-[#F6F4EF]">
+              <div className="flex justify-between p-3 bg-[#F1F5F9]">
                 <span className="text-xs text-[var(--color-slate)]">Measurements</span>
                 <span className="font-mono text-xs text-[var(--color-ink)] font-medium">8.05 × 5.67 × 3.58 mm</span>
               </div>
@@ -817,7 +817,7 @@ export function StoreProductView({ product }: { product: StoreProduct }) {
                 <span className="text-xs text-[var(--color-slate)]">Polish</span>
                 <span className="font-mono text-xs text-[var(--color-ink)] font-medium">Excellent</span>
               </div>
-              <div className="flex justify-between p-3 bg-[#F6F4EF]">
+              <div className="flex justify-between p-3 bg-[#F1F5F9]">
                 <span className="text-xs text-[var(--color-slate)]">Symmetry</span>
                 <span className="font-mono text-xs text-[var(--color-ink)] font-medium">Excellent</span>
               </div>
@@ -828,7 +828,7 @@ export function StoreProductView({ product }: { product: StoreProduct }) {
             </div>
 
             <div className="flex flex-col divide-y divide-[var(--color-line)] border border-[var(--color-line)]">
-              <div className="flex justify-between p-3 bg-[#F6F4EF]">
+              <div className="flex justify-between p-3 bg-[#F1F5F9]">
                 <span className="text-xs text-[var(--color-slate)]">Girdle Thickness</span>
                 <span className="font-mono text-xs text-[var(--color-ink)] font-medium">Medium to Slightly Thick</span>
               </div>
@@ -836,7 +836,7 @@ export function StoreProductView({ product }: { product: StoreProduct }) {
                 <span className="text-xs text-[var(--color-slate)]">Culet</span>
                 <span className="font-mono text-xs text-[var(--color-ink)] font-medium">Pointed (None)</span>
               </div>
-              <div className="flex justify-between p-3 bg-[#F6F4EF]">
+              <div className="flex justify-between p-3 bg-[#F1F5F9]">
                 <span className="text-xs text-[var(--color-slate)]">Growth Process</span>
                 <span className="font-mono text-xs text-[var(--color-ink)] font-medium">
                   {isLabGrown ? "CVD (Type IIa)" : "Natural Geological"}
@@ -856,7 +856,7 @@ export function StoreProductView({ product }: { product: StoreProduct }) {
         {activeTab === "certificate" && (
           <div className="bg-white border border-[var(--color-line)] p-6 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xs">
             <div className="flex items-start gap-4">
-              <div className="w-16 h-20 bg-[#F6F4EF] border border-[var(--color-line)] flex flex-col items-center justify-center p-2 shrink-0">
+              <div className="w-16 h-20 bg-[#F1F5F9] border border-[var(--color-line)] flex flex-col items-center justify-center p-2 shrink-0">
                 <ShieldCheck className="size-8 text-[var(--color-ink)]" />
                 <span className="font-mono text-[8px] text-[var(--color-slate)] mt-1">SEAL</span>
               </div>
@@ -865,7 +865,7 @@ export function StoreProductView({ product }: { product: StoreProduct }) {
                   <span className="font-serif text-[18px] text-[var(--color-ink)]">
                     Official Gemological Report
                   </span>
-                  <span className="px-2 py-0.5 bg-[#F6F4EF] font-mono text-[11px] text-[var(--color-ink)] border border-[var(--color-line)]">
+                  <span className="px-2 py-0.5 bg-[#F1F5F9] font-mono text-[11px] text-[var(--color-ink)] border border-[var(--color-line)]">
                     {sku}
                   </span>
                 </div>
@@ -899,7 +899,7 @@ export function StoreProductView({ product }: { product: StoreProduct }) {
               <button
                 type="button"
                 onClick={() => showToast("Downloading official certificate dossier...", "info")}
-                className="px-5 py-2.5 bg-[var(--canvas-dark,#0D0D0D)] text-white font-mono text-xs uppercase tracking-wider hover:bg-black transition-colors flex items-center justify-center gap-1.5"
+                className="px-5 py-2.5 bg-[var(--canvas-dark,#0A192F)] text-white font-mono text-xs uppercase tracking-wider hover:bg-black transition-colors flex items-center justify-center gap-1.5"
               >
                 View Report PDF
               </button>
@@ -910,7 +910,7 @@ export function StoreProductView({ product }: { product: StoreProduct }) {
         {/* Tab 4: Shipping & Transit */}
         {activeTab === "shipping" && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <div className="p-4 bg-[#F6F4EF] border border-[var(--color-line)] flex flex-col gap-2">
+            <div className="p-4 bg-[#F1F5F9] border border-[var(--color-line)] flex flex-col gap-2">
               <Truck className="size-6 text-[var(--color-ink)]" />
               <h4 className="font-serif text-[16px] text-[var(--color-ink)]">Insured Armored Transit</h4>
               <p className="text-xs text-[var(--color-slate)] leading-relaxed">
@@ -918,7 +918,7 @@ export function StoreProductView({ product }: { product: StoreProduct }) {
               </p>
             </div>
 
-            <div className="p-4 bg-[#F6F4EF] border border-[var(--color-line)] flex flex-col gap-2">
+            <div className="p-4 bg-[#F1F5F9] border border-[var(--color-line)] flex flex-col gap-2">
               <ShieldCheck className="size-6 text-[#2F6B4F]" />
               <h4 className="font-serif text-[16px] text-[var(--color-ink)]">Dual Optical Check</h4>
               <p className="text-xs text-[var(--color-slate)] leading-relaxed">
@@ -926,7 +926,7 @@ export function StoreProductView({ product }: { product: StoreProduct }) {
               </p>
             </div>
 
-            <div className="p-4 bg-[#F6F4EF] border border-[var(--color-line)] flex flex-col gap-2">
+            <div className="p-4 bg-[#F1F5F9] border border-[var(--color-line)] flex flex-col gap-2">
               <RotateCcw className="size-6 text-[var(--color-ink)]" />
               <h4 className="font-serif text-[16px] text-[var(--color-ink)]">30-Day Inspection Right</h4>
               <p className="text-xs text-[var(--color-slate)] leading-relaxed">

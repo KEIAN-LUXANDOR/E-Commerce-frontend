@@ -1,6 +1,7 @@
 import { cacheLife } from "next/cache";
 import Link from "next/link";
 import { NewsletterForm } from "@/components/layout/NewsletterForm";
+import { Logo } from "@/components/layout/Logo";
 import { getStoreCategories } from "@/lib/api/store";
 import { site, whatsappLink } from "@/lib/site";
 import { ShieldCheck, Truck, RotateCcw, Award } from "lucide-react";
@@ -83,12 +84,7 @@ export async function Footer() {
         <div className="grid gap-10 py-12 md:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr_1.4fr]">
           {/* Column 1: Direct Atelier (No showroom) */}
           <div className="space-y-3">
-            <div className="flex items-center gap-3">
-              <span aria-hidden="true" className="grid size-10 place-items-center border border-[var(--brand-accent)] font-editorial text-lg text-[var(--brand-accent-deep)]">
-                KL
-              </span>
-              <p className="font-serif text-lg font-medium">Keian Luxandor</p>
-            </div>
+            <Logo size="compact" />
             <p className="text-xs text-[var(--color-slate)] leading-relaxed">
               Online Certified Loose Diamond Atelier.
               <br />

@@ -17,7 +17,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { User, MapPin, Package, Award } from "lucide-react";
+import { UserRound, MapPin, Package, FileText } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export interface NavItem {
@@ -27,10 +27,10 @@ export interface NavItem {
 }
 
 export const ACCOUNT_NAV_ITEMS: NavItem[] = [
-  { href: "/account", label: "Profile & Identity", icon: User },
-  { href: "/account/orders", label: "Acquisitions & Orders", icon: Package },
-  { href: "/account/addresses", label: "Insured Addresses", icon: MapPin },
-  { href: "/account/vault", label: "Gemological Vault", icon: Award },
+  { href: "/account", label: "Profile", icon: UserRound },
+  { href: "/account/orders", label: "Orders", icon: Package },
+  { href: "/account/addresses", label: "Addresses", icon: MapPin },
+  { href: "/account/vault", label: "Certificates", icon: FileText },
 ];
 
 export function AccountNav({ className }: { className?: string }) {
@@ -38,19 +38,19 @@ export function AccountNav({ className }: { className?: string }) {
 
   return (
     <nav
-      className={cn("w-full border-b border-[var(--color-line)] lg:border-b-0", className)}
+      className={cn("w-full", className)}
       aria-label="Account navigation"
     >
-      <div className="flex lg:flex-col gap-1 overflow-x-auto pb-2 lg:pb-0 scrollbar-none">
+      <div className="flex gap-1 overflow-x-auto border-b border-line pb-3 lg:flex-col lg:overflow-visible lg:border-0 lg:pb-0">
         {ACCOUNT_NAV_ITEMS.map((item) => {
           const isActive = pathname === item.href;
           const Icon = item.icon;
 
           let linkStyle =
-            "border-transparent text-[var(--color-slate)] hover:text-[var(--color-ink)] hover:bg-[var(--color-stone)]";
+            "border-transparent text-slate hover:bg-stone hover:text-ink";
           if (isActive) {
             linkStyle =
-              "border-[var(--color-ink)] bg-[var(--color-stone)] text-[var(--color-ink)] font-medium";
+              "border-ink bg-stone text-ink font-medium";
           }
 
           return (
@@ -58,9 +58,10 @@ export function AccountNav({ className }: { className?: string }) {
               key={item.href}
               href={item.href}
               className={cn(
-                "flex items-center gap-2.5 px-3.5 py-2.5 border text-xs font-mono uppercase tracking-[0.08em] transition-colors whitespace-nowrap",
+                "flex min-h-10 items-center gap-2.5 border-l-2 px-3 py-2 text-sm transition-colors whitespace-nowrap lg:w-full",
                 linkStyle
               )}
+              aria-current={isActive ? "page" : undefined}
             >
               <Icon className="size-4 shrink-0" />
               <span>{item.label}</span>

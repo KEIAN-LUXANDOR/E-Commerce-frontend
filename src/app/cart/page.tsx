@@ -89,7 +89,7 @@ function CartSpecimenCard({
       {/* Laboratory Ledger Head */}
       <div className="flex flex-wrap items-center justify-between gap-2 pb-3 mb-4 border-b border-[var(--color-line)]/70 text-[11px] font-mono tracking-wider">
         <div className="flex items-center gap-2">
-          <span className="px-2 py-0.5 bg-[#F6F4EF] text-[var(--color-ink)] font-semibold border border-[var(--color-line)]">
+          <span className="px-2 py-0.5 bg-[#F1F5F9] text-[var(--color-ink)] font-semibold border border-[var(--color-line)]">
             SPECIMEN NO. {specimenIndex}
           </span>
           <span className="text-[var(--color-slate)] font-medium">
@@ -109,8 +109,8 @@ function CartSpecimenCard({
       </div>
 
       <div className="flex flex-col sm:flex-row gap-5">
-        {/* Square Visualizer Well (#F6F4EF stone tone) */}
-        <div className="relative size-24 sm:size-28 flex-shrink-0 bg-[#F6F4EF] border border-[var(--color-line)] p-2 flex items-center justify-center group overflow-hidden">
+        {/* Square Visualizer Well (#F1F5F9 stone tone) */}
+        <div className="relative size-24 sm:size-28 flex-shrink-0 bg-[#F1F5F9] border border-[var(--color-line)] p-2 flex items-center justify-center group overflow-hidden">
           {line.imageUrl ? (
             // eslint-disable-next-line @next/next/no-img-element
             <img
@@ -267,7 +267,7 @@ function InsuredTransitPincodeChecker() {
               setStatus("idle");
             }}
             placeholder="PIN code"
-            className="h-10 w-32 px-3 font-mono text-[13px] text-[var(--color-ink)] bg-[#F6F4EF] border border-[var(--color-line)] text-center tracking-widest outline-none focus:border-[var(--color-ink)]"
+            className="h-10 w-32 px-3 font-mono text-[13px] text-[var(--color-ink)] bg-[#F1F5F9] border border-[var(--color-line)] text-center tracking-widest outline-none focus:border-[var(--color-ink)]"
           />
           <button
             type="submit"
@@ -300,7 +300,7 @@ function InsuredTransitPincodeChecker() {
 function EmptyCart() {
   return (
     <div className="py-20 flex flex-col items-center gap-6 text-center border border-[var(--color-line)] bg-white p-8">
-      <div className="grid size-20 place-items-center bg-[#F6F4EF] border border-[var(--color-line)]">
+      <div className="grid size-20 place-items-center bg-[#F1F5F9] border border-[var(--color-line)]">
         <ShoppingBag className="size-8 text-[var(--color-slate)]" />
       </div>
       <div className="max-w-md">
@@ -319,7 +319,7 @@ function EmptyCart() {
         </Link>
         <Link
           href="/shop?q=lab"
-          className="flex h-12 items-center justify-center gap-2 px-6 border border-[var(--color-line)] text-[var(--color-ink)] bg-white text-[12px] uppercase tracking-[0.12em] font-medium hover:bg-[#F6F4EF] transition-colors"
+          className="flex h-12 items-center justify-center gap-2 px-6 border border-[var(--color-line)] text-[var(--color-ink)] bg-white text-[12px] uppercase tracking-[0.12em] font-medium hover:bg-[#F1F5F9] transition-colors"
         >
           Browse Lab-Grown Diamonds
         </Link>
@@ -354,7 +354,7 @@ export default function CartPage() {
   }, []);
 
   return (
-    <main className="bg-[#FAF9F5] min-h-screen text-[var(--color-ink)]">
+    <main className="bg-[#F8FAFC] min-h-screen text-[var(--color-ink)]">
       <section className="max-w-7xl w-full mx-auto px-6 md:px-10 pt-8 pb-16">
         {/* Breadcrumbs & Architectural Header */}
         <nav
@@ -378,7 +378,7 @@ export default function CartPage() {
               Your Cart
             </h1>
             {!isEmpty && (
-              <span className="font-mono text-[11px] uppercase tracking-wider text-[var(--brand-anchor,#0A192F)] px-2.5 py-1 bg-[#F6F4EF] border border-[var(--color-line)] font-medium">
+              <span className="font-mono text-[11px] uppercase tracking-wider text-[var(--brand-anchor,#0A192F)] px-2.5 py-1 bg-[#F1F5F9] border border-[var(--color-line)] font-medium">
                 {lines.length} Certified Single-Specimen {lines.length === 1 ? "Stone" : "Stones"}
               </span>
             )}
@@ -447,7 +447,7 @@ export default function CartPage() {
                         value={couponCode}
                         onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
                         placeholder="Enter coupon code"
-                        className="h-9 px-3 w-full font-mono text-[11px] text-[var(--color-ink)] bg-[#F6F4EF] border border-[var(--color-line)] uppercase outline-none focus:border-[var(--color-ink)]"
+                        className="h-9 px-3 w-full font-mono text-[11px] text-[var(--color-ink)] bg-[#F1F5F9] border border-[var(--color-line)] uppercase outline-none focus:border-[var(--color-ink)]"
                       />
                       <button
                         type="button"
@@ -464,7 +464,7 @@ export default function CartPage() {
                     </div>
 
                     {couponApplied && (
-                      <div className="mt-2 flex items-center justify-between px-2.5 py-1.5 bg-[#F6F4EF] border border-[var(--color-line)] text-[11px] font-mono">
+                      <div className="mt-2 flex items-center justify-between px-2.5 py-1.5 bg-[#F1F5F9] border border-[var(--color-line)] text-[11px] font-mono">
                         <span className="text-emerald-800 font-medium flex items-center gap-1.5">
                           <Check className="size-3 text-emerald-700" />
                           −₹10,000 (Concierge Welcome)
@@ -525,7 +525,7 @@ export default function CartPage() {
                 {/* Checkout CTA */}
                 <Link
                   href="/checkout"
-                  className="w-full h-12 bg-[var(--canvas-dark,#0D0D0D)] text-white hover:bg-black transition-colors flex items-center justify-center gap-2 font-mono text-[12px] uppercase tracking-widest text-center shadow-sm"
+                  className="w-full h-12 bg-[var(--canvas-dark,#0A192F)] text-white hover:bg-black transition-colors flex items-center justify-center gap-2 font-mono text-[12px] uppercase tracking-widest text-center shadow-sm"
                 >
                   <span>Check Out Securely</span>
                   <ArrowRight className="size-4" />
@@ -543,7 +543,7 @@ export default function CartPage() {
               </div>
 
               {/* Private Client Concierge Box (Surat Atelier & 40x Loupe Video Consultation) */}
-              <div className="bg-[#F6F4EF] border border-[var(--color-line)] p-5 text-[13px] space-y-2.5">
+              <div className="bg-[#F1F5F9] border border-[var(--color-line)] p-5 text-[13px] space-y-2.5">
                 <div className="flex items-center gap-2 text-[var(--color-ink)] font-medium">
                   <Video className="size-4 text-[var(--brand-anchor,#0A192F)]" />
                   <span className="font-mono text-[11px] uppercase tracking-wider font-semibold">
@@ -569,7 +569,7 @@ export default function CartPage() {
       </section>
 
       {/* Below the Fold: Curated Cohort / Similar Diamonds Carousel */}
-      <section className="w-full bg-[#F6F4EF] border-t border-[var(--color-line)] py-14 mt-8">
+      <section className="w-full bg-[#F1F5F9] border-t border-[var(--color-line)] py-14 mt-8">
         <div className="max-w-7xl mx-auto px-6 md:px-10">
           <div className="flex flex-col md:flex-row md:items-end justify-between pb-4 mb-8 border-b border-[var(--color-line)] gap-3">
             <div>
@@ -596,7 +596,7 @@ export default function CartPage() {
                 >
                   <div>
                     <div className="flex justify-between items-center text-[10px] font-mono text-[var(--color-slate)] mb-2">
-                      <span className="px-1.5 py-0.5 bg-[#F6F4EF] text-[var(--color-ink)] border border-[var(--color-line)]">
+                      <span className="px-1.5 py-0.5 bg-[#F1F5F9] text-[var(--color-ink)] border border-[var(--color-line)]">
                         {d.lab} {d.certificateNumber}
                       </span>
                       <span className={d.origin === "NATURAL" ? "font-medium text-[var(--color-ink)]" : "text-emerald-800"}>
@@ -604,7 +604,7 @@ export default function CartPage() {
                       </span>
                     </div>
 
-                    <div className="h-36 bg-[#F6F4EF] border border-[var(--color-line)] flex items-center justify-center p-3 mb-3 relative overflow-hidden">
+                    <div className="h-36 bg-[#F1F5F9] border border-[var(--color-line)] flex items-center justify-center p-3 mb-3 relative overflow-hidden">
                       {d.media?.[0]?.url ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
@@ -639,7 +639,7 @@ export default function CartPage() {
                     </span>
                     <Link
                       href={`/diamonds/${originType}/${d.slug}`}
-                      className="px-3 py-1 bg-[#F6F4EF] hover:bg-[var(--color-ink)] hover:text-white transition-colors text-[var(--color-ink)] font-mono text-[10px] uppercase tracking-wider border border-[var(--color-line)]"
+                      className="px-3 py-1 bg-[#F1F5F9] hover:bg-[var(--color-ink)] hover:text-white transition-colors text-[var(--color-ink)] font-mono text-[10px] uppercase tracking-wider border border-[var(--color-line)]"
                     >
                       View
                     </Link>

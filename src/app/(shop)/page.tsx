@@ -31,7 +31,7 @@ function categoryHref(categories: StoreCategory[], word: string, fallback: strin
  * Strictly aligned with Stitch Calm Editorial Luxury cadence:
  * 1. Hero with architectural specimen drafting overlay & star facet fire
  * 2. Stat Strip (GIA & IGI, 30-day returns, insured delivery, Surat precision atelier)
- * 3. Choose your shape (10 shape tiles in #F6F4EF stone band)
+ * 3. Choose your shape (10 shape tiles in #F1F5F9 stone band)
  * 4. Natural or Lab-grown (geological origin vs modern science)
  * 5. New this month (clean diamond specimen cards)
  * 6. Choose by size (proportions tier cards: Under 1ct, 1-2ct, 2ct+)

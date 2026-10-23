@@ -1,44 +1,42 @@
 @import "tailwindcss";
 
 :root {
-  /* Editorial Palette: Midnight Obsidian & Champagne Gold */
-  --canvas-dark: #0D0D0D;      /* Deep Obsidian - Midnight Hero Sections */
-  --canvas-light: #F9F8F6;     /* Soft Alabaster - Human Warm Cream */
-  --brand-anchor: #0A192F;     /* Deep Navy - Trust & Navigation */
-  --brand-accent: #D4AF37;     /* Champagne Gold - CTAs & Certifications */
-  --brand-accent-muted: #E8D283;
-  --brand-accent-deep: #B8952C;
-  --color-gold: #D4AF37;
-  --color-gold-hover: #C5A028;
+  --canvas-dark: #0A192F;
+  --canvas-light: #FFFFFF;
+  --brand-anchor: #0A192F;
+  --brand-accent: #526D89;
+  --brand-accent-muted: #DCE6F0;
+  --brand-accent-deep: #334C67;
+  --color-gold: #526D89;
+  --color-gold-hover: #334C67;
 
-  /* Editorial Palette: Stitch Atelier Foundations */
   --color-paper: #FFFFFF;
-  --color-surface: #F9F8F6;
-  --color-stone: #F6F4EF;
-  --color-stone-bg: #F6F4EF;
-  --color-stone-well: #F1EFEA;
-  --color-stone-deep: #EFEDE7;
-  --color-platinum: #EFEDE7;
-  --surface-warm: #FAF8F4;
+  --color-surface: #FFFFFF;
+  --color-stone: #F8FAFC;
+  --color-stone-bg: #F8FAFC;
+  --color-stone-well: #F1F5F9;
+  --color-stone-deep: #E8EEF5;
+  --color-platinum: #E8EEF5;
+  --surface-warm: #FFFFFF;
 
-  --color-ink: #16181D;
-  --color-ink-secondary: #4A4D55;
-  --color-slate: #5F6470;
-  --color-muted: #5F6470;
+  --color-ink: #0A192F;
+  --color-ink-secondary: #334155;
+  --color-slate: #64748B;
+  --color-muted: #64748B;
 
-  --color-line: #E4E2DC;
-  --color-line-dark: #C9C6BE;
-  --color-line-strong: #C9C6BE;
+  --color-line: #E2E8F0;
+  --color-line-dark: #CBD5E1;
+  --color-line-strong: #CBD5E1;
 
-  --color-loupe: #1E4A6D;
-  --color-loupe-deep: #153650;
-  --color-accent: #1E4A6D;
-  --color-accent-hover: #153650;
+  --color-loupe: #0A192F;
+  --color-loupe-deep: #071426;
+  --color-accent: #0A192F;
+  --color-accent-hover: #071426;
 
   --color-ok: #2F6B4F;
   --color-ok-bg: #E7F0EB;
   --color-warn: #8A5A12;
-  --color-warn-bg: #F6EEDF;
+  --color-warn-bg: #F8F1E4;
   --color-out: #A23B3B;
   --color-out-bg: #F7E9E9;
   --color-whatsapp: #1F7A4D;
@@ -48,8 +46,8 @@
   --color-fire-3: #F2A9C9;
   --color-fire-4: #FFD88F;
 
-  --font-display: "Ibarra Real Nova", Georgia, serif;
-  --font-editorial: "Bodoni Moda Variable", "Ibarra Real Nova", Georgia, serif;
+  --font-display: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif;
+  --font-editorial: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif;
   --font-sans: "Jost Variable", "Jost", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 
   --radius-control: 3px;
@@ -58,6 +56,11 @@
 
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
   --ease-in-out-soft: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+@theme inline {
+  --font-serif: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif;
+  --font-sans: "Jost Variable", "Jost", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
 /* ============================================================
@@ -171,8 +174,8 @@
   to   { opacity: 1; transform: translateX(0); }
 }
 @keyframes gold-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(212, 175, 55, 0.35); }
-  50%       { box-shadow: 0 0 0 8px rgba(212, 175, 55, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(10, 25, 47, 0.24); }
+  50%       { box-shadow: 0 0 0 8px rgba(10, 25, 47, 0); }
 }
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
@@ -257,7 +260,7 @@
   }
 
   ::selection {
-    background: rgba(212, 175, 55, 0.18);
+    background: rgba(10, 25, 47, 0.12);
   }
 
   dialog::backdrop {
@@ -442,7 +445,7 @@
   /* Champagne Gold CTA — for hero and editorial sections */
   .btn-gold {
     background: var(--brand-accent);
-    color: var(--canvas-dark);
+    color: #ffffff;
     border: 1px solid var(--brand-accent);
     font-weight: 600;
   }
@@ -497,7 +500,7 @@
   }
   .product-card-hover:hover {
     border-color: var(--brand-accent) !important;
-    box-shadow: 0 12px 32px rgba(212, 175, 55, 0.12);
+    box-shadow: 0 12px 32px rgba(10, 25, 47, 0.12);
     transform: translateY(-2px);
   }
 
@@ -510,7 +513,7 @@
   }
   .shape-tile:hover {
     border-color: var(--brand-accent) !important;
-    box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+    box-shadow: 0 0 0 2px rgba(10, 25, 47, 0.12);
     transform: translateY(-1px);
   }
   .shape-tile.active-shape {

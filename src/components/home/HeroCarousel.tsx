@@ -5,15 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { HeroDiamond } from "@/components/home/HeroDiamond";
-import { Spotlight } from "@/components/ui/spotlight";
-import { ShimmerButton } from "@/components/ui/shimmer-button";
 import { Badge } from "@/components/ui/badge";
 import type { Banner } from "@/lib/types/catalog";
 
-/**
- * Editorial Hero Carousel with Aceternity-style ambient lighting,
- * high-contrast typography, and designated photoshoot banner space.
- */
 export function HeroCarousel({ banners }: { banners: Banner[] }) {
   const [index, setIndex] = useState(0);
   if (!banners.length) return null;
@@ -26,10 +20,6 @@ export function HeroCarousel({ banners }: { banners: Banner[] }) {
       aria-label="Featured Collection"
       className="relative overflow-hidden border-b border-line bg-[var(--surface-warm)]"
     >
-      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(#e5dfd5_1px,transparent_1px)] [background-size:26px_26px] opacity-35" />
-      {/* Aceternity Spotlight Effect */}
-      <Spotlight className="-top-40 left-0 md:left-48 md:-top-20" fill="rgba(30, 74, 109, 0.15)" />
-
       <div className="page relative z-10 grid items-center gap-10 py-12 md:grid-cols-[1.1fr_1fr] md:py-20 lg:gap-16">
         <div key={b.id} aria-live="polite" aria-atomic="true" className="order-2 animate-fade-up md:order-1">
           <div role="group" aria-roledescription="slide" aria-label={`${index + 1} of ${banners.length}`}>
@@ -53,14 +43,14 @@ export function HeroCarousel({ banners }: { banners: Banner[] }) {
 
             <div className="mt-8 flex flex-wrap items-center gap-4">
               <Link href={b.ctaHref}>
-                <ShimmerButton className="rounded-xl px-7 py-3.5 shadow-md">
-                  <span>{b.ctaLabel}</span>
-                  <ArrowRight className="size-3.5 ml-2" />
-                </ShimmerButton>
+                <span className="btn btn-primary rounded-sm px-7 py-3.5">
+                  {b.ctaLabel}
+                  <ArrowRight className="size-3.5" />
+                </span>
               </Link>
               <Link
                 href="/education/shapes"
-                className="inline-flex items-center justify-center rounded-xl border border-[var(--brand-accent)] bg-surface px-6 py-3 text-xs font-medium uppercase tracking-[0.08em] text-ink hover:bg-[var(--brand-accent)]/10 transition-all"
+                className="inline-flex items-center justify-center rounded-sm border border-line-dark bg-white px-6 py-3 text-xs font-medium uppercase tracking-[0.08em] text-ink transition-colors hover:border-ink"
               >
                 Shape Metrology Guide
               </Link>
@@ -106,7 +96,7 @@ export function HeroCarousel({ banners }: { banners: Banner[] }) {
 
         <div className="order-1 md:order-2 flex justify-center">
           {b.imageUrl ? (
-            <div className="relative aspect-square w-full max-w-lg overflow-hidden rounded-none border border-line bg-[#F1EFEA]">
+            <div className="relative aspect-square w-full max-w-lg overflow-hidden rounded-none border border-line bg-[#F8FAFC]">
               <Image
                 src={b.imageUrl}
                 alt=""

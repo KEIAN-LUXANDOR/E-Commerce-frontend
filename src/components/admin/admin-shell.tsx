@@ -16,6 +16,7 @@
 import * as React from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { Logo } from "@/components/layout/Logo";
 import {
   ShieldCheck,
   PackageCheck,
@@ -106,14 +107,12 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       <header className="border-b border-[var(--color-line)] bg-white sticky top-0 z-40">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
           <div className="flex items-center gap-6">
-            <Link href="/admin/packing" className="flex items-center gap-2">
-              <span className="font-serif text-lg tracking-wider text-[var(--color-ink)] font-semibold uppercase">
-                Keian Luxandor
-              </span>
+            <div className="flex items-center gap-2">
+              <Logo href="/admin/packing" size="compact" />
               <span className="font-mono text-[9px] uppercase tracking-[0.14em] bg-[var(--color-stone)] border border-[var(--color-line)] px-2 py-0.5 text-[var(--color-ink)]">
                 Operations Desk
               </span>
-            </Link>
+            </div>
 
             <div className="hidden md:flex items-center gap-2 font-mono text-[10px] uppercase text-[var(--color-slate)] border-l border-[var(--color-line)] pl-4">
               <span className="size-2 rounded-full bg-emerald-500 animate-pulse" />

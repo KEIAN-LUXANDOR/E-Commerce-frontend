@@ -1,10 +1,26 @@
 import * as React from "react";
 import { describe, it, expect, vi } from "vitest";
 import { renderToString } from "react-dom/server";
-import { OrderStepper, TRANSIT_MILESTONES } from "../order-stepper";
-import { AccountNav, ACCOUNT_NAV_ITEMS } from "../account-nav";
-import { OrderHistory, SAMPLE_CUSTOMER_ORDERS } from "../order-history";
+import { OrderStepper } from "../order-stepper";
+import { AccountNav } from "../account-nav";
+import { OrderHistory } from "../order-history";
 import { ProfileEditor } from "../profile-editor";
+
+vi.mock("@/lib/session", () => ({
+  useSession: () => ({
+    status: "user",
+    user: {
+      id: "customer-1",
+      email: "riya@example.com",
+      fullName: "Riya Shah",
+      phone: "9876543210",
+      role: "CUSTOMER",
+      emailVerified: true,
+      createdAt: "2026-01-10T00:00:00Z",
+    },
+  }),
+  setSessionUser: vi.fn(),
+}));
 
 vi.mock("next/navigation", () => ({
   useRouter: () => ({ push: vi.fn(), refresh: vi.fn(), replace: vi.fn() }),
@@ -43,50 +59,32 @@ describe("AccountNav", () => {
     expect(html).toContain("/account/orders");
     expect(html).toContain("/account/addresses");
     expect(html).toContain("/account/vault");
-    expect(html).toContain("Profile &amp; Identity");
-    expect(html).toContain("Acquisitions &amp; Orders");
+    expect(html).toContain(">Profile</span>");
+    expect(html).toContain(">Orders</span>");
+    expect(html).toContain(">Addresses</span>");
+    expect(html).toContain(">Certificates</span>");
   });
 });
 
 describe("OrderHistory", () => {
-  it("renders sample orders with reference IDs", () => {
+  it("does not invent order data and explains how to get help", () => {
     const html = renderToString(<OrderHistory />);
-
-    expect(html).toContain("KL-2026-98214");
-    expect(html).toContain("KL-2026-89102");
-    expect(html).toContain("Sequel Secure Armoured Escort");
-    expect(html).toContain("Malca-Amit Luxury Logistics");
-  });
-
-  it("renders formatted INR totals", () => {
-    const html = renderToString(<OrderHistory />);
-    expect(html).toContain("₹9,27,000");
-    expect(html).toContain("₹4,94,400");
-  });
-
-  it("includes GIA / IGI dossier links", () => {
-    const html = renderToString(<OrderHistory />);
-    expect(html).toContain("Verify GIA");
-    expect(html).toContain("Verify IGI");
-    expect(html).toContain("2287654321");
-  });
-
-  it("includes tracking and invoice download triggers", () => {
-    const html = renderToString(<OrderHistory />);
-    expect(html).toContain("Track Live GPS &amp; Delivery OTP");
-    expect(html).toContain("GST Tax Invoice (PDF)");
+    expect(html).toContain("Order history is on its way");
+    expect(html).toContain("Contact us");
+    expect(html).toContain("/shop");
+    expect(html).not.toContain("KL-2026-98214");
   });
 });
 
 describe("ProfileEditor", () => {
-  it("renders personal dossier fields and KYC status", () => {
+  it("renders actual account details without invented profile fields", () => {
     const html = renderToString(<ProfileEditor />);
 
-    expect(html).toContain("Personal Dossier");
-    expect(html).toContain("KYC Verified");
-    expect(html).toContain("Full Legal Name");
-    expect(html).toContain("Registered Email");
-    expect(html).toContain("Verified Mobile Number");
-    expect(html).toContain("Real-Time WhatsApp Armoured Transit Dispatch");
+    expect(html).toContain("Personal details");
+    expect(html).toContain("Full name");
+    expect(html).toContain("riya@example.com");
+    expect(html).toContain("9876543210");
+    expect(html).not.toContain("KYC Verified");
+    expect(html).not.toContain("aarav.mehta@example.com");
   });
 });

@@ -167,7 +167,7 @@ export function StoreListing({
       </div>
 
       {/* 10 Geometric Shape Visual Selector */}
-      <section className="w-full bg-[#F6F4EF] border-b border-[var(--color-line)] px-6 md:px-12 py-5">
+      <section className="w-full bg-[#F1F5F9] border-b border-[var(--color-line)] px-6 md:px-12 py-5">
         <div className="max-w-[1360px] mx-auto">
           <div className="flex items-center justify-between mb-3">
             <span className="text-[11px] uppercase tracking-wider text-[var(--color-slate)] font-mono font-semibold">
@@ -193,8 +193,8 @@ export function StoreListing({
                   className={cn(
                     "flex flex-col items-center justify-center py-2.5 px-2 border transition-all rounded-none text-center group",
                     isMatch
-                      ? "border-[var(--canvas-dark,#0D0D0D)] bg-white text-[var(--color-ink)] font-bold ring-1 ring-[var(--brand-accent,#D4AF37)] shadow-xs"
-                      : "border-[var(--color-line)] bg-white/70 hover:border-[var(--brand-accent)] hover:bg-white hover:shadow-[0_4px_16px_rgba(212,175,55,0.10)] text-[var(--color-slate)]"
+                      ? "border-[var(--canvas-dark,#0A192F)] bg-white text-[var(--color-ink)] font-bold ring-1 ring-[var(--brand-accent,#8FA9C4)] shadow-xs"
+                      : "border-[var(--color-line)] bg-white/70 hover:border-[var(--brand-accent)] hover:bg-white hover:shadow-[0_4px_16px_rgba(10,25,47,0.10)] text-[var(--color-slate)]"
                   )}
                 >
                   <ShapeIcon
@@ -233,8 +233,8 @@ export function StoreListing({
                       className={cn(
                         "block px-2.5 py-1.5 transition-colors",
                         c.active
-                          ? "bg-[var(--canvas-dark,#0D0D0D)] text-white font-medium"
-                          : "text-[var(--color-slate)] hover:text-[var(--color-ink)] hover:bg-[#F6F4EF]"
+                          ? "bg-[var(--canvas-dark,#0A192F)] text-white font-medium"
+                          : "text-[var(--color-slate)] hover:text-[var(--color-ink)] hover:bg-[#F1F5F9]"
                       )}
                     >
                       {c.label}
@@ -405,7 +405,7 @@ function Pages({
           <ChevronLeft className="size-3.5" aria-hidden />
         </Link>
       ) : (
-        <span className={`${cell} border-[var(--color-line)] bg-[#F6F4EF] text-[var(--color-muted)]`} aria-hidden>
+        <span className={`${cell} border-[var(--color-line)] bg-[#F1F5F9] text-[var(--color-muted)]`} aria-hidden>
           <ChevronLeft className="size-3.5" />
         </span>
       )}
@@ -438,7 +438,7 @@ function Pages({
           <ChevronRight className="size-3.5" aria-hidden />
         </Link>
       ) : (
-        <span className={`${cell} border-[var(--color-line)] bg-[#F6F4EF] text-[var(--color-muted)]`} aria-hidden>
+        <span className={`${cell} border-[var(--color-line)] bg-[#F1F5F9] text-[var(--color-muted)]`} aria-hidden>
           <ChevronRight className="size-3.5" />
         </span>
       )}

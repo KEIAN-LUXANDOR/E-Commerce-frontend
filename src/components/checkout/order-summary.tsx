@@ -86,17 +86,17 @@ function ReservationTimerWidget() {
             "font-mono font-semibold text-[12px] px-2 py-0.5 rounded-none border",
             isWarning
               ? "text-[#b45309] bg-[#fef3c7] border-[#fde68a]"
-              : "text-[var(--color-ink)] bg-[#F6F4EF] border-[var(--color-line)]"
+              : "text-[var(--color-ink)] bg-[#F1F5F9] border-[var(--color-line)]"
           )}
         >
           {formattedTime}
         </span>
       </div>
-      <div className="w-full bg-[#EAE8E2] h-1.5 overflow-hidden">
+      <div className="w-full bg-[#E2EAF2] h-1.5 overflow-hidden">
         <div
           className={cn(
             "h-full transition-all duration-1000",
-            isWarning ? "bg-[#d97706]" : "bg-[var(--canvas-dark,#0D0D0D)]"
+            isWarning ? "bg-[#d97706]" : "bg-[var(--canvas-dark,#0A192F)]"
           )}
           style={{ width: `${pct}%` }}
         />
@@ -116,7 +116,7 @@ function SpecimenLineItem({ line }: { line: CartLine }) {
   return (
     <div className="flex items-start gap-4 py-3.5 border-b border-[var(--color-line)]/70 last:border-b-0">
       {/* Thumbnail Well with LAB/NAT Badge */}
-      <div className="size-16 bg-[#F6F4EF] border border-[var(--color-line)] flex-shrink-0 relative overflow-hidden flex items-center justify-center p-1.5">
+      <div className="size-16 bg-[#F1F5F9] border border-[var(--color-line)] flex-shrink-0 relative overflow-hidden flex items-center justify-center p-1.5">
         {line.imageUrl ? (
           // eslint-disable-next-line @next/next/no-img-element
           <img
@@ -133,7 +133,7 @@ function SpecimenLineItem({ line }: { line: CartLine }) {
           className={cn(
             "absolute bottom-0 right-0 font-mono text-[8px] px-1 py-0.2 tracking-wider font-semibold border",
             isLabGrown
-              ? "bg-[var(--canvas-dark,#0D0D0D)] text-white border-transparent"
+              ? "bg-[var(--canvas-dark,#0A192F)] text-white border-transparent"
               : "bg-white text-[var(--color-ink)] border-[var(--color-line)]"
           )}
         >
@@ -155,7 +155,7 @@ function SpecimenLineItem({ line }: { line: CartLine }) {
           {line.specLabel}
         </p>
         <div className="flex items-center gap-2 mt-1 font-mono text-[9px] text-[var(--color-slate)]">
-          <span className="px-1.5 py-0.2 bg-[#F6F4EF] border border-[var(--color-line)]">
+          <span className="px-1.5 py-0.2 bg-[#F1F5F9] border border-[var(--color-line)]">
             {certAuthority} {line.certificateNumber || "INSCRIBED"}
           </span>
         </div>
@@ -258,7 +258,7 @@ export function OrderSummary({
         {showPromo && (
           <div className="py-3 border-t border-[var(--color-line)]/70">
             {promoStatus === "applied" ? (
-              <div className="flex items-center justify-between px-2.5 py-1.5 bg-[#F6F4EF] border border-[var(--color-line)] text-[11px] font-mono">
+              <div className="flex items-center justify-between px-2.5 py-1.5 bg-[#F1F5F9] border border-[var(--color-line)] text-[11px] font-mono">
                 <span className="text-emerald-800 font-medium flex items-center gap-1.5">
                   <Check className="size-3 text-emerald-700" />
                   Privilege Code: {appliedCode} (−{formatINR(discountPaise)})
@@ -282,7 +282,7 @@ export function OrderSummary({
                     setPromoStatus("idle");
                   }}
                   placeholder="Privilege code"
-                  className="h-9 px-3 w-full font-mono text-[11px] text-[var(--color-ink)] bg-[#F6F4EF] border border-[var(--color-line)] uppercase outline-none focus:border-[var(--color-ink)]"
+                  className="h-9 px-3 w-full font-mono text-[11px] text-[var(--color-ink)] bg-[#F1F5F9] border border-[var(--color-line)] uppercase outline-none focus:border-[var(--color-ink)]"
                 />
                 <button
                   type="button"

@@ -73,7 +73,7 @@ function CollapsedStepRow({
   return (
     <div className="bg-white border border-[var(--color-line)] p-4 flex items-center justify-between transition-colors hover:border-[var(--color-slate)]">
       <div className="flex items-center gap-3 min-w-0 pr-2">
-        <div className="size-6 bg-[var(--canvas-dark,#0D0D0D)] text-white flex items-center justify-center flex-shrink-0">
+        <div className="size-6 bg-[var(--canvas-dark,#0A192F)] text-white flex items-center justify-center flex-shrink-0">
           <Check className="size-3.5" />
         </div>
         <div className="flex items-baseline gap-2 flex-wrap min-w-0">
@@ -131,7 +131,7 @@ function Step1ContactForm({
     <div className="bg-white border-2 border-[var(--color-ink)] p-6">
       <div className="flex items-center justify-between pb-4 mb-5 border-b border-[var(--color-line)]">
         <div className="flex items-center gap-3">
-          <div className="size-7 bg-[var(--canvas-dark,#0D0D0D)] text-white flex items-center justify-center font-mono text-[12px] font-bold">
+          <div className="size-7 bg-[var(--canvas-dark,#0A192F)] text-white flex items-center justify-center font-mono text-[12px] font-bold">
             1
           </div>
           <h2 className="font-serif text-[20px] text-[var(--color-ink)] font-normal">
@@ -157,7 +157,7 @@ function Step1ContactForm({
             value={contact.name}
             onChange={(e) => onChange({ ...contact, name: e.target.value })}
             placeholder="e.g. Riya Sharma"
-            className="w-full h-11 px-3 bg-[#F6F4EF] border border-[var(--color-line)] font-mono text-[13px] text-[var(--color-ink)] outline-none focus:border-[var(--color-ink)]"
+            className="w-full h-11 px-3 bg-[#F1F5F9] border border-[var(--color-line)] font-mono text-[13px] text-[var(--color-ink)] outline-none focus:border-[var(--color-ink)]"
           />
           {errors.name && <p className="font-mono text-[10px] text-red-600 mt-1">{errors.name}</p>}
         </div>
@@ -176,7 +176,7 @@ function Step1ContactForm({
               value={contact.email}
               onChange={(e) => onChange({ ...contact, email: e.target.value })}
               placeholder="riya.sharma@example.com"
-              className="w-full h-11 px-3 bg-[#F6F4EF] border border-[var(--color-line)] font-mono text-[13px] text-[var(--color-ink)] outline-none focus:border-[var(--color-ink)]"
+              className="w-full h-11 px-3 bg-[#F1F5F9] border border-[var(--color-line)] font-mono text-[13px] text-[var(--color-ink)] outline-none focus:border-[var(--color-ink)]"
             />
             {errors.email && <p className="font-mono text-[10px] text-red-600 mt-1">{errors.email}</p>}
           </div>
@@ -194,7 +194,7 @@ function Step1ContactForm({
               value={contact.phone}
               onChange={(e) => onChange({ ...contact, phone: e.target.value })}
               placeholder="+91 98765 43210"
-              className="w-full h-11 px-3 bg-[#F6F4EF] border border-[var(--color-line)] font-mono text-[13px] text-[var(--color-ink)] outline-none focus:border-[var(--color-ink)]"
+              className="w-full h-11 px-3 bg-[#F1F5F9] border border-[var(--color-line)] font-mono text-[13px] text-[var(--color-ink)] outline-none focus:border-[var(--color-ink)]"
             />
             {errors.phone && <p className="font-mono text-[10px] text-red-600 mt-1">{errors.phone}</p>}
           </div>
@@ -203,7 +203,7 @@ function Step1ContactForm({
         <div className="pt-2">
           <button
             type="submit"
-            className="w-full h-12 bg-[var(--canvas-dark,#0D0D0D)] text-white font-mono text-[11px] uppercase tracking-widest font-semibold hover:bg-black transition-colors"
+            className="w-full h-12 bg-[var(--canvas-dark,#0A192F)] text-white font-mono text-[11px] uppercase tracking-widest font-semibold hover:bg-black transition-colors"
           >
             Continue to Delivery Address →
           </button>
@@ -236,7 +236,7 @@ function Step2AddressForm({
     <div className="bg-white border-2 border-[var(--color-ink)] p-6">
       <div className="flex items-center justify-between pb-4 mb-5 border-b border-[var(--color-line)]">
         <div className="flex items-center gap-3">
-          <div className="size-7 bg-[var(--canvas-dark,#0D0D0D)] text-white flex items-center justify-center font-mono text-[12px] font-bold">
+          <div className="size-7 bg-[var(--canvas-dark,#0A192F)] text-white flex items-center justify-center font-mono text-[12px] font-bold">
             2
           </div>
           <h2 className="font-serif text-[20px] text-[var(--color-ink)] font-normal">
@@ -260,14 +260,14 @@ function Step2AddressForm({
           type="button"
           onClick={onNext}
           disabled={!selectedAddress}
-          className="flex-1 h-12 bg-[var(--canvas-dark,#0D0D0D)] text-white font-mono text-[11px] uppercase tracking-widest font-semibold hover:bg-black transition-colors disabled:opacity-50"
+          className="flex-1 h-12 bg-[var(--canvas-dark,#0A192F)] text-white font-mono text-[11px] uppercase tracking-widest font-semibold hover:bg-black transition-colors disabled:opacity-50"
         >
           Continue to Order Review →
         </button>
         <button
           type="button"
           onClick={onBack}
-          className="h-12 px-6 border border-[var(--color-line)] font-mono text-[11px] uppercase tracking-wider hover:bg-[#F6F4EF] transition-colors"
+          className="h-12 px-6 border border-[var(--color-line)] font-mono text-[11px] uppercase tracking-wider hover:bg-[#F1F5F9] transition-colors"
         >
           Back
         </button>
@@ -297,7 +297,7 @@ function Step3ReviewForm({
     <div className="bg-white border-2 border-[var(--color-ink)] p-6">
       <div className="flex items-center justify-between pb-4 mb-5 border-b border-[var(--color-line)]">
         <div className="flex items-center gap-3">
-          <div className="size-7 bg-[var(--canvas-dark,#0D0D0D)] text-white flex items-center justify-center font-mono text-[12px] font-bold">
+          <div className="size-7 bg-[var(--canvas-dark,#0A192F)] text-white flex items-center justify-center font-mono text-[12px] font-bold">
             3
           </div>
           <h2 className="font-serif text-[20px] text-[var(--color-ink)] font-normal">
@@ -311,7 +311,7 @@ function Step3ReviewForm({
 
       <div className="space-y-4 text-[13px]">
         {/* Recipient summary */}
-        <div className="border border-[var(--color-line)] p-4 bg-[#F6F4EF]">
+        <div className="border border-[var(--color-line)] p-4 bg-[#F1F5F9]">
           <span className="font-mono text-[10px] uppercase tracking-wider text-[var(--color-slate)] block mb-1">
             Armored Transit Recipient
           </span>
@@ -346,14 +346,14 @@ function Step3ReviewForm({
         <button
           type="button"
           onClick={onNext}
-          className="flex-1 h-12 bg-[var(--canvas-dark,#0D0D0D)] text-white font-mono text-[11px] uppercase tracking-widest font-semibold hover:bg-black transition-colors"
+          className="flex-1 h-12 bg-[var(--canvas-dark,#0A192F)] text-white font-mono text-[11px] uppercase tracking-widest font-semibold hover:bg-black transition-colors"
         >
           Proceed to Settlement &amp; Payment →
         </button>
         <button
           type="button"
           onClick={onBack}
-          className="h-12 px-6 border border-[var(--color-line)] font-mono text-[11px] uppercase tracking-wider hover:bg-[#F6F4EF] transition-colors"
+          className="h-12 px-6 border border-[var(--color-line)] font-mono text-[11px] uppercase tracking-wider hover:bg-[#F1F5F9] transition-colors"
         >
           Back
         </button>
@@ -383,7 +383,7 @@ function Step4PaymentForm({
     <div className="bg-white border-2 border-[var(--color-ink)] p-6 shadow-sm">
       <div className="flex items-center justify-between pb-4 mb-5 border-b border-[var(--color-line)]">
         <div className="flex items-center gap-3">
-          <div className="size-7 bg-[var(--canvas-dark,#0D0D0D)] text-white flex items-center justify-center font-mono text-[12px] font-bold">
+          <div className="size-7 bg-[var(--canvas-dark,#0A192F)] text-white flex items-center justify-center font-mono text-[12px] font-bold">
             4
           </div>
           <h2 className="font-serif text-[20px] text-[var(--color-ink)] font-normal">
@@ -412,7 +412,7 @@ function Step4PaymentForm({
             value={pan}
             onChange={(e) => setPan(e.target.value.toUpperCase())}
             placeholder="ABCDE1234F"
-            className="w-full max-w-md h-11 px-3 bg-[#F6F4EF] border border-[var(--color-line)] font-mono text-[14px] text-[var(--color-ink)] uppercase tracking-widest outline-none focus:border-[var(--color-ink)]"
+            className="w-full max-w-md h-11 px-3 bg-[#F1F5F9] border border-[var(--color-line)] font-mono text-[14px] text-[var(--color-ink)] uppercase tracking-widest outline-none focus:border-[var(--color-ink)]"
           />
           <p className="font-mono text-[10px] text-[var(--color-slate)]">
             Required by law under Section 139A of the Indian Income Tax Act for precious acquisitions above ₹2 lakh.
@@ -482,14 +482,14 @@ export default function CheckoutPage() {
 
   if (lines.length === 0) {
     return (
-      <div className="min-h-screen py-24 flex items-center justify-center bg-[#FAF9F5]">
+      <div className="min-h-screen py-24 flex items-center justify-center bg-[#F8FAFC]">
         <Loader2 className="size-8 animate-spin text-[var(--color-slate)]" />
       </div>
     );
   }
 
   return (
-    <main className="bg-[#FAF9F5] min-h-screen text-[var(--color-ink)]">
+    <main className="bg-[#F8FAFC] min-h-screen text-[var(--color-ink)]">
       <section className="max-w-7xl mx-auto w-full px-6 md:px-10 py-8 md:py-12">
         {/* Discreet Protocol Header matching mockup */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-4 mb-8 border-b border-[var(--color-line)] gap-3">
@@ -555,7 +555,7 @@ export default function CheckoutPage() {
             ) : (
               <div className="bg-white border border-[var(--color-line)] p-4 flex items-center justify-between text-[var(--color-slate)]">
                 <div className="flex items-center gap-3">
-                  <div className="size-6 bg-[#F6F4EF] text-[var(--color-slate)] flex items-center justify-center font-mono text-[11px]">
+                  <div className="size-6 bg-[#F1F5F9] text-[var(--color-slate)] flex items-center justify-center font-mono text-[11px]">
                     2
                   </div>
                   <span className="font-mono text-[11px] uppercase tracking-wider">
@@ -584,7 +584,7 @@ export default function CheckoutPage() {
             ) : (
               <div className="bg-white border border-[var(--color-line)] p-4 flex items-center justify-between text-[var(--color-slate)]">
                 <div className="flex items-center gap-3">
-                  <div className="size-6 bg-[#F6F4EF] text-[var(--color-slate)] flex items-center justify-center font-mono text-[11px]">
+                  <div className="size-6 bg-[#F1F5F9] text-[var(--color-slate)] flex items-center justify-center font-mono text-[11px]">
                     3
                   </div>
                   <span className="font-mono text-[11px] uppercase tracking-wider">
@@ -605,7 +605,7 @@ export default function CheckoutPage() {
             ) : (
               <div className="bg-white border border-[var(--color-line)] p-4 flex items-center justify-between text-[var(--color-slate)]">
                 <div className="flex items-center gap-3">
-                  <div className="size-6 bg-[#F6F4EF] text-[var(--color-slate)] flex items-center justify-center font-mono text-[11px]">
+                  <div className="size-6 bg-[#F1F5F9] text-[var(--color-slate)] flex items-center justify-center font-mono text-[11px]">
                     4
                   </div>
                   <span className="font-mono text-[11px] uppercase tracking-wider">

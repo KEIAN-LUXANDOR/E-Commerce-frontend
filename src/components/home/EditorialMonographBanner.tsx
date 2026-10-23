@@ -1,20 +1,11 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Sparkles, ArrowRight, ShieldCheck, Microscope } from "lucide-react";
+import { Sparkles, ArrowRight, Microscope } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
-import { ShimmerButton } from "@/components/ui/shimmer-button";
 
-/**
- * Editorial Monograph Campaign Banner.
- * Designed for high-fashion photoshooted campaign assets with custom editorial typography,
- * deep organic travertine accents, and luxury soft borders.
- */
 export function EditorialMonographBanner() {
   return (
-    <section aria-labelledby="monograph-heading" className="border-y border-line bg-[#faf8f5] py-20 lg:py-28 relative overflow-hidden">
-      {/* Subtle organic travertine grain and vignette */}
-      <div className="absolute inset-0 bg-[radial-gradient(#e5dfd5_1px,transparent_1px)] [background-size:24px_24px] opacity-40 pointer-events-none" />
-
+    <section aria-labelledby="monograph-heading" className="border-y border-line bg-[#F8FAFC] py-20 lg:py-28 relative overflow-hidden">
       <div className="page relative z-10">
         <div className="grid lg:grid-cols-[1.1fr_1fr] items-center gap-12 xl:gap-20">
           {/* Photoshooted Campaign Asset Area */}
@@ -100,14 +91,14 @@ export function EditorialMonographBanner() {
 
             <div className="flex flex-wrap items-center gap-4 pt-2">
               <Link href="/shop">
-                <ShimmerButton className="rounded-xl px-7 py-3.5 shadow-md">
-                  <span>Explore The Curated Vault</span>
-                  <ArrowRight className="size-3.5 ml-2" />
-                </ShimmerButton>
+                <span className="btn btn-primary rounded-sm px-7 py-3.5">
+                  Explore The Curated Vault
+                  <ArrowRight className="size-3.5" />
+                </span>
               </Link>
               <Link
                 href="/about"
-                className="inline-flex items-center justify-center rounded-xl border border-line bg-surface px-6 py-3 text-xs font-medium uppercase tracking-[0.08em] text-ink hover:bg-stone transition-all"
+                className="inline-flex items-center justify-center rounded-sm border border-line-dark bg-white px-6 py-3 text-xs font-medium uppercase tracking-[0.08em] text-ink transition-colors hover:border-ink"
               >
                 Our Direct Sourcing Story
               </Link>

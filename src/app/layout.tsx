@@ -1,5 +1,4 @@
-import "@fontsource/ibarra-real-nova";
-import "@fontsource-variable/bodoni-moda";
+import "@fontsource-variable/cormorant-garamond";
 import "@fontsource-variable/jost";
 import "./globals.css";
 
@@ -24,7 +23,7 @@ export const metadata: Metadata = {
 };
 
 export const viewport: Viewport = {
-  themeColor: "#f5f6f8",
+  themeColor: "#F8FAFC",
 };
 
 export default async function RootLayout({ children }: LayoutProps<"/">) {

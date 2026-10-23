@@ -292,9 +292,9 @@ export function DiamondCatalogView({
   const naturalCount = initialDiamonds.filter((d) => d.origin === "NATURAL").length;
 
   return (
-    <div className="bg-[#FAF9F5] min-h-screen text-[var(--color-ink)]">
+    <div className="bg-[#F8FAFC] min-h-screen text-[var(--color-ink)]">
       {/* 1. Archival Dossier Top Bar & Breadcrumb Matrix */}
-      <section className="w-full bg-[#F6F4EF] border-b border-[var(--color-line)] px-6 md:px-10 py-3">
+      <section className="w-full bg-[#F1F5F9] border-b border-[var(--color-line)] px-6 md:px-10 py-3">
         <div className="max-w-[1440px] mx-auto flex items-center justify-between font-mono text-[11px] uppercase tracking-wider text-[var(--color-slate)]">
           <nav aria-label="Breadcrumb" className="flex items-center gap-2">
             <Link href="/" className="hover:text-[var(--color-ink)] transition-colors">Home</Link>
@@ -314,7 +314,7 @@ export function DiamondCatalogView({
       <header className="w-full bg-white border-b border-[var(--color-line)] px-6 md:px-10 pt-8 pb-8">
         <div className="max-w-[1440px] mx-auto flex flex-col lg:flex-row lg:items-end justify-between gap-6">
           <div className="max-w-3xl space-y-2">
-            <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-[#F6F4EF] border border-[var(--color-line)] font-mono text-[10px] uppercase tracking-widest text-[var(--brand-anchor,#0A192F)] font-semibold">
+            <div className="inline-flex items-center gap-2 px-2.5 py-1 bg-[#F1F5F9] border border-[var(--color-line)] font-mono text-[10px] uppercase tracking-widest text-[var(--brand-anchor,#0A192F)] font-semibold">
               <Sparkles className="size-3" />
               <span>
                 {originLock === "LAB_GROWN"
@@ -357,8 +357,8 @@ export function DiamondCatalogView({
                     className={cn(
                       "px-2.5 py-1.5 flex items-center justify-between text-left transition-colors",
                       filters.origins.includes("LAB_GROWN")
-                        ? "bg-[var(--canvas-dark,#0D0D0D)] text-white"
-                        : "bg-[#F6F4EF] text-[var(--color-ink)] hover:bg-[#EAE8E2]"
+                        ? "bg-[var(--canvas-dark,#0A192F)] text-white"
+                        : "bg-[#F1F5F9] text-[var(--color-ink)] hover:bg-[#E2EAF2]"
                     )}
                   >
                     <span>Lab-grown diamonds</span>
@@ -370,8 +370,8 @@ export function DiamondCatalogView({
                     className={cn(
                       "px-2.5 py-1.5 flex items-center justify-between text-left transition-colors",
                       filters.origins.includes("NATURAL")
-                        ? "bg-[var(--canvas-dark,#0D0D0D)] text-white"
-                        : "bg-[#F6F4EF] text-[var(--color-ink)] hover:bg-[#EAE8E2]"
+                        ? "bg-[var(--canvas-dark,#0A192F)] text-white"
+                        : "bg-[#F1F5F9] text-[var(--color-ink)] hover:bg-[#E2EAF2]"
                     )}
                   >
                     <span>Natural diamonds</span>
@@ -410,8 +410,8 @@ export function DiamondCatalogView({
                       className={cn(
                         "flex flex-col items-center justify-center p-1 border transition-all",
                         isSelected
-                          ? "bg-[var(--canvas-dark,#0D0D0D)] text-white border-[var(--canvas-dark,#0D0D0D)]"
-                          : "bg-[#F6F4EF] border-[var(--color-line)] text-[var(--color-ink)] hover:bg-[#EAE8E2]"
+                          ? "bg-[var(--canvas-dark,#0A192F)] text-white border-[var(--canvas-dark,#0A192F)]"
+                          : "bg-[#F1F5F9] border-[var(--color-line)] text-[var(--color-ink)] hover:bg-[#E2EAF2]"
                       )}
                     >
                       {opt.renderIcon()}
@@ -448,7 +448,7 @@ export function DiamondCatalogView({
                 />
               </div>
               <div className="grid grid-cols-2 gap-2 font-mono text-[11px]">
-                <div className="flex items-center bg-[#F6F4EF] border border-[var(--color-line)] px-2 py-1">
+                <div className="flex items-center bg-[#F1F5F9] border border-[var(--color-line)] px-2 py-1">
                   <span className="text-[var(--color-slate)] mr-1 text-[10px]">Min</span>
                   <input
                     type="number"
@@ -459,7 +459,7 @@ export function DiamondCatalogView({
                   />
                   <span className="text-[var(--color-slate)] text-[10px]">ct</span>
                 </div>
-                <div className="flex items-center bg-[#F6F4EF] border border-[var(--color-line)] px-2 py-1">
+                <div className="flex items-center bg-[#F1F5F9] border border-[var(--color-line)] px-2 py-1">
                   <span className="text-[var(--color-slate)] mr-1 text-[10px]">Max</span>
                   <input
                     type="number"
@@ -485,41 +485,41 @@ export function DiamondCatalogView({
                 <button
                   type="button"
                   onClick={() => handlePricePreset(undefined, 100000)}
-                  className="px-2 py-1 bg-[#F6F4EF] border border-[var(--color-line)] hover:bg-[#EAE8E2] text-[var(--color-ink)]"
+                  className="px-2 py-1 bg-[#F1F5F9] border border-[var(--color-line)] hover:bg-[#E2EAF2] text-[var(--color-ink)]"
                 >
                   Under ₹1L
                 </button>
                 <button
                   type="button"
                   onClick={() => handlePricePreset(100000, 300000)}
-                  className="px-2 py-1 bg-[#F6F4EF] border border-[var(--color-line)] hover:bg-[#EAE8E2] text-[var(--color-ink)]"
+                  className="px-2 py-1 bg-[#F1F5F9] border border-[var(--color-line)] hover:bg-[#E2EAF2] text-[var(--color-ink)]"
                 >
                   ₹1–3L
                 </button>
                 <button
                   type="button"
                   onClick={() => handlePricePreset(300000, 600000)}
-                  className="px-2 py-1 bg-[#F6F4EF] border border-[var(--color-line)] hover:bg-[#EAE8E2] text-[var(--color-ink)]"
+                  className="px-2 py-1 bg-[#F1F5F9] border border-[var(--color-line)] hover:bg-[#E2EAF2] text-[var(--color-ink)]"
                 >
                   ₹3–6L
                 </button>
                 <button
                   type="button"
                   onClick={() => handlePricePreset(600000, 1500000)}
-                  className="px-2 py-1 bg-[#F6F4EF] border border-[var(--color-line)] hover:bg-[#EAE8E2] text-[var(--color-ink)]"
+                  className="px-2 py-1 bg-[#F1F5F9] border border-[var(--color-line)] hover:bg-[#E2EAF2] text-[var(--color-ink)]"
                 >
                   ₹6–15L
                 </button>
                 <button
                   type="button"
                   onClick={() => handlePricePreset(1500000, undefined)}
-                  className="px-2 py-1 bg-[#F6F4EF] border border-[var(--color-line)] hover:bg-[#EAE8E2] text-[var(--color-ink)]"
+                  className="px-2 py-1 bg-[#F1F5F9] border border-[var(--color-line)] hover:bg-[#E2EAF2] text-[var(--color-ink)]"
                 >
                   &gt;₹15L
                 </button>
               </div>
               <div className="grid grid-cols-2 gap-2 pt-1 font-mono text-[11px]">
-                <div className="flex items-center bg-[#F6F4EF] border border-[var(--color-line)] px-2 py-1">
+                <div className="flex items-center bg-[#F1F5F9] border border-[var(--color-line)] px-2 py-1">
                   <span className="text-[var(--color-slate)] mr-1 text-[10px]">₹</span>
                   <input
                     type="number"
@@ -531,7 +531,7 @@ export function DiamondCatalogView({
                     className="w-full bg-transparent text-[var(--color-ink)] outline-none"
                   />
                 </div>
-                <div className="flex items-center bg-[#F6F4EF] border border-[var(--color-line)] px-2 py-1">
+                <div className="flex items-center bg-[#F1F5F9] border border-[var(--color-line)] px-2 py-1">
                   <span className="text-[var(--color-slate)] mr-1 text-[10px]">₹</span>
                   <input
                     type="number"
@@ -558,7 +558,7 @@ export function DiamondCatalogView({
                   {filters.colors.length > 0 ? filters.colors.join(", ") : "D through K"}
                 </span>
               </div>
-              <div className="grid grid-cols-8 gap-0.5 border border-[var(--color-line)] p-0.5 bg-[#F6F4EF]">
+              <div className="grid grid-cols-8 gap-0.5 border border-[var(--color-line)] p-0.5 bg-[#F1F5F9]">
                 {COLOR_LIST.map((c) => {
                   const isSelected = filters.colors.includes(c);
                   return (
@@ -569,8 +569,8 @@ export function DiamondCatalogView({
                       className={cn(
                         "py-1 text-center font-mono text-[11px] font-semibold transition-colors",
                         isSelected
-                          ? "bg-[var(--canvas-dark,#0D0D0D)] text-white"
-                          : "text-[var(--color-ink)] hover:bg-[#EAE8E2]"
+                          ? "bg-[var(--canvas-dark,#0A192F)] text-white"
+                          : "text-[var(--color-ink)] hover:bg-[#E2EAF2]"
                       )}
                     >
                       {c}
@@ -606,8 +606,8 @@ export function DiamondCatalogView({
                       className={cn(
                         "py-1 text-center border font-semibold transition-colors",
                         isSelected
-                          ? "bg-[var(--canvas-dark,#0D0D0D)] text-white border-[var(--canvas-dark,#0D0D0D)]"
-                          : "bg-[#F6F4EF] border-[var(--color-line)] text-[var(--color-ink)] hover:bg-[#EAE8E2]"
+                          ? "bg-[var(--canvas-dark,#0A192F)] text-white border-[var(--canvas-dark,#0A192F)]"
+                          : "bg-[#F1F5F9] border-[var(--color-line)] text-[var(--color-ink)] hover:bg-[#E2EAF2]"
                       )}
                     >
                       {cl}
@@ -636,8 +636,8 @@ export function DiamondCatalogView({
                       className={cn(
                         "py-1 text-center border font-semibold transition-colors",
                         isSelected
-                          ? "bg-[var(--canvas-dark,#0D0D0D)] text-white border-[var(--canvas-dark,#0D0D0D)]"
-                          : "bg-[#F6F4EF] border-[var(--color-line)] text-[var(--color-ink)] hover:bg-[#EAE8E2]"
+                          ? "bg-[var(--canvas-dark,#0A192F)] text-white border-[var(--canvas-dark,#0A192F)]"
+                          : "bg-[#F1F5F9] border-[var(--color-line)] text-[var(--color-ink)] hover:bg-[#E2EAF2]"
                       )}
                     >
                       {label}
@@ -653,7 +653,7 @@ export function DiamondCatalogView({
             <button
               type="button"
               onClick={clearAllFilters}
-              className="w-full py-2 bg-transparent hover:bg-[#F6F4EF] text-[var(--color-slate)] hover:text-[var(--color-ink)] font-mono text-[10px] uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5 border border-dashed border-[var(--color-line)]"
+              className="w-full py-2 bg-transparent hover:bg-[#F1F5F9] text-[var(--color-slate)] hover:text-[var(--color-ink)] font-mono text-[10px] uppercase tracking-widest transition-colors flex items-center justify-center gap-1.5 border border-dashed border-[var(--color-line)]"
             >
               <RotateCcw className="size-3" />
               <span>Reset all filters</span>
@@ -677,7 +677,7 @@ export function DiamondCatalogView({
                       {filters.shapes.map((s) => (
                         <span
                           key={s}
-                          className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#F6F4EF] text-[var(--color-ink)] text-[10px] font-mono border border-[var(--color-line)]"
+                          className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#F1F5F9] text-[var(--color-ink)] text-[10px] font-mono border border-[var(--color-line)]"
                         >
                           Shape: {s}
                           <button
@@ -691,7 +691,7 @@ export function DiamondCatalogView({
                       ))}
 
                       {filters.colors.length > 0 && (
-                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#F6F4EF] text-[var(--color-ink)] text-[10px] font-mono border border-[var(--color-line)]">
+                        <span className="inline-flex items-center gap-1 px-2 py-0.5 bg-[#F1F5F9] text-[var(--color-ink)] text-[10px] font-mono border border-[var(--color-line)]">
                           Colour: {filters.colors.join(", ")}
                           <button
                             type="button"
@@ -738,7 +738,7 @@ export function DiamondCatalogView({
                     id="catalog-sort"
                     value={filters.sort}
                     onChange={(e) => updateFilters({ sort: e.target.value })}
-                    className="h-8 border border-[var(--color-line)] bg-[#F6F4EF] px-2 text-[11px] text-[var(--color-ink)] font-mono outline-none focus:border-[var(--color-ink)]"
+                    className="h-8 border border-[var(--color-line)] bg-[#F1F5F9] px-2 text-[11px] text-[var(--color-ink)] font-mono outline-none focus:border-[var(--color-ink)]"
                   >
                     <option value="featured">Featured First</option>
                     <option value="price_asc">Price: Low to High</option>
@@ -749,14 +749,14 @@ export function DiamondCatalogView({
                 </div>
 
                 {/* Grid / Table View Switcher */}
-                <div className="flex items-center border border-[var(--color-line)] bg-[#F6F4EF] p-0.5">
+                <div className="flex items-center border border-[var(--color-line)] bg-[#F1F5F9] p-0.5">
                   <button
                     type="button"
                     onClick={() => updateFilters({ view: "grid" })}
                     className={cn(
                       "p-1.5 transition-colors",
                       filters.view === "grid"
-                        ? "bg-[var(--canvas-dark,#0D0D0D)] text-white"
+                        ? "bg-[var(--canvas-dark,#0A192F)] text-white"
                         : "text-[var(--color-slate)] hover:text-[var(--color-ink)]"
                     )}
                     aria-label="Grid view"
@@ -770,7 +770,7 @@ export function DiamondCatalogView({
                     className={cn(
                       "p-1.5 transition-colors",
                       filters.view === "table"
-                        ? "bg-[var(--canvas-dark,#0D0D0D)] text-white"
+                        ? "bg-[var(--canvas-dark,#0A192F)] text-white"
                         : "text-[var(--color-slate)] hover:text-[var(--color-ink)]"
                     )}
                     aria-label="High-density table view"
@@ -794,7 +794,7 @@ export function DiamondCatalogView({
                   <button
                     type="button"
                     onClick={clearAllFilters}
-                    className="px-4 py-2 bg-[var(--canvas-dark,#0D0D0D)] text-white font-mono text-[11px] uppercase tracking-wider hover:bg-black transition-colors"
+                    className="px-4 py-2 bg-[var(--canvas-dark,#0A192F)] text-white font-mono text-[11px] uppercase tracking-wider hover:bg-black transition-colors"
                   >
                     Clear All Filters
                   </button>

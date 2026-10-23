@@ -184,8 +184,8 @@ export function AddressBook() {
     <section aria-labelledby="addresses-heading" className="space-y-5">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h2 id="addresses-heading" className="text-2xl">Delivery addresses</h2>
-          <p className="mt-1 text-sm text-slate">Manage the addresses saved to your account.</p>
+          <h2 id="addresses-heading" className="font-serif text-2xl font-normal">Saved addresses</h2>
+          <p className="mt-1 text-sm text-slate">Choose where you’d like your order delivered.</p>
         </div>
         {!showForm && (
           <button type="button" onClick={startNewAddress} className="btn btn-secondary">
@@ -198,8 +198,11 @@ export function AddressBook() {
       {actionError && <FormAlert>{actionError}</FormAlert>}
 
       {showForm && (
-        <form onSubmit={saveAddress} className="space-y-4 rounded-[3px] border border-line bg-surface p-5">
-          <h3 className="text-xl">{editingId ? "Edit address" : "Add a delivery address"}</h3>
+        <form onSubmit={saveAddress} className="space-y-5 border-y border-line bg-white py-6">
+          <div>
+            <h3 className="font-serif text-xl">{editingId ? "Edit address" : "Add a delivery address"}</h3>
+            <p className="mt-1 text-sm text-slate">Fields marked optional can be left blank.</p>
+          </div>
           <TextField label="Full name" autoComplete="name" maxLength={100} value={values.fullName} onChange={(event) => changeValue("fullName", event.target.value)} error={fieldErrors.fullName} />
           <TextField label="Phone" type="tel" autoComplete="tel-national" inputMode="tel" maxLength={14} value={values.phone} onChange={(event) => changeValue("phone", event.target.value)} error={fieldErrors.phone} />
           <TextField label="Address line 1" autoComplete="address-line1" maxLength={200} value={values.line1} onChange={(event) => changeValue("line1", event.target.value)} error={fieldErrors.line1} />
@@ -237,14 +240,15 @@ export function AddressBook() {
       )}
 
       {addresses.length === 0 && !showForm && !loadError ? (
-        <div className="rounded-[3px] border border-line bg-surface px-6 py-10 text-center">
-          <p className="text-slate">You haven’t saved a delivery address yet.</p>
+        <div className="border-y border-line bg-stone/50 px-6 py-10 text-center">
+          <h3 className="font-serif text-xl">No saved addresses</h3>
+          <p className="mt-1 text-sm text-slate">Add one to make checkout quicker next time.</p>
         </div>
       ) : (
         <ul className="grid gap-4 sm:grid-cols-2">
           {addresses.map((address) => (
             <li key={address.id}>
-              <article className="h-full rounded-[3px] border border-line bg-surface p-5">
+              <article className="h-full border border-line bg-white p-5">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <h3 className="font-semibold">{address.fullName}</h3>
                   {address.defaultAddress && <span className="rounded-full bg-platinum px-3 py-1 text-xs font-medium">Default</span>}

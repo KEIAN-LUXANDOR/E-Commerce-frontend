@@ -69,7 +69,7 @@ export function DiamondDossierTabs({ diamond }: { diamond: DiamondDetail }) {
           >
             Overview
             {activeTab === "overview" && (
-              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--canvas-dark,#0D0D0D)]" />
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--canvas-dark,#0A192F)]" />
             )}
           </button>
 
@@ -85,7 +85,7 @@ export function DiamondDossierTabs({ diamond }: { diamond: DiamondDetail }) {
           >
             Grading Report
             {activeTab === "grading" && (
-              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--canvas-dark,#0D0D0D)]" />
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--canvas-dark,#0A192F)]" />
             )}
           </button>
 
@@ -101,7 +101,7 @@ export function DiamondDossierTabs({ diamond }: { diamond: DiamondDetail }) {
           >
             Certificate Dossier
             {activeTab === "certificate" && (
-              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--canvas-dark,#0D0D0D)]" />
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--canvas-dark,#0A192F)]" />
             )}
           </button>
 
@@ -117,7 +117,7 @@ export function DiamondDossierTabs({ diamond }: { diamond: DiamondDetail }) {
           >
             Transit &amp; Returns
             {activeTab === "shipping" && (
-              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--canvas-dark,#0D0D0D)]" />
+              <span className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--canvas-dark,#0A192F)]" />
             )}
           </button>
         </div>
@@ -127,7 +127,7 @@ export function DiamondDossierTabs({ diamond }: { diamond: DiamondDetail }) {
           <div className="flex flex-col gap-8 pt-2">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
               {/* Proportions Blueprint */}
-              <div className="flex flex-col gap-4 bg-[#F6F4EF] p-6 border border-[var(--color-line)]">
+              <div className="flex flex-col gap-4 bg-[#F1F5F9] p-6 border border-[var(--color-line)]">
                 <div className="flex justify-between items-center">
                   <span className="font-mono text-[11px] uppercase tracking-widest text-[var(--color-ink)] font-semibold">
                     Proportions Blueprint
@@ -139,12 +139,12 @@ export function DiamondDossierTabs({ diamond }: { diamond: DiamondDetail }) {
 
                 <div className="relative w-full aspect-[16/9] flex items-center justify-center bg-white border border-[var(--color-line)] p-4">
                   <svg className="w-full h-full max-h-[180px]" fill="none" stroke="currentColor" viewBox="0 0 500 240">
-                    <line stroke="#EAE8E2" strokeDasharray="2 2" strokeWidth="1" x1="80" x2="420" y1="30" y2="30" />
-                    <line stroke="#EAE8E2" strokeDasharray="2 2" strokeWidth="1" x1="80" x2="420" y1="210" y2="210" />
+                    <line stroke="#E2EAF2" strokeDasharray="2 2" strokeWidth="1" x1="80" x2="420" y1="30" y2="30" />
+                    <line stroke="#E2EAF2" strokeDasharray="2 2" strokeWidth="1" x1="80" x2="420" y1="210" y2="210" />
                     <line stroke="#172033" strokeWidth="2" x1="160" x2="340" y1="40" y2="40" />
                     <line stroke="#172033" strokeWidth="1.8" x1="160" x2="80" y1="40" y2="105" />
                     <line stroke="#172033" strokeWidth="1.8" x1="340" x2="420" y1="40" y2="105" />
-                    <rect fill="#F6F4EF" height="8" stroke="#172033" strokeWidth="1.5" width="340" x="80" y="105" />
+                    <rect fill="#F1F5F9" height="8" stroke="#172033" strokeWidth="1.5" width="340" x="80" y="105" />
                     <line stroke="#172033" strokeWidth="1.8" x1="80" x2="250" y1="113" y2="210" />
                     <line stroke="#172033" strokeWidth="1.8" x1="420" x2="250" y1="113" y2="210" />
                     <line stroke="#0A192F" strokeWidth="1" x1="160" x2="340" y1="20" y2="20" />
@@ -208,8 +208,8 @@ export function DiamondDossierTabs({ diamond }: { diamond: DiamondDetail }) {
                             className={cn(
                               "w-full h-8 flex items-center justify-center text-[11px] font-bold border transition-colors",
                               isMatch
-                                ? "bg-[var(--canvas-dark,#0D0D0D)] text-white border-[var(--canvas-dark,#0D0D0D)]"
-                                : "bg-[#F6F4EF] text-[var(--color-slate)] border-[var(--color-line)]"
+                                ? "bg-[var(--canvas-dark,#0A192F)] text-white border-[var(--canvas-dark,#0A192F)]"
+                                : "bg-[#F1F5F9] text-[var(--color-slate)] border-[var(--color-line)]"
                             )}
                           >
                             {g}
@@ -242,8 +242,8 @@ export function DiamondDossierTabs({ diamond }: { diamond: DiamondDetail }) {
                             className={cn(
                               "w-full h-8 flex items-center justify-center text-[10px] font-bold border transition-colors",
                               isMatch
-                                ? "bg-[var(--canvas-dark,#0D0D0D)] text-white border-[var(--canvas-dark,#0D0D0D)]"
-                                : "bg-[#F6F4EF] text-[var(--color-slate)] border-[var(--color-line)]"
+                                ? "bg-[var(--canvas-dark,#0A192F)] text-white border-[var(--canvas-dark,#0A192F)]"
+                                : "bg-[#F1F5F9] text-[var(--color-slate)] border-[var(--color-line)]"
                             )}
                           >
                             {cl}
@@ -258,7 +258,7 @@ export function DiamondDossierTabs({ diamond }: { diamond: DiamondDetail }) {
                 </div>
 
                 {/* Diamond origin note */}
-                <div className="bg-[#F6F4EF] p-4 text-[13px] text-[var(--color-slate)] border border-[var(--color-line)] leading-relaxed">
+                <div className="bg-[#F1F5F9] p-4 text-[13px] text-[var(--color-slate)] border border-[var(--color-line)] leading-relaxed">
                   <strong className="text-[var(--color-ink)] font-semibold">
                     {isLabGrown ? "Cultivated Type IIa Solitaire: " : "Earth-Mined Natural Diamond: "}
                   </strong>
@@ -275,7 +275,7 @@ export function DiamondDossierTabs({ diamond }: { diamond: DiamondDetail }) {
         {activeTab === "grading" && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-x-10 gap-y-3 pt-2 font-mono text-[13px]">
             <div className="divide-y divide-[var(--color-line)] border border-[var(--color-line)]">
-              <div className="flex justify-between py-3 px-4 bg-[#F6F4EF]">
+              <div className="flex justify-between py-3 px-4 bg-[#F1F5F9]">
                 <span className="text-[var(--color-slate)]">Measurements</span>
                 <span className="text-[var(--color-ink)] font-medium">
                   {diamond.measurements.lengthMm} × {diamond.measurements.widthMm} × {diamond.measurements.depthMm} mm
@@ -285,7 +285,7 @@ export function DiamondDossierTabs({ diamond }: { diamond: DiamondDetail }) {
                 <span className="text-[var(--color-slate)]">Polish</span>
                 <span className="text-[var(--color-ink)] font-medium">{diamond.polish}</span>
               </div>
-              <div className="flex justify-between py-3 px-4 bg-[#F6F4EF]">
+              <div className="flex justify-between py-3 px-4 bg-[#F1F5F9]">
                 <span className="text-[var(--color-slate)]">Symmetry</span>
                 <span className="text-[var(--color-ink)] font-medium">{diamond.symmetry}</span>
               </div>
@@ -296,7 +296,7 @@ export function DiamondDossierTabs({ diamond }: { diamond: DiamondDetail }) {
             </div>
 
             <div className="divide-y divide-[var(--color-line)] border border-[var(--color-line)]">
-              <div className="flex justify-between py-3 px-4 bg-[#F6F4EF]">
+              <div className="flex justify-between py-3 px-4 bg-[#F1F5F9]">
                 <span className="text-[var(--color-slate)]">Girdle Thickness</span>
                 <span className="text-[var(--color-ink)] font-medium">{diamond.girdle || "Medium to Slightly Thick"}</span>
               </div>
@@ -304,7 +304,7 @@ export function DiamondDossierTabs({ diamond }: { diamond: DiamondDetail }) {
                 <span className="text-[var(--color-slate)]">Culet</span>
                 <span className="text-[var(--color-ink)] font-medium">{diamond.culet || "Pointed (None)"}</span>
               </div>
-              <div className="flex justify-between py-3 px-4 bg-[#F6F4EF]">
+              <div className="flex justify-between py-3 px-4 bg-[#F1F5F9]">
                 <span className="text-[var(--color-slate)]">Growth / Origin</span>
                 <span className="text-[var(--color-ink)] font-medium">
                   {isLabGrown ? "CVD (Type IIa)" : "Natural Earth-Mined"}
@@ -322,7 +322,7 @@ export function DiamondDossierTabs({ diamond }: { diamond: DiamondDetail }) {
 
         {/* TAB 3: CERTIFICATE DOSSIER */}
         {activeTab === "certificate" && (
-          <div className="bg-[#F6F4EF] border border-[var(--color-line)] p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
+          <div className="bg-[#F1F5F9] border border-[var(--color-line)] p-6 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div className="flex items-start gap-4">
               <div className="w-16 h-20 bg-white border border-[var(--color-line)] flex flex-col items-center justify-center p-2 flex-shrink-0 shadow-sm font-mono text-center">
                 <ShieldCheck className="size-6 text-[var(--color-ink)]" />
@@ -361,7 +361,7 @@ export function DiamondDossierTabs({ diamond }: { diamond: DiamondDetail }) {
                 href={certVerifyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-5 py-2.5 bg-white border border-[var(--color-line)] hover:bg-[#FAF9F5] text-[var(--color-ink)] font-mono text-[11px] uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors font-medium"
+                className="px-5 py-2.5 bg-white border border-[var(--color-line)] hover:bg-[#F8FAFC] text-[var(--color-ink)] font-mono text-[11px] uppercase tracking-wider flex items-center justify-center gap-1.5 transition-colors font-medium"
               >
                 <span>Check on {diamond.lab.toLowerCase()}.org</span>
                 <ExternalLink className="size-3.5" />
@@ -370,7 +370,7 @@ export function DiamondDossierTabs({ diamond }: { diamond: DiamondDetail }) {
                 href={diamond.certificateUrl || certVerifyUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-5 py-2.5 bg-[var(--canvas-dark,#0D0D0D)] text-white font-mono text-[11px] uppercase tracking-wider hover:bg-black transition-colors flex items-center justify-center gap-1.5 font-medium"
+                className="px-5 py-2.5 bg-[var(--canvas-dark,#0A192F)] text-white font-mono text-[11px] uppercase tracking-wider hover:bg-black transition-colors flex items-center justify-center gap-1.5 font-medium"
               >
                 <FileText className="size-3.5" />
                 <span>View Official Certificate</span>
@@ -382,7 +382,7 @@ export function DiamondDossierTabs({ diamond }: { diamond: DiamondDetail }) {
         {/* TAB 4: SHIPPING & RETURNS */}
         {activeTab === "shipping" && (
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 pt-2">
-            <div className="p-5 bg-[#F6F4EF] border border-[var(--color-line)] space-y-2">
+            <div className="p-5 bg-[#F1F5F9] border border-[var(--color-line)] space-y-2">
               <Truck className="size-6 text-[var(--brand-anchor,#0A192F)]" />
               <h4 className="font-serif text-[18px] text-[var(--color-ink)] font-normal">
                 Insured Armored Delivery
@@ -392,7 +392,7 @@ export function DiamondDossierTabs({ diamond }: { diamond: DiamondDetail }) {
               </p>
             </div>
 
-            <div className="p-5 bg-[#F6F4EF] border border-[var(--color-line)] space-y-2">
+            <div className="p-5 bg-[#F1F5F9] border border-[var(--color-line)] space-y-2">
               <CheckCircle2 className="size-6 text-[var(--brand-anchor,#0A192F)]" />
               <h4 className="font-serif text-[18px] text-[var(--color-ink)] font-normal">
                 Dual In-House Optical Check
@@ -402,7 +402,7 @@ export function DiamondDossierTabs({ diamond }: { diamond: DiamondDetail }) {
               </p>
             </div>
 
-            <div className="p-5 bg-[#F6F4EF] border border-[var(--color-line)] space-y-2">
+            <div className="p-5 bg-[#F1F5F9] border border-[var(--color-line)] space-y-2">
               <RotateCcw className="size-6 text-[var(--brand-anchor,#0A192F)]" />
               <h4 className="font-serif text-[18px] text-[var(--color-ink)] font-normal">
                 30-Day Inspection Privilege
