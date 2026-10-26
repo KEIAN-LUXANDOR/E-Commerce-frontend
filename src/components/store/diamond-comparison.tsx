@@ -8,9 +8,10 @@ import {
   useCompare,
   removeFromCompare,
   clearCompare,
-  addToCart,
   showToast,
 } from "@/lib/stores";
+import { addToCart } from "@/lib/shop/cart";
+import { fetchProduct } from "@/lib/api/products-browser";
 import { diamonds } from "@/mocks/data";
 import { formatRupees, formatRupeesPerCarat } from "@/lib/money";
 import {
@@ -20,7 +21,6 @@ import {
   ExternalLink,
   ShoppingBag,
   MessageCircle,
-  Check,
 } from "lucide-react";
 import { whatsappLink } from "@/lib/site";
 import type { DiamondDetail } from "@/lib/types/catalog";
@@ -44,40 +44,42 @@ export function DiamondComparison() {
   const maxSlots = 4;
   const emptySlotsCount = Math.max(0, maxSlots - selectedDiamonds.length);
 
-  const handleAddToCart = (diamond: DiamondDetail) => {
-    const result = addToCart({
-      diamondId: diamond.id,
-      slug: diamond.slug,
-      title: `${diamond.carat.toFixed(2)} ct ${diamond.shape} ${diamond.origin === "NATURAL" ? "Natural" : "Lab-Grown"}`,
-      imageUrl: diamond.media[0]?.url,
-      shape: diamond.shape,
-      specLabel: `${diamond.color} / ${diamond.clarity} / ${diamond.cut} · ${diamond.lab} #${diamond.certificateNumber}`,
-      certificateNumber: diamond.certificateNumber,
-      pricePaise: diamond.pricePaise,
-    });
-
-    if (result === "already") {
-      showToast("Diamond is already reserved in your cart.", "info");
-      return;
+  const handleAddToCart = async (diamond: DiamondDetail) => {
+    try {
+      const product = await fetchProduct(diamond.slug);
+      if (!product) {
+        showToast("This diamond is no longer available.", "error");
+        return;
+      }
+      const result = await addToCart(product);
+      if (!result.ok) {
+        showToast(result.message, "error");
+        return;
+      }
+      if (result.already) {
+        showToast("Diamond is already reserved in your cart.", "info");
+        return;
+      }
+      showToast("Diamond added to your shopping cart.", "info");
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : "Could not add this diamond to your cart.", "error");
     }
-    showToast("Diamond added to your shopping cart.", "info");
   };
 
-  const handleAddAllToCart = () => {
+  const handleAddAllToCart = async () => {
     let addedCount = 0;
     for (const d of selectedDiamonds) {
-      const res = addToCart({
-        diamondId: d.id,
-        slug: d.slug,
-        title: `${d.carat.toFixed(2)} ct ${d.shape} ${d.origin === "NATURAL" ? "Natural" : "Lab-Grown"}`,
-        imageUrl: d.media[0]?.url,
-        shape: d.shape,
-        specLabel: `${d.color} / ${d.clarity} / ${d.cut} · ${d.lab} #${d.certificateNumber}`,
-        certificateNumber: d.certificateNumber,
-        pricePaise: d.pricePaise,
-      });
-      if (res === "added") {
-        addedCount++;
+      try {
+        const product = await fetchProduct(d.slug);
+        if (!product) continue;
+        const result = await addToCart(product);
+        if (result.ok && !result.already) {
+          addedCount++;
+        } else if (!result.ok) {
+          showToast(result.message, "error");
+        }
+      } catch (error) {
+        showToast(error instanceof Error ? error.message : `Could not add ${d.slug} to your cart.`, "error");
       }
     }
 

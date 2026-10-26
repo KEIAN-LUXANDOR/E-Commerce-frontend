@@ -12,19 +12,11 @@ import {
   GemologistConciergeBand,
   HomeFAQ,
 } from "@/components/home/HomeSections";
-import { ProductRow } from "@/components/store/ProductRow";
-import { getStoreCategories, getStoreProducts } from "@/lib/api/store";
+import Link from "next/link";
+import { Suspense } from "react";
 import type { Banner } from "@/lib/types/catalog";
-import type { StoreCategory } from "@/lib/types/store";
-
-/** Finds the category whose name or slug contains a word, e.g. "lab" → Lab-grown diamonds. */
-function categoryHref(categories: StoreCategory[], word: string, fallback: string) {
-  const c = categories.find((x) => `${x.slug} ${x.name}`.toLowerCase().includes(word));
-  if (c) {
-    return `/shop/${encodeURIComponent(c.slug)}`;
-  }
-  return fallback;
-}
+import { ProductCard } from "@/components/catalog/ProductCard";
+import { getNewArrivals } from "@/lib/api/products";
 
 /**
  * Modern Human-Centric Diamond Atelier Home Page.
@@ -42,13 +34,10 @@ function categoryHref(categories: StoreCategory[], word: string, fallback: strin
  * 11. Client Testimonials
  * 12. Frequently Asked Questions (accordions)
  */
-export default async function HomePage() {
-  const [categories, newest] = await Promise.all([
-    getStoreCategories(),
-    getStoreProducts({ sort: "newest", page: 0, size: 4 }),
-  ]);
-  const naturalHref = categoryHref(categories, "natural", "/shop?q=natural");
-  const labHref = categoryHref(categories, "lab", "/shop?q=lab");
+// NOTE: home page content is being redone by hand. Only the data source and links were updated here.
+export default function HomePage() {
+  const naturalHref = "/diamonds/natural";
+  const labHref = "/diamonds/lab-grown";
 
   const banners: Banner[] = [
     {
@@ -56,7 +45,7 @@ export default async function HomePage() {
       title: "Every diamond, certified and inspected.",
       text: "Natural diamonds graded by GIA and lab-grown diamonds graded by IGI. Clear grades, honest prices, insured delivery across India.",
       ctaLabel: "Shop Diamonds",
-      ctaHref: "/shop",
+      ctaHref: "/diamonds",
       shape: "ROUND",
       startsAt: "",
       endsAt: "",
@@ -76,7 +65,7 @@ export default async function HomePage() {
       title: "Architectural Step Cuts & Radiant Fire",
       text: "Emerald and Asscher cuts showcase mesmerizing hall-of-mirrors clarity. Every specimen is inspected and guaranteed eye-clean.",
       ctaLabel: "Discover Emerald Cuts",
-      ctaHref: "/shop?q=emerald",
+      ctaHref: "/diamonds?shape=emerald",
       shape: "EMERALD",
       startsAt: "",
       endsAt: "",
@@ -100,12 +89,17 @@ export default async function HomePage() {
       {/* 5. New This Month */}
       <section className="w-full bg-white border-b border-line py-16 lg:py-20" id="new-month">
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <ProductRow
-            id="new"
-            title="New this month"
-            products={newest.items}
-            link={{ href: "/shop?sort=newest", label: "VIEW ALL" }}
-          />
+          <div className="flex items-end justify-between gap-4">
+            <h2 id="new" className="text-3xl">
+              New this month
+            </h2>
+            <Link href="/diamonds?sort=newest" className="btn-link">
+              View all
+            </Link>
+          </div>
+          <Suspense fallback={<div className="skeleton mt-6 h-80" />}>
+            <NewArrivals />
+          </Suspense>
         </div>
       </section>
 
@@ -133,5 +127,19 @@ export default async function HomePage() {
       {/* 13. Frequently Asked Questions */}
       <HomeFAQ />
     </>
+  );
+}
+
+/** Newest diamonds from the live catalogue (streams in, so the page never waits for the API). */
+async function NewArrivals() {
+  const newest = await getNewArrivals(4);
+  return (
+    <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      {newest.map((p) => (
+        <li key={p.id}>
+          <ProductCard product={p} compact />
+        </li>
+      ))}
+    </ul>
   );
 }

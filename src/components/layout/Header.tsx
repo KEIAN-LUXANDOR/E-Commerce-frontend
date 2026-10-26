@@ -15,7 +15,9 @@ import { Dialog } from "@/components/ui/dialog";
 import { ShapeIcon } from "@/components/art/ShapeIcon";
 import { SHAPES } from "@/lib/catalog-labels";
 import { site } from "@/lib/site";
-import { setMiniCartOpen, useCart, useWishlist, useCompare } from "@/lib/stores";
+import { useCart } from "@/lib/shop/cart";
+import { useWishlist } from "@/lib/shop/wishlist";
+import { setMiniCartOpen, useCompare } from "@/lib/stores";
 import type { StoreCategory } from "@/lib/types/store";
 
 const categoryHref = (slug: string) => `/shop/${encodeURIComponent(slug)}`;
@@ -53,8 +55,8 @@ export function Header({
   const [mobileSearch, setMobileSearch] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
-  const cartCount = useCart().length;
-  const wishCount = useWishlist().length;
+  const cartCount = useCart().itemCount;
+  const wishCount = useWishlist().ids.length;
   const compareCount = useCompare().length;
   const navRef = useRef<HTMLElement>(null);
   const hoverTimer = useRef<number | undefined>(undefined);

@@ -1,12 +1,16 @@
-import { Metadata } from "next";
-import { DiamondComparison } from "@/components/store/diamond-comparison";
+import type { Metadata } from "next";
+import { CompareView } from "@/components/catalog/CompareView";
 
 export const metadata: Metadata = {
-  title: "Compare Certified Loose Diamonds | Keian Luxandor",
-  description:
-    "Evaluate certified loose natural and lab-grown diamonds side by side on proportions, cut metrology, and official GIA/IGI laboratory records.",
+  title: "Compare Diamonds | Keian Luxandor",
+  description: "Compare certified diamonds side by side.",
 };
 
 export default function ComparePage() {
-  return <DiamondComparison />;
+  return (
+    <div className="page pb-16 pt-8">
+      <h1 className="text-4xl sm:text-5xl">Compare diamonds</h1>
+      <CompareView />
+    </div>
+  );
 }

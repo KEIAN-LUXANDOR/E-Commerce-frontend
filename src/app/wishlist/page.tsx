@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { WishlistView } from "@/components/store/wishlist-view";
+import { WishlistView } from "@/components/catalog/WishlistView";
 
 export const metadata: Metadata = {
   title: "Your Diamond Wishlist | Keian Luxandor",

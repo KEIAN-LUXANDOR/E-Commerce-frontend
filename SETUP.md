@@ -54,10 +54,15 @@ and the frontend at <http://localhost:3000>. Verify the backend/database at
 | Page | Address |
 |---|---|
 | Home | `http://localhost:3000/` |
-| All products | `http://localhost:3000/shop` |
-| Category | `http://localhost:3000/shop/{category-slug}` |
+| All diamonds | `http://localhost:3000/diamonds` |
+| Natural diamonds | `http://localhost:3000/diamonds/natural` |
+| Lab-grown diamonds | `http://localhost:3000/diamonds/lab-grown` |
 | Search | `http://localhost:3000/search?q={query}` |
-| Product | `http://localhost:3000/product/{product-slug}` |
+| Diamond | `http://localhost:3000/diamond/{product-slug}` |
+| Cart | `http://localhost:3000/cart` |
+| Checkout | `http://localhost:3000/checkout` |
+| Compare | `http://localhost:3000/compare` |
+| Wishlist | `http://localhost:3000/wishlist` |
 | Log in | `http://localhost:3000/login` |
 | Create account | `http://localhost:3000/register` |
 | Verify email | `http://localhost:3000/verify-email?token={token}` |
@@ -65,15 +70,19 @@ and the frontend at <http://localhost:3000>. Verify the backend/database at
 | Reset password | `http://localhost:3000/reset-password?token={token}` |
 | Your account | `http://localhost:3000/account` (sends you to log in first if you aren't) |
 
+For compatibility, `/shop` and `/shop/{category}` redirect to the diamond
+listing, and `/product/{slug}` redirects to `/diamond/{slug}`.
+
 The account page lets signed-in customers view, add, edit, delete, and choose a
 default delivery address. Address changes use the authenticated
 `/api/v1/account/addresses` endpoints documented in `docs/api.md`.
 
-The shop supports the documented `q`, `category`, `minPrice`, `maxPrice`, `sort`,
-`page`, and `size` product filters. In the website address and the price form,
-`minPrice`/`maxPrice` are in **rupees**; the frontend multiplies by 100 before
-calling the API, which filters in paise. Categories and products are empty until
-records have been added to PostgreSQL.
+The diamond listing filters are URL-based and include origin, shape, carat,
+price, colour, clarity, cut, polish, symmetry, fluorescence, lab, photo, quick
+ship, sort, page, and view. See `src/lib/catalog/query.ts` for the URL contract.
+In the website address, `minPrice`/`maxPrice` are in **rupees**; the frontend
+multiplies by 100 before calling the API, which filters in paise. Products are
+empty until records have been added to PostgreSQL.
 
 ## Accounts and errors
 

@@ -20,4 +20,6 @@ export interface DeliveryAddressRequest {
   city: string;
   state: string;
   pincode: string;
+  /** true makes it the default address */
+  makeDefault?: boolean;
 }

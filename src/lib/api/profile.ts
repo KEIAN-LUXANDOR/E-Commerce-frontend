@@ -1,4 +1,5 @@
 import { apiFetch } from "@/lib/api/client";
+import type { MessageResponse } from "@/lib/api/auth";
 import type { User } from "@/lib/types/auth";
 
 export interface UpdateProfileRequest {
@@ -8,4 +9,13 @@ export interface UpdateProfileRequest {
 
 export function updateProfile(body: UpdateProfileRequest) {
   return apiFetch<User>("/account/profile", { method: "PUT", body });
+}
+
+export interface ChangePasswordRequest {
+  currentPassword: string;
+  newPassword: string;
+}
+
+export function changePassword(body: ChangePasswordRequest) {
+  return apiFetch<MessageResponse>("/account/change-password", { method: "POST", body });
 }

@@ -9,6 +9,7 @@ import { Footer } from "@/components/layout/Footer";
 import { Header, HeaderWithPath } from "@/components/layout/Header";
 import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { Toaster } from "@/components/ui/Toaster";
+import { ShopSync } from "@/components/layout/ShopSync";
 import { getStoreCategories } from "@/lib/api/store";
 import { site } from "@/lib/site";
 
@@ -37,6 +38,7 @@ export default async function RootLayout({ children }: LayoutProps<"/">) {
         <main id="main" className="flex-1 pb-24">
           {children}
         </main>
+        <ShopSync />
         <Footer />
         <WhatsAppButton />
         <CookieNotice />

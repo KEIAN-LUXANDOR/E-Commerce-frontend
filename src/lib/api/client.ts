@@ -20,6 +20,7 @@ export interface ProblemDetail {
   status?: number;
   detail?: string;
   instance?: string;
+  code?: string;
   errors?: { field: string; message: string }[];
 }
 
@@ -33,6 +34,10 @@ export class ApiError extends Error {
     message: string,
     /** Field name → first message for that field (from the 400 "errors" list) */
     public readonly fieldErrors: Record<string, string> = {},
+    /** Optional machine-readable backend error code */
+    public readonly code?: string,
+    /** The whole error body, for extra fields such as `orderNumber` on PENDING_ORDER_EXISTS */
+    public readonly body: Record<string, unknown> = {},
   ) {
     super(message);
     this.name = "ApiError";
@@ -68,7 +73,7 @@ export async function toApiError(res: Response): Promise<ApiError> {
     if (e?.field && e.message && !fieldErrors[e.field]) fieldErrors[e.field] = e.message;
   }
   const detail = typeof body.detail === "string" && body.detail.trim() ? body.detail : fallbackFor(res.status);
-  return new ApiError(res.status, body.title ?? `HTTP ${res.status}`, detail, fieldErrors);
+  return new ApiError(res.status, body.title ?? `HTTP ${res.status}`, detail, fieldErrors, body.code, body as Record<string, unknown>);
 }
 
 // ---------- CSRF (browser only) ----------
@@ -113,6 +118,12 @@ export interface ApiOptions extends Omit<RequestInit, "body"> {
 
 const isServer = typeof window === "undefined";
 
+function requestBody(body: unknown): BodyInit | undefined {
+  if (body === undefined) return undefined;
+  if (typeof FormData !== "undefined" && body instanceof FormData) return body;
+  return JSON.stringify(body);
+}
+
 export async function apiFetch<T>(path: string, options: ApiOptions = {}): Promise<T> {
   const { body, allow404, allow401, headers, ...rest } = options;
   const method = (rest.method ?? "GET").toUpperCase();
@@ -122,7 +133,9 @@ export async function apiFetch<T>(path: string, options: ApiOptions = {}): Promi
   async function send(): Promise<Response> {
     const h = new Headers(headers);
     h.set("Accept", "application/json");
-    if (body !== undefined) h.set("Content-Type", "application/json");
+    const isForm = typeof FormData !== "undefined" && body instanceof FormData;
+    // FormData (file uploads): the browser sets the multipart Content-Type itself
+    if (body !== undefined && !isForm) h.set("Content-Type", "application/json");
     if (needsCsrf) {
       const t = await getCsrfToken();
       h.set(t.headerName, t.token);
@@ -133,7 +146,7 @@ export async function apiFetch<T>(path: string, options: ApiOptions = {}): Promi
         method,
         headers: h,
         credentials: "include",
-        body: body === undefined ? undefined : JSON.stringify(body),
+        body: requestBody(body),
       });
     } catch (e) {
       if ((e as Error).name === "AbortError") throw e;
