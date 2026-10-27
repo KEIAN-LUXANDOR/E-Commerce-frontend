@@ -1,11 +1,17 @@
 import { describe, expect, it } from "vitest";
 import * as React from "react";
 import { renderToString } from "react-dom/server";
+import { vi } from "vitest";
 import { ShapeSelector } from "@/components/store/shape-selector";
 import { ColorScaleSelector, ClarityScaleSelector } from "@/components/store/grade-scale-slider";
-import { DiamondCard } from "@/components/store/diamond-card";
+import { ProductCard } from "@/components/catalog/ProductCard";
 import { DiamondTable } from "@/components/store/diamond-table";
 import type { DiamondSummary } from "@/lib/types/catalog";
+import type { Product } from "@/lib/types/product";
+
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: vi.fn() }),
+}));
 
 const sampleDiamond: DiamondSummary = {
   id: "d-test-1",
@@ -26,6 +32,35 @@ const sampleDiamond: DiamondSummary = {
   fluorescence: "NONE",
   isNew: false,
   media: [],
+};
+
+const sampleProduct: Product = {
+  id: "p-test-1",
+  slug: "2-04-round-d-vvs1-gia",
+  name: "2.04 ct Round Brilliant",
+  description: null,
+  diamond: {
+    origin: "NATURAL",
+    shape: "ROUND",
+    carat: 2.04,
+    color: "D",
+    clarity: "VVS1",
+    cut: "EXCELLENT",
+    polish: "EXCELLENT",
+    symmetry: "EXCELLENT",
+    fluorescence: "NONE",
+    lab: "GIA",
+    quickShip: false,
+  },
+  images: [],
+  variants: [{
+    id: "v-test-1",
+    sku: "KL-D-001",
+    name: "2.04 ct",
+    pricePaise: 45000000,
+    mrpPaise: null,
+    inStock: true,
+  }],
 };
 
 describe("Catalog Components - Phase 3", () => {
@@ -63,14 +98,14 @@ describe("Catalog Components - Phase 3", () => {
     });
   });
 
-  describe("DiamondCard", () => {
-    it("renders carat weight, grades, price and Reserve button", () => {
-      const html = renderToString(<DiamondCard diamond={sampleDiamond} />);
-      expect(html).toContain("2.04 Carat");
-      expect(html).toContain("ROUND");
+  describe("ProductCard", () => {
+    it("renders diamond grades, price and cart action", () => {
+      const html = renderToString(<ProductCard product={sampleProduct} />);
+      expect(html).toContain("2.04 ct");
+      expect(html).toContain("Round Brilliant");
       expect(html).toContain("VVS1");
       expect(html).toContain("GIA");
-      expect(html).toContain("Reserve");
+      expect(html).toContain("Add to cart");
       expect(html).toContain("₹4,50,000");
     });
   });

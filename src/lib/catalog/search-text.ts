@@ -1,105 +1,84 @@
-import { CLARITY_VALUES, COLOR_VALUES, LAB_VALUES, SHAPE_VALUES, type ProductQuery, type Shape } from "@/lib/types/product";
-
 /**
- * Turns what a shopper types into shop filters, so "1.5 ct oval lab F VS1 under 3 lakh"
- * finds the right stones even though the backend's `q` only searches names.
- * Anything not understood is sent as `q` (name search).
+ * Parses natural language search queries to extract diamond attributes.
+ * Example: "1.5 ct oval lab F VS1 under 3 lakh"
  */
+export function parseDiamondSearchText(query: string): Record<string, any> {
+  if (!query) return {};
 
-const SHAPE_WORDS: Record<string, Shape> = {
-  brilliant: "ROUND",
-  round: "ROUND",
-  oval: "OVAL",
-  cushion: "CUSHION",
-  emerald: "EMERALD",
-  pear: "PEAR",
-  teardrop: "PEAR",
-  princess: "PRINCESS",
-  square: "PRINCESS",
-  radiant: "RADIANT",
-  asscher: "ASSCHER",
-  marquise: "MARQUISE",
-  heart: "HEART",
-};
+  const q = query.toLowerCase();
+  const filters: Record<string, any> = {};
 
-const FILLER = new Set(["diamond", "diamonds", "loose", "stone", "stones", "certified", "a", "the", "with", "and", "in", "of", "for", "colour", "color", "clarity", "cut", "shape", "carat", "ct", "cts", "carats"]);
-
-export function searchToQuery(text: string): ProductQuery {
-  let rest = ` ${text.toLowerCase().replace(/[,]/g, " ")} `;
-  const query: ProductQuery = {};
-
-  // Price: "under 3 lakh", "below 50000", "upto 2l"
-  const price = /\b(?:under|below|upto|up to|max|less than)\s*₹?\s*([\d.]+)\s*(lakh|lakhs|lac|l|k|thousand)?\b/.exec(rest);
-  if (price) {
-    let rupees = Number(price[1]);
-    const unit = price[2] ?? "";
-    if (unit.startsWith("l")) rupees *= 100000;
-    if (unit === "k" || unit === "thousand") rupees *= 1000;
-    if (rupees > 0) query.maxPrice = Math.round(rupees) * 100;
-    rest = rest.replace(price[0], " ");
-  }
-
-  // Carat: "1.5 ct", "2 carat", "1ct"
-  const carat = /\b(\d+(?:\.\d+)?)\s*(?:ct|cts|carat|carats)\b/.exec(rest);
-  if (carat) {
-    const c = Number(carat[1]);
-    if (c > 0 && c <= 50) {
-      query.minCarat = c;
-      query.maxCarat = Math.round(c * 1.2 * 100) / 100;
-    }
-    rest = rest.replace(carat[0], " ");
-  }
-
-  // Origin
-  if (/\blab[\s-]?grown\b|\blab\b|\bcvd\b|\bhpht\b|\blab[\s-]?created\b/.test(rest)) {
-    query.origin = "LAB_GROWN";
-    rest = rest.replace(/\blab[\s-]?grown\b|\blab[\s-]?created\b|\blab\b|\bcvd\b|\bhpht\b/g, " ");
-  } else if (/\bnatural\b|\bmined\b|\bearth[\s-]?mined\b/.test(rest)) {
-    query.origin = "NATURAL";
-    rest = rest.replace(/\bnatural\b|\bearth[\s-]?mined\b|\bmined\b/g, " ");
-  }
-
-  // Shapes
-  const shapes: Shape[] = [];
-  for (const [word, shape] of Object.entries(SHAPE_WORDS)) {
-    const re = new RegExp(`\\b${word}s?\\b`, "g");
-    if (re.test(rest)) {
-      if (!shapes.includes(shape)) shapes.push(shape);
-      rest = rest.replace(re, " ");
+  // 1. Carat (e.g., "1.5 ct", "0.90 carat")
+  const caratMatch = q.match(/(?:^|\s)(\d+(?:\.\d+)?)\s*(?:ct|carats?)/);
+  if (caratMatch && caratMatch[1]) {
+    const val = parseFloat(caratMatch[1]);
+    if (!isNaN(val)) {
+      // Create a ±0.05ct range around the requested carat
+      filters.minCarat = Math.max(0.1, val - 0.05);
+      filters.maxCarat = val + 0.05;
     }
   }
-  if (shapes.length) query.shape = shapes.filter((s) => SHAPE_VALUES.includes(s));
 
-  // Lab
-  const labs = LAB_VALUES.filter((lab) => new RegExp(`\\b${lab.toLowerCase()}\\b`).test(rest));
-  if (labs.length) {
-    query.lab = [...labs];
-    for (const lab of labs) rest = rest.replace(new RegExp(`\\b${lab.toLowerCase()}\\b`, "g"), " ");
+  // 2. Origin (Natural vs Lab-Grown)
+  if (q.includes("lab") || q.includes("lgd") || q.includes("grown")) {
+    filters.origin = "LAB_GROWN";
+  } else if (q.includes("natural") || q.includes("earth") || q.includes("mined")) {
+    filters.origin = "NATURAL";
   }
 
-  // Clarity (before colour, so "if" isn't mistaken)
-  const clarities = CLARITY_VALUES.filter((c) => c !== "IF" && new RegExp(`\\b${c.toLowerCase()}\\b`).test(rest));
-  if (/\bif\b/.test(rest) && /\b(vvs|vs|si|fl|clarity)\b|\bif\s+clarity\b/.test(rest)) clarities.push("IF");
-  if (clarities.length) {
-    query.clarity = [...clarities];
-    for (const c of clarities) rest = rest.replace(new RegExp(`\\b${c.toLowerCase()}\\b`, "g"), " ");
+  // 3. Shape
+  const shapes = [
+    "ROUND", "OVAL", "PRINCESS", "CUSHION", "EMERALD", 
+    "PEAR", "MARQUISE", "HEART", "RADIANT", "ASSCHER"
+  ];
+  const matchedShapes = shapes.filter(s => q.includes(s.toLowerCase()));
+  if (matchedShapes.length > 0) {
+    filters.shape = matchedShapes;
   }
 
-  // Colour: single letters D–M, or "d colour"
-  // "i" is only a colour when the word colour is next to it ("i colour"), not in "i want…"
-  const colourI = /\bi\s+colou?r\b|\bcolou?r\s+i\b/.test(rest);
-  const colours = COLOR_VALUES.filter((c) => (c !== "I" || colourI) && new RegExp(`(^|\\s)${c.toLowerCase()}(\\s|$)`).test(rest));
-  if (colours.length && colours.length <= 4) {
-    query.color = [...colours];
-    for (const c of colours) rest = rest.replace(new RegExp(`(^|\\s)${c.toLowerCase()}(?=\\s|$)`, "g"), " ");
+  // 4. Color (Matches whole words D through K)
+  const colorMatch = q.match(/\b([d-k])\b/);
+  if (colorMatch && colorMatch[1]) {
+    filters.color = [colorMatch[1].toUpperCase()];
   }
 
-  const leftover = rest
-    .split(/\s+/)
-    .filter((w) => w && !FILLER.has(w))
-    .join(" ")
-    .trim();
-  if (leftover) query.q = leftover;
+  // 5. Clarity
+  const clarities = ["FL", "IF", "VVS1", "VVS2", "VS1", "VS2", "SI1", "SI2"];
+  const matchedClarity = clarities.find(c => {
+    // Ensure we match whole words (e.g., "VS1" but not inside another word)
+    const regex = new RegExp(`\\b${c.toLowerCase()}\\b`);
+    return regex.test(q);
+  });
+  if (matchedClarity) {
+    filters.clarity = [matchedClarity];
+  }
 
-  return query;
+  // 6. Price (e.g., "under 3 lakh")
+  const lakhMatch = q.match(/(?:under|<|below)\s*(\d+(?:\.\d+)?)\s*lakh/);
+  if (lakhMatch && lakhMatch[1]) {
+    const lakhs = parseFloat(lakhMatch[1]);
+    if (!isNaN(lakhs)) {
+      // Convert lakhs to rupees, then to paise for the API
+      filters.maxPrice = lakhs * 100000 * 100;
+    }
+  } else {
+    // Standard numerical price (e.g., "under 50000")
+    const priceMatch = q.match(/(?:under|<|below)\s*₹?\s*(\d+(?:,\d+)*)/);
+    if (priceMatch && priceMatch[1]) {
+      const rupees = parseFloat(priceMatch[1].replace(/,/g, ""));
+      if (!isNaN(rupees)) {
+        filters.maxPrice = rupees * 100;
+      }
+    }
+  }
+
+  // 7. Certification Lab
+  if (q.includes("igi")) filters.lab = ["IGI"];
+  if (q.includes("gia")) filters.lab = ["GIA"];
+
+  // Always pass the raw query string back so the API can perform text matching 
+  // on product names or SKU/Report numbers.
+  filters.q = query;
+
+  return filters;
 }

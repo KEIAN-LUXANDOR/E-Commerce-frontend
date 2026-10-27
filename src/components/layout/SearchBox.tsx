@@ -1,219 +1,199 @@
 "use client";
 
-import { Clock, Search, X } from "lucide-react";
+import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useId, useRef, useState } from "react";
+import Link from "next/link";
+import { Search, X } from "lucide-react";
 import { ShapeIcon } from "@/components/art/ShapeIcon";
-import { fetchSuggestions } from "@/lib/api/catalog-browser";
-import { formatINR } from "@/lib/format";
-import { clearRecentSearches, rememberSearch, useRecentSearches } from "@/lib/stores";
-import type { SearchSuggestion } from "@/lib/types/catalog";
+import { fetchProducts } from "@/lib/api/products-browser";
+import type { Product } from "@/lib/types/product";
 
-interface Option {
-  key: string;
-  label: string;
-  href: string;
-  suggestion?: SearchSuggestion;
-  recent?: boolean;
+export interface SearchBoxProps {
+  className?: string;
+  placeholder?: string;
+  defaultValue?: string;
+  initialQuery?: string;
+  compact?: boolean;
+  onNavigate?: () => void;
+  autoFocus?: boolean;
 }
 
-/**
- * Search field with suggestions (combobox pattern).
- * Waits 250 ms after typing, cancels old requests, and supports ↑ ↓ Enter Esc.
- */
-export function SearchBox({ autoFocus, onNavigate, className }: { autoFocus?: boolean; onNavigate?: () => void; className?: string }) {
+function formatINRFromPaise(paise?: number | null): string {
+  if (typeof paise !== "number" || Number.isNaN(paise)) return "";
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(Math.round(paise / 100));
+}
+
+export function SearchBox({
+  className = "",
+  placeholder = "Search diamonds...",
+  defaultValue = "",
+  initialQuery = "",
+  onNavigate,
+  autoFocus = false,
+}: SearchBoxProps) {
   const router = useRouter();
-  const id = useId();
-  const listId = `${id}-list`;
-  const [query, setQuery] = useState("");
-  const [open, setOpen] = useState(false);
-  const [active, setActive] = useState(-1);
-  const [suggestions, setSuggestions] = useState<SearchSuggestion[]>([]);
+  const [query, setQuery] = useState(defaultValue || initialQuery);
+  const [results, setResults] = useState<Product[]>([]);
   const [loading, setLoading] = useState(false);
-  const recent = useRecentSearches();
-  const timer = useRef<number | undefined>(undefined);
-  const abort = useRef<AbortController | undefined>(undefined);
+  const [open, setOpen] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
 
-  const term = query.trim();
-  const options: Option[] =
-    term.length < 2
-      ? recent.map((r) => ({ key: `r-${r}`, label: r, href: `/search?q=${encodeURIComponent(r)}`, recent: true }))
-      : [
-          ...suggestions.map((s) => ({ key: s.href, label: s.label, href: s.href, suggestion: s })),
-          { key: "all", label: `See all results for “${term}”`, href: `/search?q=${encodeURIComponent(term)}` },
-        ];
-
-  function onChange(value: string) {
-    setQuery(value);
-    setActive(-1);
-    setOpen(true);
-    window.clearTimeout(timer.current);
-    abort.current?.abort();
-    if (value.trim().length < 2) {
-      setSuggestions([]);
-      setLoading(false);
+  useEffect(() => {
+    const trimmed = query.trim();
+    if (trimmed.length < 2) {
       return;
     }
-    setLoading(true);
-    timer.current = window.setTimeout(() => {
-      const ctrl = new AbortController();
-      abort.current = ctrl;
-      fetchSuggestions(value.trim(), ctrl.signal)
-        .then((s) => setSuggestions(s))
-        .catch((e: unknown) => {
-          if ((e as Error).name !== "AbortError") setSuggestions([]);
-        })
-        .finally(() => {
-          if (!ctrl.signal.aborted) setLoading(false);
-        });
-    }, 250);
-  }
 
-  function go(href: string, searchTerm?: string) {
-    if (searchTerm) rememberSearch(searchTerm);
-    setOpen(false);
-    setActive(-1);
-    onNavigate?.();
-    router.push(href);
-  }
+    const controller = new AbortController();
+    const timer = setTimeout(async () => {
+      setLoading(true);
+      try {
+        const data = await fetchProducts({ q: trimmed, size: 5 }, controller.signal);
+        setResults(data.items);
+      } catch {
+        if (!controller.signal.aborted) {
+          setResults([]);
+        }
+      } finally {
+        if (!controller.signal.aborted) {
+          setLoading(false);
+        }
+      }
+    }, 220);
 
-function getPreviousActiveIndex(currentIndex: number, totalOptions: number): number {
-  if (totalOptions === 0) {
-    return -1;
-  }
-  if (currentIndex <= 0) {
-    return totalOptions - 1;
-  }
-  return currentIndex - 1;
-}
+    return () => {
+      clearTimeout(timer);
+      controller.abort();
+    };
+  }, [query]);
 
-function getNextActiveIndex(currentIndex: number, totalOptions: number): number {
-  if (totalOptions === 0) {
-    return -1;
-  }
-  return (currentIndex + 1) % totalOptions;
-}
-
-function getSearchTermForOption(opt: Option, currentTerm: string): string | undefined {
-  if (opt.recent) {
-    return opt.label;
-  }
-  if (opt.suggestion) {
-    return undefined;
-  }
-  return currentTerm;
-}
-
-  function onKeyDown(e: React.KeyboardEvent<HTMLInputElement>) {
-    if (e.key === "ArrowDown") {
-      e.preventDefault();
-      setOpen(true);
-      setActive((i) => getNextActiveIndex(i, options.length));
-    } else if (e.key === "ArrowUp") {
-      e.preventDefault();
-      setActive((i) => getPreviousActiveIndex(i, options.length));
-    } else if (e.key === "Escape") {
-      if (open) {
-        e.preventDefault();
+  useEffect(() => {
+    function handleOutsideClick(e: MouseEvent) {
+      if (containerRef.current && !containerRef.current.contains(e.target as Node)) {
         setOpen(false);
       }
-    } else if (e.key === "Enter") {
-      e.preventDefault();
-      const opt = options[active];
-      if (opt) {
-        go(opt.href, getSearchTermForOption(opt, term));
-      } else if (term) {
-        go(`/search?q=${encodeURIComponent(term)}`, term);
-      }
     }
+    document.addEventListener("mousedown", handleOutsideClick);
+    return () => document.removeEventListener("mousedown", handleOutsideClick);
+  }, []);
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    const trimmed = query.trim();
+    if (!trimmed) return;
+    setOpen(false);
+    onNavigate?.();
+    router.push(`/search?q=${encodeURIComponent(trimmed)}`);
   }
 
-  const showList = open && (options.length > 0 || (term.length >= 2 && !loading));
-
   return (
-    <div className={`relative ${className ?? ""}`}>
-      <form
-        role="search"
-        onSubmit={(e) => {
-          e.preventDefault();
-          if (term) go(`/search?q=${encodeURIComponent(term)}`, term);
-        }}
-      >
-        <label htmlFor={`${id}-input`} className="sr-only">
-          Search diamonds
-        </label>
-        <Search className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-slate" aria-hidden />
+    <div ref={containerRef} className={`relative ${className}`}>
+      <form onSubmit={handleSubmit} role="search" className="relative flex items-center">
+        <Search
+          className="pointer-events-none absolute left-2.5 h-3.5 w-3.5 text-slate"
+          aria-hidden="true"
+        />
         <input
-          id={`${id}-input`}
           type="search"
-          role="combobox"
-          aria-expanded={showList}
-          aria-controls={listId}
-          aria-autocomplete="list"
-          aria-activedescendant={active >= 0 ? `${id}-opt-${active}` : undefined}
-          autoComplete="off"
-          autoFocus={autoFocus}
-          placeholder="Search shape, carat, colour, report no…"
           value={query}
-          onChange={(e) => onChange(e.target.value)}
+          autoFocus={autoFocus}
           onFocus={() => setOpen(true)}
-          onBlur={() => window.setTimeout(() => setOpen(false), 120)}
-          onKeyDown={onKeyDown}
-          className="field h-10 min-h-0 rounded-full border-line bg-paper pl-9 pr-9 text-sm [&::-webkit-search-cancel-button]:hidden"
+          onChange={(e) => {
+            setQuery(e.target.value);
+            setOpen(true);
+          }}
+          placeholder={placeholder}
+          aria-label="Search diamonds"
+          className="h-9 w-full rounded-[3px] border border-line bg-surface pl-8 pr-7 text-xs text-ink placeholder:text-slate/80 focus:border-loupe focus:outline-none focus:ring-1 focus:ring-loupe transition-colors"
         />
         {query && (
           <button
             type="button"
-            onClick={() => onChange("")}
-            className="absolute right-2 top-1/2 grid size-7 -translate-y-1/2 place-items-center rounded-full text-slate hover:bg-platinum"
+            onClick={() => {
+              setQuery("");
+              setResults([]);
+            }}
             aria-label="Clear search"
+            className="absolute right-2 text-slate hover:text-ink"
           >
-            <X className="size-4" aria-hidden />
+            <X className="h-3.5 w-3.5" />
           </button>
         )}
       </form>
 
-      {showList && (
-        <div className="absolute left-0 right-0 top-[calc(100%+6px)] z-40 overflow-hidden rounded-[4px] border border-line bg-surface shadow-[0_12px_32px_rgb(23_32_51/0.14)]">
-          {term.length < 2 && recent.length > 0 && (
-            <div className="flex items-center justify-between px-4 pt-3 text-xs text-slate">
-              <span>Recent searches</span>
-              <button type="button" onMouseDown={(e) => e.preventDefault()} onClick={clearRecentSearches} className="hover:text-ink hover:underline">
-                Clear
-              </button>
-            </div>
-          )}
-          <ul id={listId} role="listbox" aria-label="Search suggestions" className="py-1.5">
-            {options.map((opt, i) => (
-              <li
-                key={opt.key}
-                id={`${id}-opt-${i}`}
-                role="option"
-                aria-selected={i === active}
-                onMouseDown={(e) => e.preventDefault()}
-                onMouseEnter={() => setActive(i)}
-                onClick={() => go(opt.href, getSearchTermForOption(opt, term))}
-                className={`flex cursor-pointer items-center gap-3 px-4 py-2 text-sm ${i === active ? "bg-platinum" : ""} ${
-                  opt.key === "all" ? "border-t border-line font-medium text-loupe" : ""
-                }`}
-              >
-                {opt.recent && <Clock className="size-4 text-slate" aria-hidden />}
-                {opt.suggestion?.type === "DIAMOND" && opt.suggestion.shape && (
-                  <ShapeIcon shape={opt.suggestion.shape} className="size-7 shrink-0 text-ink" />
-                )}
-                {opt.suggestion?.type === "CATEGORY" && <Search className="size-4 text-slate" aria-hidden />}
-                <span className="flex-1 truncate">{opt.label}</span>
-                {opt.suggestion?.pricePaise !== undefined && (
-                  <span className="shrink-0 tabular-nums text-slate">{formatINR(opt.suggestion.pricePaise)}</span>
-                )}
+      {open && query.trim().length >= 2 && (
+        <div className="absolute right-0 top-full z-50 mt-1.5 w-72 sm:w-80 rounded-[4px] border border-line bg-surface shadow-lg">
+          {loading ? (
+            <div className="px-4 py-3 text-xs text-slate">Searching diamonds…</div>
+          ) : results.length > 0 ? (
+            <ul className="divide-y divide-line">
+              {results.map((item) => {
+                const variant = item?.variants?.[0];
+                const d = item?.diamond;
+                const subtitle = d
+                  ? [
+                      d.carat ? `${Number(d.carat).toFixed(2)} ct` : null,
+                      d.color,
+                      d.clarity,
+                      d.lab,
+                    ]
+                      .filter(Boolean)
+                      .join(" · ")
+                  : "";
+                return (
+                  <li key={item.id ?? item.slug}>
+                    <Link
+                      href={`/diamond/${item.slug}`}
+                      onClick={() => {
+                        setOpen(false);
+                        onNavigate?.();
+                      }}
+                      className="flex items-center justify-between gap-3 px-3.5 py-2.5 hover:bg-platinum transition-colors"
+                    >
+                      <div className="flex items-center gap-2.5 min-w-0">
+                        <ShapeIcon
+                          shape={d?.shape ?? "ROUND"}
+                          className="h-5 w-5 shrink-0 text-ink"
+                        />
+                        <div className="min-w-0">
+                          <p className="truncate text-xs font-medium text-ink">{item.name}</p>
+                          {subtitle && (
+                            <p className="truncate text-[11px] text-slate">{subtitle}</p>
+                          )}
+                        </div>
+                      </div>
+                      {variant?.pricePaise != null && (
+                        <span className="shrink-0 text-xs font-medium tabular-nums text-ink">
+                          {formatINRFromPaise(variant.pricePaise)}
+                        </span>
+                      )}
+                    </Link>
+                  </li>
+                );
+              })}
+              <li>
+                <button
+                  type="button"
+                  onClick={handleSubmit}
+                  className="w-full px-3.5 py-2 text-left text-xs font-medium text-loupe hover:bg-platinum transition-colors"
+                >
+                  See all results for &ldquo;{query.trim()}&rdquo; →
+                </button>
               </li>
-            ))}
-          </ul>
-          {term.length >= 2 && !loading && suggestions.length === 0 && (
-            <p className="px-4 pb-3 text-sm text-slate">No quick matches. Press Enter to search everything.</p>
+            </ul>
+          ) : (
+            <div className="px-4 py-3 text-xs text-slate">
+              No quick matches. Press Enter to search all diamonds.
+            </div>
           )}
         </div>
       )}
     </div>
   );
 }
+
+export default SearchBox;

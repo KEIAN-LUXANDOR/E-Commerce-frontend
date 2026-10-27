@@ -1,37 +1,58 @@
 "use client";
 
-import { useEffect } from "react";
-import { fetchCurrentUser } from "@/lib/api/auth";
-import { createMemoryStore } from "@/lib/local-store";
+import { useSyncExternalStore } from "react";
+import { getMe } from "@/lib/api/auth";
 import type { User } from "@/lib/types/auth";
 
-/**
- * Who is logged in, shared by the header and account pages.
- * Asks the backend (GET /auth/me) once per page load; login and logout update it directly.
- */
-
-export type Session = { status: "loading" } | { status: "guest" } | { status: "user"; user: User };
-
-const store = createMemoryStore<Session>({ status: "loading" });
-let loading: Promise<void> | null = null;
-
-/** Fetch the current user again from the backend. */
-export function refreshSession(): Promise<void> {
-  loading = fetchCurrentUser()
-    .then((user) => store.set(user ? { status: "user", user } : { status: "guest" }))
-    // Backend unreachable: treat as logged out rather than spinning forever
-    .catch(() => store.set({ status: "guest" }));
-  return loading;
+interface SessionState {
+  user: User | null;
+  status: "loading" | "authenticated" | "unauthenticated";
 }
 
-export function setSessionUser(user: User | null) {
-  store.set(user ? { status: "user", user } : { status: "guest" });
+let state: SessionState = { user: null, status: "loading" };
+const listeners = new Set<() => void>();
+
+function notify() {
+  listeners.forEach((l) => l());
 }
 
-export function useSession(): Session {
-  const session = store.useValue();
-  useEffect(() => {
-    if (!loading) void refreshSession();
-  }, []);
-  return session;
+async function initSession() {
+  try {
+    const user = await getMe();
+    state = { user, status: "authenticated" };
+  } catch {
+    state = { user: null, status: "unauthenticated" };
+  }
+  notify();
 }
+
+// Initialize once on the client
+if (typeof window !== "undefined") {
+  initSession();
+}
+
+export const sessionStore = {
+  get: () => state,
+  setAuthenticated: (user: User) => {
+    state = { user, status: "authenticated" };
+    notify();
+  },
+  logout: async () => {
+    try {
+      const { logout: apiLogout } = await import("@/lib/api/auth");
+      await apiLogout();
+    } catch (e) {}
+    state = { user: null, status: "unauthenticated" };
+    notify();
+  },
+  useSession: () => {
+    return useSyncExternalStore(
+      (listener) => {
+        listeners.add(listener);
+        return () => listeners.delete(listener);
+      },
+      () => state,
+      () => state
+    );
+  },
+};

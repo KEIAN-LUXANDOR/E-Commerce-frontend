@@ -65,7 +65,7 @@ export function useAdminQuery<T>(feature: Feature, load: () => Promise<T>, deps:
   const [error, setError] = useState<string>();
   const [loading, setLoading] = useState(!off);
   const [tick, setTick] = useState(0);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+  // eslint-disable-next-line react-hooks/use-memo, react-hooks/exhaustive-deps -- dependencies are supplied by each query caller
   const run = useCallback(load, deps);
 
   useEffect(() => {

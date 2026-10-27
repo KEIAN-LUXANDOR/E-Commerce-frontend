@@ -1,18 +1,21 @@
 "use client";
 
-import { VerifyEmailNotice } from "@/components/account/VerifyEmailNotice";
-import { useSession } from "@/lib/session";
+import { sessionStore } from "@/lib/session";
 
-/** "Hello, Riya" plus the verify-email reminder when needed. */
 export function AccountHeader() {
-  const session = useSession();
-  let greeting = "Your account";
-  if (session.status === "user") greeting = `Hello, ${session.user.fullName.split(" ")[0]}`;
+  const session = sessionStore.useSession();
+  const user = session?.user;
+
+  if (!user) return null;
+
   return (
-    <div>
-      <h1 className="text-4xl md:text-5xl">{greeting}</h1>
-      <p className="mt-2 text-slate">Your details, orders, addresses and saved diamonds.</p>
-      {session.status === "user" && <VerifyEmailNotice user={session.user} className="mt-5" />}
+    <div className="mb-8 border-b border-line pb-4">
+      <h1 className="text-2xl font-serif tracking-widest text-ink">
+        Welcome back, {(user as any).name || (user as any).firstName || "Guest"}
+      </h1>
+      <p className="text-sm text-slate mt-1">{user.email}</p>
     </div>
   );
 }
+
+export default AccountHeader;

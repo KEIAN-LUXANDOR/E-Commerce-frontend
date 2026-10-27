@@ -1,22 +1,27 @@
 import * as React from "react";
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 import { renderToString } from "react-dom/server";
 import { AdminShell, ADMIN_NAV_ITEMS } from "../admin-shell";
 import { PackingDesk } from "../packing-desk";
 import { DiamondInventoryManager } from "../diamond-form";
 import { CsvWizard } from "../csv-wizard";
 
+vi.mock("next/navigation", () => ({
+  usePathname: () => "/admin",
+  useRouter: () => ({ push: vi.fn() }),
+}));
+
 describe("AdminShell", () => {
-  it("renders staff clearance credential and level badge", () => {
+  it("renders the default admin identity", () => {
     const html = renderToString(
       <AdminShell>
         <div>Content</div>
       </AdminShell>
     );
 
-    expect(html).toContain("Elena Vance, GG (GIA)");
-    expect(html).toContain("Level 4 Clearance");
-    expect(html).toContain("L4");
+    expect(html).toContain("Owner / Admin");
+    expect(html).toContain("admin@keianluxandor.com");
+    expect(html).toContain("Owner");
   });
 
   it("renders all navigation items", () => {
@@ -26,12 +31,12 @@ describe("AdminShell", () => {
       </AdminShell>
     );
 
+    expect(html).toContain("Dashboard");
+    expect(html).toContain("Diamonds &amp; Inventory");
+    expect(html).toContain("CSV Bulk Import");
     expect(html).toContain("Packing Desk");
-    expect(html).toContain("Diamond Inventory");
-    expect(html).toContain("CSV Ingestion");
-    expect(html).toContain("Order Dossiers");
-    expect(html).toContain("Staff &amp; Clearance");
-    expect(html).toContain("Privilege Codes");
+    expect(html).toContain("Access &amp; Staff");
+    expect(html).toContain("Store Settings");
   });
 });
 

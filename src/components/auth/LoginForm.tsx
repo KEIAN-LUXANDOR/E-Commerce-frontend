@@ -1,119 +1,154 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FormAlert, PasswordField, TextField } from "@/components/auth/FormParts";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Loader2 } from "lucide-react";
 import { login, resendVerification } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
-import { setSessionUser } from "@/lib/session";
+import { sessionStore } from "@/lib/session";
 import { normaliseEmail, validateLogin, type FieldErrors } from "@/lib/validators";
 
-/**
- * POST /auth/login. Shows the backend's message for a wrong password (401)
- * and for the 15-minute lock after 5 wrong attempts (429).
- */
-export function LoginForm({ next, notice }: { next: string; notice?: string }) {
+export function LoginForm() {
   const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [errors, setErrors] = useState<FieldErrors>({});
-  const [formError, setFormError] = useState<string>();
-  const [busy, setBusy] = useState(false);
-  const [resendBusy, setResendBusy] = useState(false);
-  const [resendMessage, setResendMessage] = useState<string>();
-  const [resendError, setResendError] = useState<string>();
+  const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [loading, setLoading] = useState(false);
+  const [needsVerification, setNeedsVerification] = useState(false);
 
-  async function onResendVerification() {
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setFieldErrors({});
+    setNeedsVerification(false);
+
     const normalizedEmail = normaliseEmail(email);
-    if (!normalizedEmail) {
-      setResendError("Enter your email address first.");
-      setResendMessage(undefined);
+    const validation = validateLogin({ email: normalizedEmail, password });
+    
+    if (!validation.valid) {
+      if (typeof validation.errors === "string") {
+        setError(validation.errors);
+      } else if (validation.errors) {
+        setFieldErrors(validation.errors as FieldErrors);
+      }
       return;
     }
 
-    setResendBusy(true);
-    setResendError(undefined);
-    setResendMessage(undefined);
+    setLoading(true);
+    
     try {
-      const response = await resendVerification(normalizedEmail);
-      setResendMessage(response.message);
-    } catch (err) {
-      setResendError(err instanceof ApiError ? err.message : "Something went wrong. Please try again.");
-    } finally {
-      setResendBusy(false);
+      // V3 strictly requires an object
+      const user = await login({ email: normalizedEmail, password });
+      
+      sessionStore.setAuthenticated(user);
+
+      router.push("/account");
+      router.refresh();
+    } catch (err: any) {
+      if (err instanceof ApiError) {
+        if (err.status === 403 && err.code === "EMAIL_NOT_VERIFIED") {
+          setNeedsVerification(true);
+          setError("Please verify your email address before logging in.");
+        } else if (err.errors) {
+          const apiErrors: FieldErrors = {};
+          err.errors.forEach((e: any) => { apiErrors[e.field] = e.message; });
+          setFieldErrors(apiErrors);
+        } else {
+          setError(err.detail || "Invalid email or password.");
+        }
+      } else {
+        setError(err.message || "An unexpected error occurred.");
+      }
+      setLoading(false);
     }
   }
 
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    const found = validateLogin({ email, password });
-    setErrors(found);
-    setFormError(undefined);
-    if (Object.keys(found).length) return;
-
-    setBusy(true);
+  async function handleResend() {
     try {
-      const user = await login({ email: normaliseEmail(email), password });
-      setSessionUser(user);
-      // Forget pages loaded while logged out, then go on
-      router.refresh();
-      router.replace(next);
-    } catch (err) {
-      if (err instanceof ApiError) {
-        setErrors(err.fieldErrors);
-        setFormError(err.message);
-        // Clear the password after a failed attempt, as most sites do
-        if (err.status === 401) setPassword("");
-      } else {
-        setFormError("Something went wrong. Please try again.");
-      }
-    } finally {
-      setBusy(false);
+      await resendVerification(normaliseEmail(email));
+      setError("Verification email sent! Please check your inbox.");
+      setNeedsVerification(false);
+    } catch (err: any) {
+      setError(err.detail || "Failed to resend verification email.");
     }
   }
 
   return (
-    <form noValidate onSubmit={onSubmit} className="space-y-5">
-      {notice && !formError && <FormAlert tone="info">{notice}</FormAlert>}
-      {formError && <FormAlert>{formError}</FormAlert>}
-      {resendMessage && <FormAlert tone="info">{resendMessage}</FormAlert>}
-      {resendError && <FormAlert>{resendError}</FormAlert>}
-      <TextField
-        label="Email"
-        type="email"
-        name="email"
-        autoComplete="email"
-        inputMode="email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        error={errors.email}
-      />
-      <PasswordField
-        label="Password"
-        name="password"
-        autoComplete="current-password"
-        value={password}
-        onChange={(e) => setPassword(e.target.value)}
-        error={errors.password}
-      />
-      <p className="-mt-3 text-right text-sm">
-        <Link href={`/forgot-password${next === "/account" ? "" : `?next=${encodeURIComponent(next)}`}`} className="link">
-          Forgot password?
-        </Link>
-      </p>
-      <button type="button" className="btn btn-secondary w-full" onClick={onResendVerification} disabled={resendBusy}>
-        {resendBusy ? "Sending…" : "Resend verification email"}
+    <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-md mx-auto">
+      {error && (
+        <div className="bg-out/5 border border-out p-4 text-sm text-out text-center">
+          <p>{error}</p>
+          {needsVerification && (
+            <button
+              type="button"
+              onClick={handleResend}
+              className="mt-3 font-medium underline hover:opacity-80 transition-opacity"
+            >
+              Resend verification email
+            </button>
+          )}
+        </div>
+      )}
+
+      <div className="space-y-4">
+        <div>
+          <label htmlFor="email" className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">
+            Email Address
+          </label>
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={`w-full h-11 border bg-surface px-4 text-sm text-ink focus:outline-none focus:ring-1 transition-colors ${
+              fieldErrors.email ? "border-out focus:border-out focus:ring-out" : "border-line focus:border-ink focus:ring-ink"
+            }`}
+            required
+          />
+          {fieldErrors.email && <p className="mt-1 text-xs text-out">{fieldErrors.email}</p>}
+        </div>
+
+        <div>
+          <div className="flex items-center justify-between mb-2">
+            <label htmlFor="password" className="block text-xs font-medium text-ink uppercase tracking-widest">
+              Password
+            </label>
+            <Link href="/forgot-password" className="text-xs text-slate hover:text-ink transition-colors">
+              Forgot?
+            </Link>
+          </div>
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={`w-full h-11 border bg-surface px-4 text-sm text-ink focus:outline-none focus:ring-1 transition-colors ${
+              fieldErrors.password ? "border-out focus:border-out focus:ring-out" : "border-line focus:border-ink focus:ring-ink"
+            }`}
+            required
+          />
+          {fieldErrors.password && <p className="mt-1 text-xs text-out">{fieldErrors.password}</p>}
+        </div>
+      </div>
+
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full h-11 flex items-center justify-center bg-ink text-white text-xs font-medium uppercase tracking-widest hover:bg-loupe-deep transition-colors disabled:opacity-50"
+      >
+        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sign In"}
       </button>
-      <button type="submit" className="btn btn-primary w-full" disabled={busy}>
-        {busy ? "Logging in…" : "Log in"}
-      </button>
-      <p className="text-center text-sm text-slate">
-        New here?{" "}
-        <Link href={next === "/account" ? "/register" : `/register?next=${encodeURIComponent(next)}`} className="link">
-          Create an account
+
+      <div className="text-center text-sm text-slate pt-2">
+        Don&apos;t have an account?{" "}
+        <Link href="/register" className="font-medium text-ink hover:underline">
+          Create Account
         </Link>
-      </p>
+      </div>
     </form>
   );
 }
+
+export default LoginForm;

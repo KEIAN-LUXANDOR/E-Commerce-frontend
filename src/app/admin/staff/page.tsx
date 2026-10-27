@@ -1,169 +1,205 @@
 "use client";
 
-/**
- * Staff Directory & Security Clearance Matrix
- * Route: /admin/staff
- *
- * Role-Based Access Control (RBAC) levels:
- *   - L0: Guest / Read-Only Storefront
- *   - L1: Digital Concierge
- *   - L2: Armoured Logistics Dispatcher
- *   - L3: Vault Custodian & Packaging
- *   - L4: Master Gemologist (Loupe & Inscription Verification)
- *   - L5: Managing Director & Escrow Authority
- *
- * Human-Centric Rules:
- *   - Zero nested ternaries.
- */
+import { useState } from "react";
+import { ShieldCheck, UserPlus, CheckCircle2, Ban } from "lucide-react";
 
-import * as React from "react";
-import { Users, Shield, Key, CheckCircle, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { showToast } from "@/lib/stores";
-
-interface StaffMember {
+interface AccountMember {
   id: string;
   name: string;
-  role: string;
-  clearance: "L1" | "L2" | "L3" | "L4" | "L5";
-  department: string;
   email: string;
+  accessLevel: "ADMIN" | "CUSTOMER";
+  status: "ACTIVE" | "DISABLED";
   lastActive: string;
 }
 
-const STAFF_MEMBERS: StaffMember[] = [
+const INITIAL_ACCOUNTS: AccountMember[] = [
   {
-    id: "stf-01",
-    name: "Dr. Elena Vance, GG",
-    role: "Master Gemologist",
-    clearance: "L4",
-    department: "Gemological Metrology",
-    email: "elena.vance@keianluxandor.com",
-    lastActive: "Just now",
+    id: "usr-1",
+    name: "Owner / Admin",
+    email: "admin@example.com",
+    accessLevel: "ADMIN",
+    status: "ACTIVE",
+    lastActive: "Today",
   },
   {
-    id: "stf-02",
-    name: "Kabir Desai",
-    role: "Chief Vault Custodian",
-    clearance: "L3",
-    department: "High-Security Vault & Packaging",
-    email: "kabir.desai@keianluxandor.com",
-    lastActive: "12m ago",
-  },
-  {
-    id: "stf-03",
-    name: "Meera Subramanian",
-    role: "Logistics Escort Lead",
-    clearance: "L2",
-    department: "Armoured Transport Coordination",
-    email: "meera.s@keianluxandor.com",
-    lastActive: "1h ago",
-  },
-  {
-    id: "stf-04",
-    name: "Aditya Singhania",
-    role: "Managing Director",
-    clearance: "L5",
-    department: "Executive & Financial Escrow",
-    email: "aditya.s@keianluxandor.com",
-    lastActive: "3h ago",
+    id: "usr-2",
+    name: "Riya Shah",
+    email: "riya@example.com",
+    accessLevel: "CUSTOMER",
+    status: "ACTIVE",
+    lastActive: "Yesterday",
   },
 ];
 
 export default function AdminStaffPage() {
+  const [members, setMembers] = useState<AccountMember[]>(INITIAL_ACCOUNTS);
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [accessLevel, setAccessLevel] = useState<"ADMIN" | "CUSTOMER">("ADMIN");
+
+  function handleAddAccount(e: React.FormEvent) {
+    e.preventDefault();
+    if (!name.trim() || !email.trim()) return;
+    setMembers((prev) => [
+      ...prev,
+      {
+        id: `usr-${Date.now()}`,
+        name: name.trim(),
+        email: email.trim().toLowerCase(),
+        accessLevel,
+        status: "ACTIVE",
+        lastActive: "Just added",
+      },
+    ]);
+    setName("");
+    setEmail("");
+  }
+
+  function toggleAccessLevel(id: string) {
+    setMembers((prev) =>
+      prev.map((m) =>
+        m.id === id
+          ? { ...m, accessLevel: m.accessLevel === "ADMIN" ? "CUSTOMER" : "ADMIN" }
+          : m
+      )
+    );
+  }
+
+  function toggleStatus(id: string) {
+    setMembers((prev) =>
+      prev.map((m) =>
+        m.id === id
+          ? { ...m, status: m.status === "ACTIVE" ? "DISABLED" : "ACTIVE" }
+          : m
+      )
+    );
+  }
+
   return (
     <div className="space-y-8">
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--color-line)] pb-4">
-        <div>
-          <h1 className="font-serif text-3xl text-[var(--color-ink)]">
-            Staff Directory &amp; Security Clearance
-          </h1>
-          <p className="font-mono text-xs text-[var(--color-slate)] mt-1">
-            Access levels L0 to L5 governing vault access, inscription audits, and escrow releases
-          </p>
+      <div>
+        <p className="eyebrow">Access Control</p>
+        <h1 className="mt-1 text-2xl font-medium text-ink">
+          Access Levels (Owner / Admin &amp; Customer)
+        </h1>
+        <p className="mt-1 text-sm text-slate">
+          The platform uses two access levels: <strong>Owner / Admin</strong> (full access to all store management screens) and <strong>Customer</strong> (storefront, wishlist, cart, checkout, and account).
+        </p>
+      </div>
+
+      {/* Add Account Form */}
+      <form
+        onSubmit={handleAddAccount}
+        className="border border-line bg-surface p-5 space-y-4"
+      >
+        <h2 className="text-sm font-semibold uppercase tracking-wider text-ink flex items-center gap-2">
+          <UserPlus className="h-4 w-4 text-loupe" />
+          <span>Grant Access</span>
+        </h2>
+
+        <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+          <div>
+            <label className="block text-xs font-medium text-ink">Full Name</label>
+            <input
+              type="text"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              placeholder="Full name"
+              className="mt-1 h-10 w-full rounded-[3px] border border-line bg-surface px-3 text-xs text-ink focus:border-loupe focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-ink">Email Address</label>
+            <input
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="name@keianluxandor.com"
+              className="mt-1 h-10 w-full rounded-[3px] border border-line bg-surface px-3 text-xs text-ink focus:border-loupe focus:outline-none"
+            />
+          </div>
+          <div>
+            <label className="block text-xs font-medium text-ink">Access Level</label>
+            <select
+              value={accessLevel}
+              onChange={(e) => setAccessLevel(e.target.value as "ADMIN" | "CUSTOMER")}
+              className="mt-1 h-10 w-full rounded-[3px] border border-line bg-surface px-3 text-xs text-ink focus:border-loupe focus:outline-none"
+            >
+              <option value="ADMIN">Owner / Admin (Full Admin Access)</option>
+              <option value="CUSTOMER">Customer (Storefront &amp; Orders)</option>
+            </select>
+          </div>
         </div>
-        <Button
-          onClick={() =>
-            showToast("Security credential invitation modal provisioned.", "info")
-          }
-          className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider"
+
+        <button
+          type="submit"
+          className="inline-flex h-10 items-center bg-ink px-5 text-xs font-medium uppercase tracking-widest text-white hover:bg-loupe-deep"
         >
-          <Plus className="size-4" />
-          <span>Provision Clearance</span>
-        </Button>
-      </div>
+          Add User
+        </button>
+      </form>
 
-      {/* Clearance Level Explanation */}
-      <div className="grid grid-cols-2 md:grid-cols-5 gap-3 text-xs font-mono">
-        <div className="border border-[var(--color-line)] p-3 bg-white">
-          <span className="font-bold text-[var(--color-ink)] block">Level 1</span>
-          <span className="text-[10px] text-[var(--color-slate)]">Concierge &amp; Inquiries</span>
-        </div>
-        <div className="border border-[var(--color-line)] p-3 bg-white">
-          <span className="font-bold text-[var(--color-ink)] block">Level 2</span>
-          <span className="text-[10px] text-[var(--color-slate)]">Armoured Waybill Dispatch</span>
-        </div>
-        <div className="border border-[var(--color-line)] p-3 bg-white">
-          <span className="font-bold text-[var(--color-ink)] block">Level 3</span>
-          <span className="text-[10px] text-[var(--color-slate)]">Physical Vault Custody</span>
-        </div>
-        <div className="border border-[var(--color-line)] p-3 bg-white">
-          <span className="font-bold text-[var(--color-ink)] block">Level 4</span>
-          <span className="text-[10px] text-[var(--color-slate)]">Forensic Loupe Audit</span>
-        </div>
-        <div className="border border-[var(--color-line)] p-3 bg-[var(--color-stone)]">
-          <span className="font-bold text-[var(--color-ink)] block">Level 5</span>
-          <span className="text-[10px] text-[var(--color-slate)]">Executive Escrow Release</span>
-        </div>
-      </div>
-
-      {/* Staff Directory Table */}
-      <div className="border border-[var(--color-line)] bg-white overflow-x-auto">
-        <table className="w-full text-left font-sans text-xs">
-          <thead className="bg-[var(--color-stone)] border-b border-[var(--color-line)] font-mono text-[10px] uppercase tracking-[0.08em] text-[var(--color-ink)]">
-            <tr>
-              <th className="py-3 px-4">Staff Member</th>
-              <th className="py-3 px-4">Department &amp; Title</th>
-              <th className="py-3 px-4">Clearance</th>
-              <th className="py-3 px-4">Contact</th>
-              <th className="py-3 px-4">Biometric Status</th>
-              <th className="py-3 px-4 text-right">Actions</th>
+      {/* Accounts Table */}
+      <div className="overflow-x-auto border border-line bg-surface">
+        <table className="w-full border-collapse text-left text-sm">
+          <thead>
+            <tr className="border-b border-ink bg-platinum/50 text-xs font-semibold uppercase tracking-wider text-ink">
+              <th className="py-3 pl-4 pr-3">Name</th>
+              <th className="px-3 py-3">Email</th>
+              <th className="px-3 py-3">Access Level</th>
+              <th className="px-3 py-3">Status</th>
+              <th className="px-3 py-3">Last Active</th>
+              <th className="py-3 pl-3 pr-4 text-right">Actions</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[var(--color-line)]">
-            {STAFF_MEMBERS.map((stf) => (
-              <tr key={stf.id} className="hover:bg-[var(--color-stone)]/40 transition-colors">
-                <td className="py-3.5 px-4">
-                  <p className="font-sans font-medium text-sm text-[var(--color-ink)]">
-                    {stf.name}
-                  </p>
-                  <p className="font-mono text-[10px] text-[var(--color-slate)]">ID: {stf.id}</p>
-                </td>
-                <td className="py-3.5 px-4 font-mono text-xs">
-                  <span className="text-[var(--color-ink)] block font-medium">{stf.role}</span>
-                  <span className="text-[10px] text-[var(--color-slate)]">{stf.department}</span>
-                </td>
-                <td className="py-3.5 px-4">
-                  <span className="inline-block px-2 py-0.5 border border-[var(--color-ink)] bg-[var(--color-ink)] text-white font-mono text-xs font-bold">
-                    {stf.clearance}
+          <tbody className="divide-y divide-line">
+            {members.map((m) => (
+              <tr key={m.id} className="hover:bg-platinum/30">
+                <td className="py-3 pl-4 pr-3 font-medium text-ink">{m.name}</td>
+                <td className="px-3 py-3 text-xs text-slate">{m.email}</td>
+                <td className="px-3 py-3">
+                  <span
+                    className={`inline-flex items-center gap-1 rounded-full px-2.5 py-0.5 text-[11px] font-medium ${
+                      m.accessLevel === "ADMIN"
+                        ? "bg-ink text-white"
+                        : "bg-platinum text-ink"
+                    }`}
+                  >
+                    {m.accessLevel === "ADMIN" && <ShieldCheck className="h-3 w-3" />}
+                    {m.accessLevel === "ADMIN" ? "Owner / Admin" : "Customer"}
                   </span>
                 </td>
-                <td className="py-3.5 px-4 font-mono text-xs text-[var(--color-slate)]">
-                  {stf.email}
+                <td className="px-3 py-3">
+                  <span
+                    className={`inline-flex items-center gap-1 text-xs font-medium ${
+                      m.status === "ACTIVE" ? "text-ok" : "text-out"
+                    }`}
+                  >
+                    {m.status === "ACTIVE" ? (
+                      <CheckCircle2 className="h-3.5 w-3.5" />
+                    ) : (
+                      <Ban className="h-3.5 w-3.5" />
+                    )}
+                    {m.status === "ACTIVE" ? "Active" : "Disabled"}
+                  </span>
                 </td>
-                <td className="py-3.5 px-4 font-mono text-xs text-emerald-800 flex items-center gap-1.5 pt-4">
-                  <CheckCircle className="size-3.5" />
-                  <span>Hardware Key Active</span>
-                </td>
-                <td className="py-3.5 px-4 text-right font-mono text-xs">
+                <td className="px-3 py-3 text-xs text-slate">{m.lastActive}</td>
+                <td className="py-3 pl-3 pr-4 text-right space-x-2">
                   <button
                     type="button"
-                    onClick={() =>
-                      showToast(`Auditing clearance permissions for ${stf.name}...`, "info")
-                    }
-                    className="text-[var(--color-ink)] underline hover:text-[var(--color-slate)] uppercase tracking-wider text-[11px]"
+                    onClick={() => toggleAccessLevel(m.id)}
+                    className="rounded-[3px] border border-line px-2.5 py-1 text-xs text-ink hover:bg-platinum"
                   >
-                    Audit
+                    Switch to {m.accessLevel === "ADMIN" ? "Customer" : "Admin"}
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => toggleStatus(m.id)}
+                    className="rounded-[3px] border border-line px-2.5 py-1 text-xs text-slate hover:text-ink"
+                  >
+                    {m.status === "ACTIVE" ? "Disable" : "Enable"}
                   </button>
                 </td>
               </tr>

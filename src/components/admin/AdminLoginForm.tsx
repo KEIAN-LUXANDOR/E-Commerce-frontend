@@ -1,48 +1,73 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FormAlert, PasswordField, TextField } from "@/components/auth/FormParts";
-import { login, logout } from "@/lib/api/auth";
-import { setSessionUser } from "@/lib/session";
+import { useRouter } from "next/navigation";
+import { login } from "@/lib/api/auth";
+import { sessionStore } from "@/lib/session";
+import { ApiError } from "@/lib/api/client";
 
-/** Logs in with the normal account endpoint, then only lets ADMIN accounts in. */
-export function AdminLoginForm({ next, denied }: { next: string; denied: boolean }) {
+export function AdminLoginForm() {
   const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | undefined>(denied ? "That account doesn’t have admin access." : undefined);
-  const [busy, setBusy] = useState(false);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [error, setError] = useState<string>("");
+  const [loading, setLoading] = useState<boolean>(false);
 
-  async function submit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    setBusy(true);
-    setError(undefined);
+    setError("");
+    setLoading(true);
+
     try {
-      const user = await login({ email: email.trim(), password });
-      if (user.role !== "ADMIN") {
-        await logout().catch(() => undefined);
-        setSessionUser(null);
-        setError("That account doesn’t have admin access.");
-        setBusy(false);
+      const user = await login({ email, password });
+      const role = user?.role?.toUpperCase();
+      if (role !== "ADMIN" && role !== "OWNER") {
+        setError("Unauthorized role for admin portal.");
+        setLoading(false);
         return;
       }
-      setSessionUser(user);
-      router.replace(next);
-    } catch (err) {
-      setError(err instanceof Error ? err.message : "Couldn’t log in.");
-      setBusy(false);
+      sessionStore.setAuthenticated(user);
+      router.push("/admin");
+      router.refresh();
+    } catch (err: any) {
+      setError(err instanceof ApiError ? (err.detail || "Login failed") : "Login failed");
+      setLoading(false);
     }
   }
 
   return (
-    <form onSubmit={submit} className="mt-6 space-y-4" noValidate>
-      {error && <FormAlert>{error}</FormAlert>}
-      <TextField label="Email" type="email" autoComplete="username" value={email} onChange={(e) => setEmail(e.target.value)} />
-      <PasswordField label="Password" autoComplete="current-password" value={password} onChange={(e) => setPassword(e.target.value)} />
-      <button type="submit" className="btn btn-primary w-full" disabled={busy || !email || !password}>
-        {busy ? "Logging in…" : "Log in"}
+    <form onSubmit={handleSubmit} className="space-y-4 max-w-sm mx-auto p-6 bg-surface border">
+      <h2 className="text-xl font-medium text-ink">Admin Sign In</h2>
+      {error && <div className="text-out text-sm">{error}</div>}
+      <div>
+        <label className="block text-xs uppercase mb-1">Email</label>
+        <input
+          type="email"
+          required
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          className="w-full h-10 border px-3 text-sm"
+        />
+      </div>
+      <div>
+        <label className="block text-xs uppercase sm:mb-1">Password</label>
+        <input
+          type="password"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full h-10 border px-3 text-sm"
+        />
+      </div>
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full h-10 bg-ink text-white text-xs uppercase tracking-widest"
+      >
+        Sign In
       </button>
     </form>
   );
 }
+
+export default AdminLoginForm;

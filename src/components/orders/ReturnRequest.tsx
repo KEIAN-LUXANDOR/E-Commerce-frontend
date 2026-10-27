@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FormAlert } from "@/components/auth/FormParts";
 import { isEnabled } from "@/config/features";
 import { requestReturn } from "@/lib/api/orders";
@@ -22,9 +22,17 @@ export function ReturnRequest({ order, onDone }: { order: Order; onDone: () => v
   const [details, setDetails] = useState("");
   const [error, setError] = useState<string>();
   const [busy, setBusy] = useState(false);
+  const [now, setNow] = useState<number>();
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setNow(Date.now()), 0);
+    return () => window.clearTimeout(timer);
+  }, []);
 
   const deliveredAt = order.shipment?.deliveredAt;
-  const withinWindow = deliveredAt ? Date.now() - new Date(deliveredAt).getTime() <= site.returnDays * 86400000 : false;
+  const withinWindow = deliveredAt && now !== undefined
+    ? now - new Date(deliveredAt).getTime() <= site.returnDays * 86400000
+    : false;
   if (!withinWindow) return null;
 
   if (!isEnabled("returns")) {

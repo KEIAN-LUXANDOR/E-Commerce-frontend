@@ -2,7 +2,7 @@ import { describe, it, expect, vi } from "vitest";
 import React from "react";
 import { renderToString } from "react-dom/server";
 import { DiamondComparison } from "@/components/store/diamond-comparison";
-import { WishlistView } from "@/components/store/wishlist-view";
+import { WishlistView } from "@/components/catalog/WishlistView";
 import AboutPage from "@/app/about/page";
 import FaqPage from "@/app/faq/page";
 import ShapesGuidePage from "@/app/education/shapes/page";
@@ -31,9 +31,9 @@ describe("Stitch Parity Storefront & Admin Components", () => {
     expect(html).toContain("Proportions &amp; Metrology");
   });
 
-  it("renders WishlistView curation vault", () => {
+  it("renders the current wishlist loading state", () => {
     const html = renderToString(<WishlistView />);
-    expect(html).toBeTruthy();
+    expect(html).toContain("Loading saved diamonds");
   });
 
   it("renders About Atelier page", () => {

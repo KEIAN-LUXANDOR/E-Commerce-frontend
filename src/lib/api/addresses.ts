@@ -1,28 +1,36 @@
-import { apiFetch } from "@/lib/api/client";
-import type { DeliveryAddress, DeliveryAddressRequest } from "@/lib/types/address";
+import { apiFetch } from "./client";
+import type { Address } from "@/lib/types/address";
 
-const ADDRESS_PATH = "/account/addresses";
-
-export function getDeliveryAddresses() {
-  return apiFetch<DeliveryAddress[]>(ADDRESS_PATH, { cache: "no-store" });
+export async function getAddresses(): Promise<Address[]> {
+  return apiFetch<Address[]>("/account/addresses");
 }
 
-export function getIndianStates() {
-  return apiFetch<string[]>(`${ADDRESS_PATH}/states`, { cache: "no-store" });
+export async function getStates(): Promise<string[]> {
+  return apiFetch<string[]>("/account/addresses/states");
 }
 
-export function createDeliveryAddress(body: DeliveryAddressRequest) {
-  return apiFetch<DeliveryAddress>(ADDRESS_PATH, { method: "POST", body });
+export async function createAddress(data: Partial<Address>): Promise<Address> {
+  return apiFetch<Address>("/account/addresses", {
+    method: "POST",
+    body: JSON.stringify(data),
+  });
 }
 
-export function updateDeliveryAddress(id: string, body: DeliveryAddressRequest) {
-  return apiFetch<DeliveryAddress>(`${ADDRESS_PATH}/${encodeURIComponent(id)}`, { method: "PUT", body });
+export async function updateAddress(id: string, data: Partial<Address>): Promise<Address> {
+  return apiFetch<Address>(`/account/addresses/${id}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
 }
 
-export function setDefaultDeliveryAddress(id: string) {
-  return apiFetch<DeliveryAddress>(`${ADDRESS_PATH}/${encodeURIComponent(id)}/default`, { method: "PUT" });
+export async function setDefaultAddress(id: string): Promise<Address> {
+  return apiFetch<Address>(`/account/addresses/${id}/default`, {
+    method: "PUT",
+  });
 }
 
-export function deleteDeliveryAddress(id: string) {
-  return apiFetch<void>(`${ADDRESS_PATH}/${encodeURIComponent(id)}`, { method: "DELETE" });
+export async function deleteAddress(id: string): Promise<void> {
+  return apiFetch<void>(`/account/addresses/${id}`, {
+    method: "DELETE",
+  });
 }

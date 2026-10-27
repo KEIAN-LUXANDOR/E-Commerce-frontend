@@ -1,123 +1,118 @@
 "use client";
 
-import { useEffect } from "react";
-import { ApiError } from "@/lib/api/client";
-import { addWishlistProduct, getWishlistProductIds, removeWishlistProduct } from "@/lib/api/wishlist";
-import { createLocalStore, createMemoryStore } from "@/lib/local-store";
-import { useSession } from "@/lib/session";
-import type { Product } from "@/lib/types/product";
+import { useSyncExternalStore } from "react";
+import { createLocalStore } from "@/lib/local-store";
+import { sessionStore } from "@/lib/session";
+import { apiFetch } from "@/lib/api/client";
 
-/**
- * Saved diamonds (the heart button).
- *
- * Logged in → the server wishlist (/account/wishlist). Guest → kept in this browser and moved
- * to the account right after login, so nothing a shopper saved is lost.
- */
+// Safe toast import fallback
+import * as storesMod from "@/lib/stores";
+const toastStoreObj = storesMod as Record<string, any>;
+const showToast = typeof toastStoreObj.showToast === "function" 
+  ? toastStoreObj.showToast 
+  : (msg: string) => console.log(msg);
 
-interface GuestSaved {
-  productId: string;
-  slug: string;
+const localWishlistStore = createLocalStore<string[]>("kl_guest_wishlist_v1", []);
+let serverWishlistIds: string[] = [];
+const wishlistListeners = new Set<() => void>();
+
+function notifyWishlist() {
+  wishlistListeners.forEach((l) => l());
 }
 
-interface WishlistView {
-  mode: "guest" | "server";
-  /** Product ids that are saved */
-  ids: string[];
-}
-
-const guestStore = createLocalStore<GuestSaved[]>("kl.guest-wishlist.v1", []);
-const viewStore = createMemoryStore<WishlistView>({ mode: "guest", ids: [] });
-let mode: "guest" | "server" | "unknown" = "unknown";
-
-export const useWishlist = viewStore.useValue;
-
-/** Slugs saved as a guest (the wishlist page loads these from the catalogue). */
-export const useGuestWishlist = guestStore.useValue;
-
-export function isSaved(productId: string, view: WishlistView): boolean {
-  return view.ids.includes(productId);
-}
-
-/** Saves or un-saves. Returns the new state, or an error message. */
-export async function toggleSaved(product: Product): Promise<{ saved: boolean } | { error: string }> {
-  const saved = viewStore.get().ids.includes(product.id);
-
-  if (mode === "server") {
-    const before = viewStore.get();
-    const ids = saved ? before.ids.filter((id) => id !== product.id) : [product.id, ...before.ids];
-    viewStore.set({ ...before, ids });
-    try {
-      if (saved) await removeWishlistProduct(product.id);
-      else await addWishlistProduct(product.id);
-      return { saved: !saved };
-    } catch (e) {
-      viewStore.set(before);
-      if (e instanceof Error) return { error: e.message };
-      return { error: "Couldn’t update your wishlist. Please try again." };
-    }
-  }
-
-  if (saved) {
-    guestStore.set((list) => list.filter((s) => s.productId !== product.id));
-  } else {
-    guestStore.set((list) => [{ productId: product.id, slug: product.slug }, ...list].slice(0, 100));
-  }
-  viewStore.set({ mode: "guest", ids: guestStore.read().map((s) => s.productId) });
-  return { saved: !saved };
-}
-
-/** Removes a product by id (used on the wishlist page). */
-export async function removeSaved(productId: string): Promise<void> {
-  if (mode === "server") {
-    const before = viewStore.get();
-    viewStore.set({ ...before, ids: before.ids.filter((id) => id !== productId) });
-    await removeWishlistProduct(productId);
-    return;
-  }
-  guestStore.set((list) => list.filter((s) => s.productId !== productId));
-  viewStore.set({ mode: "guest", ids: guestStore.read().map((s) => s.productId) });
-}
-
-async function loadServerIds() {
-  const ids = await getWishlistProductIds();
-  viewStore.set({ mode: "server", ids });
-}
-
-async function switchMode(next: "guest" | "server") {
-  if (mode === next) return;
-  mode = next;
-  if (next === "guest") {
-    viewStore.set({ mode: "guest", ids: guestStore.read().map((s) => s.productId) });
-    return;
-  }
-  // Move what was saved as a guest into the account
-  for (const item of guestStore.read()) {
-    try {
-      await addWishlistProduct(item.productId);
-    } catch (e) {
-      if (e instanceof ApiError && e.status === 401) {
-        mode = "guest";
-        return;
-      }
-      // 404 (no longer on sale) or full: skip it
-    }
-  }
-  guestStore.set([]);
+export async function fetchServerWishlistIds() {
   try {
-    await loadServerIds();
-  } catch {
-    viewStore.set({ mode: "server", ids: [] });
+    const ids = await apiFetch<string[]>("/account/wishlist/ids");
+    serverWishlistIds = ids || [];
+    notifyWishlist();
+    return serverWishlistIds;
+  } catch (e) {
+    return [];
   }
 }
 
-let queue: Promise<void> = Promise.resolve();
+export async function addWishlistProduct(productId: string) {
+  return toggleWishlist(productId, "add");
+}
 
-/** Keeps the wishlist in step with who is logged in. Rendered once in the store layout. */
-export function useWishlistSync() {
-  const session = useSession();
-  useEffect(() => {
-    if (session.status === "loading") return;
-    const next = session.status === "user" ? "server" : "guest";
-    queue = queue.then(() => switchMode(next));
-  }, [session.status]);
+export async function removeWishlistProduct(productId: string) {
+  return toggleWishlist(productId, "remove");
+}
+
+export async function toggleWishlist(productId: string, action?: "add" | "remove") {
+  const session = sessionStore.get();
+  const isAuthenticated = session.status === "authenticated";
+  
+  const currentList = isAuthenticated ? serverWishlistIds : localWishlistStore.read();
+  const isSaved = currentList.includes(productId);
+  
+  const isAdding = action === "add" || (action === undefined && !isSaved);
+  
+  if (isAuthenticated) {
+    try {
+      if (isAdding) {
+        await apiFetch(`/account/wishlist/${productId}`, { method: "PUT" });
+        showToast("Saved to your wishlist");
+      } else {
+        await apiFetch(`/account/wishlist/${productId}`, { method: "DELETE" });
+        showToast("Removed from your wishlist");
+      }
+      await fetchServerWishlistIds();
+    } catch (e: any) {
+      showToast(e.detail || "Could not update wishlist", { tone: "error" });
+    }
+  } else {
+    if (isAdding) {
+      localWishlistStore.set([productId, ...currentList].slice(0, 100));
+      showToast("Saved to your wishlist");
+    } else {
+      localWishlistStore.set(currentList.filter((id: string) => id !== productId));
+      showToast("Removed from your wishlist");
+    }
+  }
+}
+
+export const wishlistStore = {
+  getIds: () => {
+    const session = sessionStore.get();
+    return session.status === "authenticated" ? serverWishlistIds : localWishlistStore.read();
+  },
+  useIds: () => {
+    const session = sessionStore.useSession();
+    const localIds = localWishlistStore.useValue();
+    
+    return useSyncExternalStore(
+      (listener) => {
+        wishlistListeners.add(listener);
+        return () => wishlistListeners.delete(listener);
+      },
+      () => {
+        if (session.status === "authenticated") {
+          return serverWishlistIds;
+        }
+        return localIds;
+      },
+      () => []
+    );
+  },
+  toggle: toggleWishlist,
+  has: (id: string) => {
+    const session = sessionStore.get();
+    const list = session.status === "authenticated" ? serverWishlistIds : localWishlistStore.read();
+    return list.includes(id);
+  }
+};
+
+// Aliases for component usage
+export function useWishlistIds() {
+  return wishlistStore.useIds();
+}
+
+export function useWishlist() {
+  const ids = wishlistStore.useIds();
+  return {
+    ids,
+    toggle: toggleWishlist,
+    has: (id: string) => ids.includes(id),
+  };
 }

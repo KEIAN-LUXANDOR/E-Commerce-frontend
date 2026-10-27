@@ -58,16 +58,15 @@ declare global {
 // ---------------------------------------------------------------------------
 
 function useRazorpayScript(): "idle" | "loading" | "ready" | "error" {
-  const [status, setStatus] = React.useState<"idle" | "loading" | "ready" | "error">("idle");
+  const [status, setStatus] = React.useState<"idle" | "loading" | "ready" | "error">("loading");
 
   React.useEffect(() => {
     // Already loaded
     if (window.Razorpay) {
-      setStatus("ready");
+      queueMicrotask(() => setStatus("ready"));
       return;
     }
 
-    setStatus("loading");
     const script = document.createElement("script");
     script.src = "https://checkout.razorpay.com/v1/checkout.js";
     script.async = true;

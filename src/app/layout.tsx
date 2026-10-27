@@ -1,45 +1,46 @@
-import "@fontsource-variable/cormorant-garamond";
+import type { Metadata } from "next";
 import "@fontsource-variable/jost";
 import "./globals.css";
-
-import type { Metadata, Viewport } from "next";
-import { Suspense } from "react";
-import { CookieNotice } from "@/components/layout/CookieNotice";
-import { Footer } from "@/components/layout/Footer";
-import { Header, HeaderWithPath } from "@/components/layout/Header";
-import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
-import { Toaster } from "@/components/ui/Toaster";
-import { ShopSync } from "@/components/layout/ShopSync";
-import { getStoreCategories } from "@/lib/api/store";
 import { site } from "@/lib/site";
+import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
+import { Header } from "@/components/layout/Header";
+import { Footer } from "@/components/layout/Footer";
+import { MiniCartDrawer } from "@/components/layout/MiniCartDrawer";
+import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
+import { CookieNotice } from "@/components/layout/CookieNotice";
+import { ShopSync } from "@/components/layout/ShopSync";
+import { Toaster } from "@/components/ui/Toaster";
 
 export const metadata: Metadata = {
-  metadataBase: new URL(site.url),
   title: {
-    default: `${site.name} | Certified diamonds`,
+    default: `${site.name} — ${site.tagline}`,
     template: `%s | ${site.name}`,
   },
-  description: "Certified natural and lab-grown diamonds. Insured delivery across India.",
-  openGraph: { siteName: site.name, locale: "en_IN", type: "website" },
+  description: site.description,
 };
 
-export const viewport: Viewport = {
-  themeColor: "#F8FAFC",
-};
-
-export default async function RootLayout({ children }: LayoutProps<"/">) {
-  const categories = await getStoreCategories();
+export default function RootLayout({
+  children,
+}: Readonly<{
+  children: React.ReactNode;
+}>) {
   return (
-    <html lang="en-IN" className="h-full antialiased">
-      <body className="flex min-h-full flex-col">
-        <Suspense fallback={<Header categories={categories} pathname="" />}>
-          <HeaderWithPath categories={categories} />
-        </Suspense>
-        <main id="main" className="flex-1 pb-24">
+    <html lang="en">
+      <body className="min-h-screen flex flex-col bg-paper text-ink font-sans antialiased selection:bg-loupe/15 selection:text-ink">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:bg-ink focus:text-white focus:px-4 focus:py-2 focus:text-xs focus:uppercase focus:tracking-widest"
+        >
+          Skip to content
+        </a>
+        <ShopSync />
+        <AnnouncementBar />
+        <Header />
+        <main id="main" className="flex-1">
           {children}
         </main>
-        <ShopSync />
         <Footer />
+        <MiniCartDrawer />
         <WhatsAppButton />
         <CookieNotice />
         <Toaster />

@@ -4,6 +4,7 @@ import { renderToString } from "react-dom/server";
 import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { MegaMenu } from "@/components/layout/MegaMenu";
 import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
+import { site } from "@/lib/site";
 
 describe("Layout Components - Spec v3", () => {
   describe("AnnouncementBar", () => {
@@ -40,10 +41,16 @@ describe("Layout Components - Spec v3", () => {
   });
 
   describe("WhatsAppButton", () => {
-    it("renders gemologist concierge link", () => {
-      const html = renderToString(<WhatsAppButton />);
-      expect(html).toContain("Gemologist Concierge");
-      expect(html).toContain("https://wa.me/");
+    it("renders the configured gemologist concierge link", () => {
+      const previousNumber = site.whatsapp;
+      site.whatsapp = "919876543210";
+      try {
+        const html = renderToString(<WhatsAppButton />);
+        expect(html).toContain("Gemologist Concierge");
+        expect(html).toContain("https://wa.me/919876543210");
+      } finally {
+        site.whatsapp = previousNumber;
+      }
     });
   });
 });

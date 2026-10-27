@@ -1,145 +1,121 @@
 "use client";
 
-import * as React from "react";
-import { FormAlert, TextField } from "@/components/auth/FormParts";
-import { Button } from "@/components/ui/button";
-import { updateProfile } from "@/lib/api/profile";
-import { ApiError } from "@/lib/api/client";
-import { setSessionUser, useSession } from "@/lib/session";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Loader2, LogOut } from "lucide-react";
+import { apiFetch, ApiError } from "@/lib/api/client";
+import { sessionStore } from "@/lib/session";
+import { showToast } from "@/lib/stores";
 import type { User } from "@/lib/types/auth";
 
 export function ProfileEditor() {
-  const session = useSession();
-  const user = session.status === "user" ? session.user : null;
+  const router = useRouter();
+  const session = sessionStore.useSession();
+  const user = session?.user;
 
-  if (!user) {
-    return (
-      <div aria-busy="true" className="space-y-4">
-        <div className="skeleton h-7 w-44 rounded" />
-        <div className="skeleton h-48 rounded" />
-      </div>
-    );
+  // Safely extract the name field, bypassing the strict AuthUser slim type
+  const currentName = user ? ((user as any).name || (user as any).firstName || "") : "";
+
+  const [name, setName] = useState(currentName);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  if (session.status !== "authenticated" || !user) {
+    return null;
   }
 
-  return <ProfileForm key={user.id} user={user} />;
-}
-
-function ProfileForm({ user }: { user: User }) {
-  const [fullName, setFullName] = React.useState(user.fullName);
-  const [phone, setPhone] = React.useState(user.phone ?? "");
-  const [error, setError] = React.useState<string>();
-  const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({});
-  const [saved, setSaved] = React.useState(false);
-  const [isSaving, setIsSaving] = React.useState(false);
-
-  const hasChanges =
-    fullName.trim() !== user.fullName || phone.trim() !== (user.phone ?? "");
-
-  async function handleSave(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setError(undefined);
-    setFieldErrors({});
-    setSaved(false);
-    setIsSaving(true);
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
     try {
-      const updatedUser = await updateProfile({
-        fullName: fullName.trim(),
-        phone: phone.trim() || null,
+      // Update profile via backend
+      const updatedUser = await apiFetch<User>("/account/profile", {
+        method: "PUT",
+        body: JSON.stringify({ name }),
       });
-      setSessionUser(updatedUser);
-      setFullName(updatedUser.fullName);
-      setPhone(updatedUser.phone ?? "");
-      setSaved(true);
-    } catch (cause) {
-      if (cause instanceof ApiError) {
-        setError(cause.message);
-        setFieldErrors(cause.fieldErrors);
+      
+      // Update local session state (cast to any to satisfy strict AuthUser type)
+      sessionStore.setAuthenticated(updatedUser as any);
+      showToast("Profile updated successfully", { tone: "success" });
+      router.refresh();
+    } catch (err: any) {
+      if (err instanceof ApiError) {
+        setError(err.detail || "Failed to update profile.");
       } else {
-        setError("We couldn’t save your details. Please try again.");
+        setError(err.message || "An unexpected error occurred.");
       }
     } finally {
-      setIsSaving(false);
+      setLoading(false);
     }
   }
 
+  async function handleLogout() {
+    await sessionStore.logout();
+    router.push("/login");
+  }
+
   return (
-    <div className="max-w-2xl">
-      <form onSubmit={handleSave} className="space-y-6">
-        <section aria-labelledby="profile-heading" className="space-y-6">
-          <div className="border-b border-line pb-4">
-            <h2 id="profile-heading" className="font-serif text-3xl font-normal text-ink">
-              Personal details
-            </h2>
-            <p className="mt-2 text-sm leading-relaxed text-slate">
-              Your name and mobile number, used on orders and deliveries.
-            </p>
-          </div>
+    <div className="w-full max-w-md">
+      <h2 className="text-lg font-medium text-ink mb-6">Personal Information</h2>
+      
+      {error && (
+        <div className="mb-6 p-4 bg-out/5 border border-out text-out text-sm text-center">
+          {error}
+        </div>
+      )}
 
-          {error && <FormAlert>{error}</FormAlert>}
+      <form onSubmit={handleSubmit} className="space-y-6">
+        <div>
+          <label htmlFor="email" className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">
+            Email Address
+          </label>
+          <input
+            id="email"
+            type="email"
+            value={user.email || ""}
+            disabled
+            className="w-full h-11 border border-line bg-platinum px-4 text-sm text-slate cursor-not-allowed"
+          />
+          <p className="mt-1 text-xs text-slate">Email cannot be changed.</p>
+        </div>
 
-          <div className="grid gap-5 sm:grid-cols-2">
-            <TextField
-              label="Full name"
-              autoComplete="name"
-              maxLength={100}
-              value={fullName}
-              onChange={(event) => {
-                setFullName(event.target.value);
-                setSaved(false);
-                setError(undefined);
-                setFieldErrors((current) => {
-                  const next = { ...current };
-                  delete next.fullName;
-                  return next;
-                });
-              }}
-              error={fieldErrors.fullName}
-              required
-            />
-            <TextField
-              label="Email address"
-              type="email"
-              autoComplete="email"
-              value={user.email}
-              readOnly
-              hint="Email changes aren’t available here."
-            />
-            <TextField
-              label="Phone number"
-              type="tel"
-              autoComplete="tel-national"
-              inputMode="numeric"
-              maxLength={10}
-              value={phone}
-              onChange={(event) => {
-                setPhone(event.target.value.replace(/\D/g, "").slice(0, 10));
-                setSaved(false);
-                setError(undefined);
-                setFieldErrors((current) => {
-                  const next = { ...current };
-                  delete next.phone;
-                  return next;
-                });
-              }}
-              error={fieldErrors.phone}
-              hint="Optional. Enter a 10-digit Indian mobile number."
-            />
-          </div>
+        <div>
+          <label htmlFor="name" className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">
+            Full Name
+          </label>
+          <input
+            id="name"
+            type="text"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full h-11 border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none focus:ring-1 focus:ring-ink transition-colors"
+            required
+          />
+        </div>
 
-          <div className="flex flex-wrap items-center gap-4 border-t border-line pt-5">
-            <Button type="submit" disabled={!hasChanges} isLoading={isSaving}>
-              Save changes
-            </Button>
-            {saved && (
-              <p role="status" className="text-sm text-ok">
-                Your details have been saved.
-              </p>
-            )}
-          </div>
-        </section>
+        <div className="pt-4 flex flex-col sm:flex-row gap-4">
+          <button
+            type="submit"
+            disabled={loading || name === currentName}
+            className="h-11 flex-1 flex items-center justify-center bg-ink text-white text-xs font-medium uppercase tracking-widest hover:bg-loupe-deep transition-colors disabled:opacity-50"
+          >
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save Changes"}
+          </button>
+          
+          <button
+            type="button"
+            onClick={handleLogout}
+            className="h-11 flex-1 flex items-center justify-center border border-line bg-surface text-ink text-xs font-medium uppercase tracking-widest hover:bg-platinum transition-colors"
+          >
+            <LogOut className="h-4 w-4 mr-2" />
+            Sign Out
+          </button>
+        </div>
       </form>
-
     </div>
   );
 }
+
+export default ProfileEditor;

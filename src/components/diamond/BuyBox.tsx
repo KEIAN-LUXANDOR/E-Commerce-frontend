@@ -1,152 +1,228 @@
+"use client";
+
 import Link from "next/link";
-import { BadgeCheck, CalendarDays, Copy, ExternalLink, MessageCircle, RotateCcw, ShieldCheck, Truck, Zap } from "lucide-react";
+import { Calendar, CheckCircle2, ExternalLink, MessageCircle, ShieldCheck } from "lucide-react";
+import { site, whatsappUrl } from "@/lib/site";
+import type { Product } from "@/lib/types/product";
 import { AddToCartButton } from "@/components/product/AddToCartButton";
-import { CompareToggle } from "@/components/product/CompareToggle";
 import { SaveButton } from "@/components/product/SaveButton";
-import { PincodeCheck } from "@/components/diamond/PincodeCheck";
 import { ShareButton } from "@/components/diamond/ShareButton";
 import { CopyText } from "@/components/diamond/CopyText";
-import { clarityMeaning, colorGroup, cutLabel, originLabel } from "@/lib/catalog/labels";
-import { compareAtPaise, isAvailable, mainVariant, pricePerCaratPaise, shortTitle } from "@/lib/catalog/product";
-import { formatINR } from "@/lib/format";
-import { site, whatsappLink } from "@/lib/site";
-import type { Product } from "@/lib/types/product";
-import { cn } from "@/lib/utils";
+import { PincodeCheck } from "@/components/diamond/PincodeCheck";
 
-/** Right-hand column of the diamond page: what it is, the price, and every way to buy or ask. */
-export function BuyBox({ product }: { product: Product }) {
+interface BuyBoxProps {
+  product: Product;
+}
+
+function formatINR(paise: number): string {
+  return new Intl.NumberFormat("en-IN", {
+    style: "currency",
+    currency: "INR",
+    maximumFractionDigits: 0,
+  }).format(Math.round(paise / 100));
+}
+
+function formatEnumLabel(val?: string | null): string {
+  if (!val) return "—";
+  if (val === "LAB_GROWN") return "Lab-Grown";
+  if (val === "NATURAL") return "Natural";
+  return val
+    .toLowerCase()
+    .split("_")
+    .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+    .join(" ");
+}
+
+export function BuyBox({ product }: BuyBoxProps) {
+  const variant = product.variants?.[0] ?? null;
   const d = product.diamond;
-  const variant = mainVariant(product);
-  const available = isAvailable(product);
-  const was = compareAtPaise(variant);
-  const perCarat = pricePerCaratPaise(product);
-  const title = d ? `${shortTitle(product)} ${originLabel(d.origin)} Diamond` : product.name;
-  const wa = whatsappLink(`Hello Keian Luxandor, I have a question about the ${product.name}.`);
-  const viewingHref = `/contact?type=viewing&diamond=${encodeURIComponent(product.slug)}#visit`;
+  const inStock = variant?.inStock ?? false;
+
+  const perCaratPaise =
+    variant && d && d.carat > 0 ? Math.round(variant.pricePaise / d.carat) : null;
+
+  const waText = `Hello, I have a question about ${product.name}${
+    variant?.sku ? ` (SKU: ${variant.sku})` : ""
+  }.`;
+  const waUrl = whatsappUrl(waText);
+  const returnDays = site.returnDays;
 
   return (
-    <div>
-      <div className="flex flex-wrap items-center gap-2 text-xs font-medium uppercase tracking-[0.08em]">
-        {d && <span className="border border-line bg-stone px-2 py-1">{originLabel(d.origin)}</span>}
-        {d && <span className="border border-line bg-stone px-2 py-1">{d.lab} certified</span>}
-        {d?.quickShip && (
-          <span className="inline-flex items-center gap-1 border border-line bg-stone px-2 py-1">
-            <Zap className="size-3.5" aria-hidden /> Ships fast
-          </span>
+    <div className="space-y-6">
+      {/* Eyebrow & Title */}
+      <div>
+        <p className="eyebrow">
+          {d
+            ? `${formatEnumLabel(d.origin)} · ${d.lab} Certified`
+            : "Certified Loose Diamond"}
+          {variant?.sku ? ` · SKU ${variant.sku}` : ""}
+        </p>
+        <h1 className="mt-2 text-2xl sm:text-3xl font-medium text-ink tracking-tight">
+          {product.name}
+        </h1>
+        {product.description && (
+          <p className="mt-2 text-sm text-slate leading-relaxed">{product.description}</p>
         )}
       </div>
 
-      <h1 className="mt-4 text-4xl leading-tight sm:text-5xl">{title}</h1>
-      {variant && <p className="mt-2 text-sm text-slate">Stock number {variant.sku}</p>}
-
+      {/* Key 4Cs Grid */}
       {d && (
-        <dl className="mt-6 grid grid-cols-2 gap-px border border-line bg-line sm:grid-cols-4">
-          <GradeBox label="Carat" value={d.carat.toFixed(2)} note="Weight" />
-          <GradeBox label="Colour" value={d.color} note={colorGroup(d.color)} />
-          <GradeBox label="Clarity" value={d.clarity} note={clarityMeaning(d.clarity)} />
-          <GradeBox label="Cut" value={cutLabel(d.cut)} note={d.cut ? "Light performance" : "Fancy shape"} />
-        </dl>
+        <div className="grid grid-cols-2 sm:grid-cols-4 border border-line bg-surface divide-y sm:divide-y-0 sm:divide-x divide-line">
+          <div className="p-3.5">
+            <p className="text-xs text-slate">Carat</p>
+            <p className="mt-1 text-lg font-medium tabular-nums text-ink">
+              {d.carat.toFixed(2)} ct
+            </p>
+          </div>
+          <div className="p-3.5">
+            <p className="text-xs text-slate">Colour</p>
+            <p className="mt-1 text-lg font-medium text-ink">{d.color}</p>
+          </div>
+          <div className="p-3.5">
+            <p className="text-xs text-slate">Clarity</p>
+            <p className="mt-1 text-lg font-medium text-ink">{d.clarity}</p>
+          </div>
+          <div className="p-3.5">
+            <p className="text-xs text-slate">{d.cut ? "Cut" : "Polish"}</p>
+            <p className="mt-1 text-lg font-medium text-ink">
+              {formatEnumLabel(d.cut ?? d.polish)}
+            </p>
+          </div>
+        </div>
       )}
 
-      <div className="mt-6 border border-line bg-stone p-5">
-        {variant && (
-          <div className="flex flex-wrap items-baseline gap-x-3 gap-y-1">
-            <p className="font-serif text-4xl tabular-nums">{formatINR(variant.pricePaise)}</p>
-            {was !== null && <p className="text-lg text-slate line-through tabular-nums">{formatINR(was)}</p>}
-            <p className="text-sm text-slate">Includes GST</p>
+      {/* Price Block */}
+      <div className="border-t border-b border-line py-4">
+        {variant ? (
+          <div>
+            <div className="flex items-baseline gap-3">
+              <span className="text-2xl sm:text-3xl font-medium tabular-nums text-ink">
+                {formatINR(variant.pricePaise)}
+              </span>
+              {variant.mrpPaise && variant.mrpPaise > variant.pricePaise && (
+                <span className="text-sm tabular-nums text-slate line-through">
+                  {formatINR(variant.mrpPaise)}
+                </span>
+              )}
+            </div>
+            <p className="mt-1 text-xs text-slate">
+              {perCaratPaise ? `${formatINR(perCaratPaise)} per carat · ` : ""}
+              Final price including GST · Insured shipping included
+            </p>
           </div>
+        ) : (
+          <p className="text-lg font-medium text-out">This diamond has been sold.</p>
         )}
-        {perCarat !== null && <p className="mt-1 text-sm text-slate">{formatINR(perCarat)} per carat</p>}
-        <p className={cn("mt-3 flex items-center gap-2 text-sm", available ? "text-ok" : "text-out")}>
-          <span className={cn("size-2 rounded-full", available ? "bg-ok" : "bg-out")} aria-hidden />
-          {available ? "Available. This is the only one — the exact stone in the report." : "This diamond has been sold."}
-        </p>
 
-        <div className="mt-5 grid gap-2 sm:grid-cols-2">
-          <AddToCartButton product={product} className="w-full" />
-          <AddToCartButton product={product} mode="buy" className="w-full" />
-        </div>
-        <div className="mt-3 flex flex-wrap items-center gap-x-5 gap-y-1">
-          <SaveButton product={product} withLabel />
-          <CompareToggle slug={product.slug} name={title} variant="link" />
-          <ShareButton title={title} />
+        {/* Availability line */}
+        <div className="mt-3 flex items-center gap-2 text-xs">
+          <span
+            className={`h-2 w-2 rounded-full ${inStock ? "bg-ok" : "bg-out"}`}
+            aria-hidden="true"
+          />
+          {inStock ? (
+            <span className="text-ok font-medium">
+              Available · One of a kind: this exact stone
+              {d?.quickShip ? " · Dispatches within 24 hours" : ""}
+            </span>
+          ) : (
+            <span className="text-out font-medium">
+              Sold ·{" "}
+              <Link
+                href={d ? `/diamonds?shape=${d.shape.toLowerCase()}` : "/diamonds"}
+                className="underline hover:text-ink"
+              >
+                See similar diamonds
+              </Link>
+            </span>
+          )}
         </div>
       </div>
 
-      {d?.certificateNumber && (
-        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 border border-line p-4 text-sm">
-          <p className="flex items-center gap-2">
-            <BadgeCheck className="size-5 text-accent-deep" aria-hidden />
-            <span>
-              {d.lab} report <strong className="font-medium">{d.certificateNumber}</strong>
+      {/* Primary & Secondary Actions */}
+      <div className="space-y-3">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="flex-1">
+            <AddToCartButton product={product} />
+          </div>
+          <SaveButton product={product} withLabel />
+          <ShareButton title={product.name} />
+        </div>
+
+        {/* Help & Showroom Visit Cards */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+          <Link
+            href={`/contact?type=VIEWING&product=${encodeURIComponent(product.slug)}`}
+            className="flex items-center gap-2.5 rounded-[3px] border border-line bg-surface px-3.5 py-2.5 text-xs font-medium text-ink hover:border-ink transition-colors"
+          >
+            <Calendar className="h-4 w-4 text-loupe shrink-0" />
+            <span>Book a Showroom Visit</span>
+          </Link>
+          {waUrl && (
+            <a
+              href={waUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex items-center gap-2.5 rounded-[3px] border border-line bg-surface px-3.5 py-2.5 text-xs font-medium text-ink hover:border-ink transition-colors"
+            >
+              <MessageCircle className="h-4 w-4 text-ok shrink-0" />
+              <span>Ask an Expert on WhatsApp</span>
+            </a>
+          )}
+        </div>
+      </div>
+
+      {/* Certificate Box */}
+      {d && (
+        <div className="rounded-[4px] border border-line bg-platinum/40 p-4 space-y-2">
+          <div className="flex items-center justify-between gap-2">
+            <span className="text-xs font-semibold uppercase tracking-wider text-ink">
+              {d.lab} Grading Report
             </span>
-            <CopyText text={d.certificateNumber} label="Copy report number">
-              <Copy className="size-4" aria-hidden />
-            </CopyText>
+            {d.certificateNumber && (
+              <CopyText text={d.certificateNumber} label="Copy certificate number">
+                <span>{d.certificateNumber}</span>
+              </CopyText>
+            )}
+          </div>
+          <p className="text-xs text-slate">
+            {formatEnumLabel(d.shape)} · {d.carat.toFixed(2)} ct · {d.color} colour ·{" "}
+            {d.clarity} clarity · {formatEnumLabel(d.fluorescence)} fluorescence
           </p>
           {d.verifyUrl && (
-            <a href={d.verifyUrl} target="_blank" rel="noopener noreferrer" className="btn-link">
-              Verify on {d.lab} <ExternalLink className="size-4" aria-hidden />
+            <a
+              href={d.verifyUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-loupe hover:underline pt-1"
+            >
+              <span>Verify on {d.lab}</span>
+              <ExternalLink className="h-3.5 w-3.5" />
             </a>
           )}
         </div>
       )}
 
-      <div className="mt-4 grid gap-3 sm:grid-cols-2">
-        <Link href={viewingHref} className="group border border-line p-4 transition-colors hover:border-ink">
-          <p className="flex items-center gap-2 font-medium">
-            <CalendarDays className="size-5 text-accent-deep" aria-hidden /> See it in person
-          </p>
-          <p className="mt-1 text-sm text-slate">Book a private viewing at our {site.address.line2 || site.address.city} showroom, {site.address.city}.</p>
-          <span className="mt-2 inline-block text-sm font-medium underline underline-offset-4 group-hover:text-accent-deep">Book a viewing</span>
-        </Link>
-        {wa ? (
-          <a href={wa} target="_blank" rel="noopener noreferrer" className="group border border-line p-4 transition-colors hover:border-ink">
-            <p className="flex items-center gap-2 font-medium">
-              <MessageCircle className="size-5 text-whatsapp" aria-hidden /> Ask us on WhatsApp
-            </p>
-            <p className="mt-1 text-sm text-slate">Ask for a video, more photos or a second opinion. We reply quickly.</p>
-            <span className="mt-2 inline-block text-sm font-medium underline underline-offset-4 group-hover:text-accent-deep">Start a chat</span>
-          </a>
-        ) : (
-          <Link href={`/contact?type=question&diamond=${encodeURIComponent(product.slug)}`} className="group border border-line p-4 transition-colors hover:border-ink">
-            <p className="flex items-center gap-2 font-medium">
-              <MessageCircle className="size-5 text-accent-deep" aria-hidden /> Ask about this diamond
-            </p>
-            <p className="mt-1 text-sm text-slate">Ask for a video, more photos or a second opinion.</p>
-            <span className="mt-2 inline-block text-sm font-medium underline underline-offset-4 group-hover:text-accent-deep">Send a question</span>
-          </Link>
-        )}
-      </div>
+      {/* Pincode Serviceability Check */}
+      <PincodeCheck />
 
-      <div className="mt-4">
-        <PincodeCheck />
-      </div>
-
-      <ul className="mt-4 grid grid-cols-3 border border-line text-center text-sm">
-        <li className="flex flex-col items-center gap-1 px-2 py-3">
-          <ShieldCheck className="size-5 text-accent-deep" aria-hidden />
-          Checked against its report
+      {/* Trust promises */}
+      <ul className="space-y-2 border-t border-line pt-4 text-xs text-slate">
+        <li className="flex items-center gap-2">
+          <CheckCircle2 className="h-4 w-4 text-ok shrink-0" />
+          <span>Graded by {d?.lab ?? "GIA or IGI"} and checked before dispatch</span>
         </li>
-        <li className="flex flex-col items-center gap-1 border-l border-line px-2 py-3">
-          <Truck className="size-5 text-accent-deep" aria-hidden />
-          Free insured delivery
+        <li className="flex items-center gap-2">
+          <ShieldCheck className="h-4 w-4 text-ok shrink-0" />
+          <span>Insured, tamper-evident delivery across India</span>
         </li>
-        <li className="flex flex-col items-center gap-1 border-l border-line px-2 py-3">
-          <RotateCcw className="size-5 text-accent-deep" aria-hidden />
-          {site.returnDays}-day returns
+        <li className="flex items-center gap-2">
+          <CheckCircle2 className="h-4 w-4 text-ok shrink-0" />
+          <span>{returnDays}-day returns with the original grading certificate</span>
         </li>
       </ul>
     </div>
   );
 }
 
-function GradeBox({ label, value, note }: { label: string; value: string; note: string }) {
-  return (
-    <div className="bg-white p-3">
-      <dt className="text-xs uppercase tracking-[0.08em] text-slate">{label}</dt>
-      <dd className="mt-1 font-serif text-2xl leading-none">{value}</dd>
-      <dd className="mt-1 text-xs text-slate">{note}</dd>
-    </div>
-  );
-}
+export default BuyBox;

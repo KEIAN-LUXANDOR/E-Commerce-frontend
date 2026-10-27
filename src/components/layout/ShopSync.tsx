@@ -1,11 +1,19 @@
 "use client";
 
-import { useCartSync } from "@/lib/shop/cart";
-import { useWishlistSync } from "@/lib/shop/wishlist";
+import { useEffect } from "react";
+import { sessionStore } from "@/lib/session";
+import { fetchServerCart } from "@/lib/shop/cart";
 
-/** Keeps the cart and saved diamonds in step with who is logged in. Renders nothing. */
 export function ShopSync() {
-  useCartSync();
-  useWishlistSync();
+  const session = sessionStore.useSession();
+
+  useEffect(() => {
+    if (session?.status === "authenticated") {
+      fetchServerCart();
+    }
+  }, [session?.status]);
+
   return null;
 }
+
+export default ShopSync;

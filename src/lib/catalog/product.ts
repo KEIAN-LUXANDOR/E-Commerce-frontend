@@ -79,3 +79,21 @@ export function measurementsLine(product: Product): string {
   if (!d || !d.lengthMm || !d.widthMm || !d.depthMm) return "";
   return `${d.lengthMm.toFixed(2)} × ${d.widthMm.toFixed(2)} × ${d.depthMm.toFixed(2)} mm`;
 }
+
+export function primaryVariant(product?: Pick<Product, "variants"> | null): ProductVariant | null {
+  return product?.variants?.[0] ?? null;
+}
+
+export function diamondSubtitle(product?: Pick<Product, "diamond"> | null): string {
+  const d = product?.diamond;
+  if (!d) return "";
+  return [
+    typeof d.carat === "number" ? `${d.carat.toFixed(2)} ct` : null,
+    d.color,
+    d.clarity,
+    d.cut ? String(d.cut).replace(/_/g, " ") : null,
+    d.lab,
+  ]
+    .filter(Boolean)
+    .join(" · ");
+}

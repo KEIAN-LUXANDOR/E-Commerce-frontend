@@ -1,47 +1,59 @@
 "use client";
 
 import { Heart } from "lucide-react";
-import { useState } from "react";
-import { isSaved, toggleSaved, useWishlist } from "@/lib/shop/wishlist";
-import { showToast } from "@/lib/stores";
-import type { Product } from "@/lib/types/product";
+import { useWishlist } from "@/lib/shop/wishlist";
 import { cn } from "@/lib/utils";
 
-/** Heart button. Works for guests too (saved in this browser, moved to the account after login). */
-export function SaveButton({ product, className, withLabel }: { product: Product; className?: string; withLabel?: boolean }) {
-  const view = useWishlist();
-  const saved = isSaved(product.id, view);
-  const [busy, setBusy] = useState(false);
+export interface SaveButtonProps {
+  productId: string;
+  variant?: "icon" | "button";
+  className?: string;
+  product?: any; // To safely accept extra props passed implicitly
+}
 
-  async function onClick(e: React.MouseEvent) {
-    e.preventDefault();
-    e.stopPropagation();
-    setBusy(true);
-    const result = await toggleSaved(product);
-    setBusy(false);
-    if ("error" in result) {
-      showToast(result.error, "error");
-      return;
-    }
-    if (result.saved) showToast("Saved to your wishlist.", "info", { label: "View saved", href: "/wishlist" });
+export function SaveButton({ productId, variant = "icon", className }: SaveButtonProps) {
+  const { has, toggle } = useWishlist();
+  const isSaved = has(productId);
+
+  if (variant === "button") {
+    return (
+      <button
+        type="button"
+        onClick={() => toggle(productId)}
+        className={cn(
+          "flex h-11 items-center justify-center gap-2 rounded-[3px] border px-6 text-xs font-medium uppercase tracking-widest transition-colors",
+          "border-line bg-surface text-ink hover:bg-platinum",
+          className
+        )}
+        aria-pressed={isSaved}
+      >
+        <Heart
+          className={cn("h-4 w-4 transition-colors", isSaved ? "fill-ink text-ink" : "text-ink")}
+        />
+        <span>{isSaved ? "Saved" : "Save"}</span>
+      </button>
+    );
   }
-
-  let label = "Save";
-  if (saved) label = "Saved";
-  const aria = saved ? `Remove ${product.name} from saved diamonds` : `Save ${product.name}`;
 
   return (
     <button
       type="button"
-      onClick={onClick}
-      disabled={busy}
-      aria-pressed={saved}
-      aria-label={aria}
-      title={aria}
-      className={cn("inline-flex items-center gap-2 text-sm text-ink transition-colors hover:text-accent-deep", withLabel ? "min-h-11 px-1" : "grid size-10 place-items-center bg-white/90 hover:bg-white", className)}
+      onClick={(e) => {
+        e.preventDefault(); // Prevents navigating if inside a Link tag
+        toggle(productId);
+      }}
+      className={cn(
+        "flex h-8 w-8 items-center justify-center rounded-full bg-surface/70 hover:bg-surface transition-colors focus:outline-none focus:ring-1 focus:ring-loupe",
+        className
+      )}
+      aria-label={isSaved ? "Remove from wishlist" : "Save to wishlist"}
+      aria-pressed={isSaved}
     >
-      <Heart className={cn("size-5", saved ? "fill-ink" : "")} aria-hidden />
-      {withLabel && <span>{label}</span>}
+      <Heart
+        className={cn("h-4 w-4 transition-colors", isSaved ? "fill-ink text-ink" : "text-ink")}
+      />
     </button>
   );
 }
+
+export default SaveButton;

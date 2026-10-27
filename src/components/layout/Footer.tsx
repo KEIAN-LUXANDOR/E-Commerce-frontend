@@ -1,192 +1,200 @@
-import { cacheLife } from "next/cache";
 import Link from "next/link";
-import { NewsletterForm } from "@/components/layout/NewsletterForm";
+import { ShieldCheck, FileCheck2, Truck, RotateCcw } from "lucide-react";
+import { site } from "@/lib/site";
 import { Logo } from "@/components/layout/Logo";
-import { getStoreCategories } from "@/lib/api/store";
-import { site, whatsappLink } from "@/lib/site";
-import { ShieldCheck, Truck, RotateCcw, Award } from "lucide-react";
+import { NewsletterForm } from "@/components/layout/NewsletterForm";
+import { CurrentYear } from "@/components/layout/CurrentYear";
 
-const HELP_LINKS = [
-  { href: "/contact", label: "Digital Concierge" },
-  { href: "/order-tracking", label: "Track an Insured Order" },
-  { href: "/faq", label: "Questions & Answers" },
-  { href: "/compare", label: "Comparison Matrix" },
-];
-
-const LEARN_LINKS = [
-  { href: "/education", label: "The 4Cs Masterclass" },
-  { href: "/education/reading-a-certificate", label: "Reading a Certificate" },
-  { href: "/education/natural-vs-lab", label: "Natural vs. Lab-Grown" },
-  { href: "/education/shapes", label: "Diamond Shapes Anatomy" },
-  { href: "/about", label: "Atelier Philosophy" },
-  { href: "/shipping", label: "Shipping & Transit Insurance" },
-  { href: "/returns", label: "Returns & Forensic Inspection" },
-];
-
-const LEGAL_LINKS = [
-  { href: "/privacy", label: "Privacy Policy" },
-  { href: "/terms", label: "Terms of Service" },
-];
-
-const FORENSIC_PROMISES = [
-  {
-    icon: Award,
-    title: "GIA & IGI Graded",
-    text: "Every loose diamond is certified with microscopic laser inscription on the girdle.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "10x Loupe Verified",
-    text: "Inspected by our gemologists before dispatch to verify report specs.",
-  },
-  {
-    icon: Truck,
-    title: "100% Insured Transit",
-    text: "Tamper-evident security packaging with armored courier coverage across India.",
-  },
-  {
-    icon: RotateCcw,
-    title: "14-Day Return Guarantee",
-    text: "Return in original condition with intact grading report for a full refund.",
-  },
-];
-
-export async function Footer() {
-  "use cache";
-  cacheLife("hours");
-  const categories = await getStoreCategories();
-  const currentYear = new Date().getFullYear();
-
+export function Footer() {
   return (
-    <footer className="border-t border-[var(--color-line)] bg-white text-[var(--color-ink)]">
-      <div className="page">
-        {/* Forensic Assurance Grid */}
-        <ul className="grid gap-x-8 gap-y-6 border-b border-[var(--color-line)] py-10 sm:grid-cols-2 lg:grid-cols-4">
-          {FORENSIC_PROMISES.map((promise) => {
-            const IconComponent = promise.icon;
-            return (
-              <li key={promise.title} className="group flex items-start gap-3">
-                <div className="grid size-10 shrink-0 place-items-center rounded-full bg-stone border border-[var(--brand-accent)]/50 transition-colors group-hover:bg-[var(--brand-accent)]/10">
-                    <IconComponent className="h-4 w-4 text-[var(--brand-accent-deep)]" aria-hidden="true" />
-                </div>
-                <div>
-                  <p className="font-serif text-base font-medium">{promise.title}</p>
-                  <p className="mt-1 text-xs text-[var(--color-slate)] leading-relaxed">
-                    {promise.text}
-                  </p>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-
-        {/* 5-Column Navigation Grid */}
-        <div className="grid gap-10 py-12 md:grid-cols-2 lg:grid-cols-[1.2fr_1fr_1fr_1fr_1.4fr]">
-          {/* Column 1: Direct Atelier (No showroom) */}
-          <div className="space-y-3">
-            <Logo size="compact" />
-            <p className="text-xs text-[var(--color-slate)] leading-relaxed">
-              Online Certified Loose Diamond Atelier.
-              <br />
-              Insured courier delivery direct to your door nationwide.
-            </p>
-            <div className="pt-2 flex flex-col gap-1 text-xs">
-              <a
-                href={site.phoneHref}
-                className="text-[var(--color-ink)] hover:text-[var(--color-loupe)] font-medium"
-              >
-                {site.phone}
-              </a>
-              <a
-                href={whatsappLink("Hello Keian Luxandor, I would like to inquire about diamonds.")}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-[var(--color-loupe)] hover:underline font-medium"
-              >
-                Direct WhatsApp Advisory
-              </a>
+    <footer className="border-t border-line bg-surface text-ink">
+      {/* Promise Strip */}
+      <div className="border-b border-line bg-platinum/60">
+        <div className="page grid grid-cols-1 gap-6 py-8 sm:grid-cols-2 lg:grid-cols-4">
+          <div className="flex items-start gap-3">
+            <FileCheck2 className="h-5 w-5 shrink-0 text-ink mt-0.5" />
+            <div>
+              <p className="text-sm font-medium text-ink">GIA &amp; IGI Certified</p>
+              <p className="text-xs text-slate mt-0.5">
+                Every loose diamond includes its original grading report.
+              </p>
             </div>
           </div>
+          <div className="flex items-start gap-3">
+            <ShieldCheck className="h-5 w-5 shrink-0 text-ink mt-0.5" />
+            <div>
+              <p className="text-sm font-medium text-ink">Checked Before Dispatch</p>
+              <p className="text-xs text-slate mt-0.5">
+                Laser inscription and grades verified in our Pune showroom.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <Truck className="h-5 w-5 shrink-0 text-ink mt-0.5" />
+            <div>
+              <p className="text-sm font-medium text-ink">Insured Delivery</p>
+              <p className="text-xs text-slate mt-0.5">
+                Sealed, tamper-evident transit insured to your doorstep.
+              </p>
+            </div>
+          </div>
+          <div className="flex items-start gap-3">
+            <RotateCcw className="h-5 w-5 shrink-0 text-ink mt-0.5" />
+            <div>
+              <p className="text-sm font-medium text-ink">{site.returnDays}-Day Returns</p>
+              <p className="text-xs text-slate mt-0.5">
+                Full refund with the original certificate intact.
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
 
-          {/* Column 2: Catalog Collections */}
-          <FooterList
-            title="Diamonds"
-            links={[
-              { href: "/shop/natural-diamonds", label: "Natural Diamonds" },
-              { href: "/shop/lab-grown-diamonds", label: "Lab-Grown Diamonds" },
-              ...categories.slice(0, 4).map((c) => ({
-                href: `/shop/${encodeURIComponent(c.slug)}`,
-                label: c.name,
-              })),
-              { href: "/shop", label: "All Solitaires" },
-            ]}
-          />
-
-          {/* Column 3: Customer Care & Concierge */}
-          <FooterList title="Concierge" links={HELP_LINKS} />
-
-          {/* Column 4: Gemological Education */}
-          <FooterList title="Education" links={LEARN_LINKS} />
-
-          {/* Column 5: Private Dispatch Newsletter */}
-          <div className="space-y-3">
-            <p className="font-serif text-lg font-medium">The Solitaire Dispatch</p>
-            <p className="text-xs text-[var(--color-slate)] leading-relaxed">
-              Receive curated monthly dossiers on newly acquired gemological parcels. Zero promotional spam.
-            </p>
+      {/* Main Footer Columns */}
+      <div className="page grid grid-cols-1 gap-10 py-14 md:grid-cols-2 lg:grid-cols-5">
+        <div className="lg:col-span-2 space-y-4">
+          <Logo />
+          <p className="max-w-sm text-sm text-slate leading-relaxed">
+            {site.description}
+          </p>
+          <div className="text-xs text-slate space-y-1">
+            {site.addressLine && <p>{site.addressLine}</p>}
+            {site.hours && <p>Hours: {site.hours}</p>}
+            {site.phone && (
+              <p>
+                Phone:{" "}
+                <a href={`tel:${site.phone}`} className="text-ink hover:underline">
+                  {site.phone}
+                </a>
+              </p>
+            )}
+            {site.email && (
+              <p>
+                Email:{" "}
+                <a href={`mailto:${site.email}`} className="text-ink hover:underline">
+                  {site.email}
+                </a>
+              </p>
+            )}
+          </div>
+          <div className="pt-2 max-w-sm">
             <NewsletterForm />
           </div>
         </div>
 
-        {/* Legal & Copyright Hairline Bar */}
-        <div className="flex flex-col gap-3 border-t border-[var(--color-line)] py-6 text-xs text-[var(--color-slate)] sm:flex-row sm:items-center sm:justify-between">
-          <p className="flex flex-wrap items-center gap-x-2 gap-y-1">
-            <span>&copy; {currentYear} {site.legalName}. All rights reserved.</span>
-            <span aria-hidden="true" className="text-[var(--brand-accent-deep)]">◆</span>
-            <span className="font-mono text-[10px] uppercase tracking-[0.12em]">Surat Precision Atelier</span>
-          </p>
-          <ul className="flex gap-5">
-            {LEGAL_LINKS.map((legal) => (
-              <li key={legal.href}>
-                <Link
-                  href={legal.href}
-                  className="hover:text-[var(--color-ink)] transition-colors"
-                >
-                  {legal.label}
-                </Link>
-              </li>
-            ))}
+        <div>
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-ink">Shop</h3>
+          <ul className="mt-4 space-y-2.5 text-sm text-slate">
+            <li>
+              <Link href="/diamonds" className="hover:text-ink transition-colors">
+                All Diamonds
+              </Link>
+            </li>
+            <li>
+              <Link href="/diamonds/natural" className="hover:text-ink transition-colors">
+                Natural Diamonds
+              </Link>
+            </li>
+            <li>
+              <Link href="/diamonds/lab-grown" className="hover:text-ink transition-colors">
+                Lab-Grown Diamonds
+              </Link>
+            </li>
+            <li>
+              <Link href="/wishlist" className="hover:text-ink transition-colors">
+                Saved Wishlist
+              </Link>
+            </li>
           </ul>
+        </div>
+
+        <div>
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-ink">Learn</h3>
+          <ul className="mt-4 space-y-2.5 text-sm text-slate">
+            <li>
+              <Link href="/education" className="hover:text-ink transition-colors">
+                Education Hub
+              </Link>
+            </li>
+            <li>
+              <Link href="/education/4cs" className="hover:text-ink transition-colors">
+                The 4Cs Explained
+              </Link>
+            </li>
+            <li>
+              <Link href="/education/natural-vs-lab" className="hover:text-ink transition-colors">
+                Natural vs. Lab-Grown
+              </Link>
+            </li>
+            <li>
+              <Link href="/education/shapes" className="hover:text-ink transition-colors">
+                Diamond Shapes
+              </Link>
+            </li>
+            <li>
+              <Link href="/education/reading-a-certificate" className="hover:text-ink transition-colors">
+                Reading a Certificate
+              </Link>
+            </li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 className="text-xs font-semibold uppercase tracking-wider text-ink">Customer Care</h3>
+          <ul className="mt-4 space-y-2.5 text-sm text-slate">
+            <li>
+              <Link href="/contact" className="hover:text-ink transition-colors">
+                Contact &amp; Showroom Visit
+              </Link>
+            </li>
+            <li>
+              <Link href="/order-tracking" className="hover:text-ink transition-colors">
+                Track an Order
+              </Link>
+            </li>
+            <li>
+              <Link href="/faq" className="hover:text-ink transition-colors">
+                FAQ
+              </Link>
+            </li>
+            <li>
+              <Link href="/shipping" className="hover:text-ink transition-colors">
+                Shipping &amp; Insurance
+              </Link>
+            </li>
+            <li>
+              <Link href="/returns" className="hover:text-ink transition-colors">
+                Returns Policy
+              </Link>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      {/* Bottom Legal Row */}
+      <div className="border-t border-line py-6">
+        <div className="page flex flex-col gap-3 text-xs text-slate sm:flex-row sm:items-center sm:justify-between">
+          <div className="flex flex-wrap items-center gap-x-4 gap-y-1">
+            <span>
+              © <CurrentYear /> {site.legalName || site.name}. All rights reserved.
+            </span>
+            {site.gstin && <span>GSTIN: {site.gstin}</span>}
+          </div>
+          <div className="flex flex-wrap items-center gap-4">
+            <Link href="/privacy" className="hover:text-ink transition-colors">
+              Privacy Policy
+            </Link>
+            <Link href="/terms" className="hover:text-ink transition-colors">
+              Terms of Service
+            </Link>
+            <Link href="/returns" className="hover:text-ink transition-colors">
+              Refunds &amp; Returns
+            </Link>
+          </div>
         </div>
       </div>
     </footer>
   );
 }
 
-function FooterList({
-  title,
-  links,
-}: {
-  title: string;
-  links: { href: string; label: string }[];
-}) {
-  return (
-    <div>
-      <p className="text-xs font-medium uppercase tracking-[0.08em] text-[var(--color-ink)]">
-        {title}
-      </p>
-      <ul className="mt-3.5 space-y-2 text-xs text-[var(--color-slate)]">
-        {links.map((link) => (
-          <li key={link.href}>
-            <Link
-              href={link.href}
-              className="hover:text-[var(--color-ink)] transition-colors"
-            >
-              {link.label}
-            </Link>
-          </li>
-        ))}
-      </ul>
-    </div>
-  );
-}
+export default Footer;

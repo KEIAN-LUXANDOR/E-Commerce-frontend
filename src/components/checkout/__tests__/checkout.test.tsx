@@ -315,7 +315,8 @@ describe("RazorpayBridge", () => {
         onSuccess={vi.fn()}
       />
     );
-    expect(html).toContain("Complete Acquisition");
+    expect(html).toContain("Loading Gateway…");
+    expect(html).toContain('aria-label="Pay ₹9,00,000 securely via Razorpay"');
     expect(html).toContain("Razorpay");
   });
 

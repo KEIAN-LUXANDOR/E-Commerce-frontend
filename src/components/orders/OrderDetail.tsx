@@ -30,8 +30,19 @@ export function OrderDetail({ orderNumber }: { orderNumber: string }) {
   }, [orderNumber]);
 
   useEffect(() => {
-    if (enabled) void load();
-  }, [enabled, load]);
+    if (!enabled) return;
+    let active = true;
+    getOrder(orderNumber)
+      .then((result) => {
+        if (active) setOrder(result);
+      })
+      .catch((e: unknown) => {
+        if (active) setError(e instanceof Error ? e.message : "Couldn’t load this order.");
+      });
+    return () => {
+      active = false;
+    };
+  }, [enabled, orderNumber]);
 
   if (!enabled) return <NotAvailableYet title="Order details are coming soon">Message or call us with your order number for an update.</NotAvailableYet>;
   if (error) return <p className="text-out">{error}</p>;

@@ -1,114 +1,111 @@
 "use client";
 
-import * as React from "react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { showToast } from "@/lib/stores";
-import { Lock, ShieldCheck, ArrowRight, UserCheck } from "lucide-react";
+import { ShieldCheck, Loader2 } from "lucide-react";
+import { login } from "@/lib/api/auth";
+import { sessionStore } from "@/lib/session";
+import { ApiError } from "@/lib/api/client";
+
+function isAdminUser(role?: string | null): boolean {
+  if (!role) return false;
+  const r = role.toUpperCase();
+  return r === "ADMIN" || r === "OWNER";
+}
 
 export default function AdminLoginPage() {
   const router = useRouter();
-  const [staffId, setStaffId] = useState("KL-ST-04");
-  const [passcode, setPasscode] = useState("••••••••");
-  const [clearance, setClearance] = useState("L3");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = (e: React.FormEvent) => {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!staffId.trim()) {
-      showToast("Please enter your staff ID.", "error");
-      return;
-    }
+    setError("");
     setLoading(true);
-    setTimeout(() => {
-      setLoading(false);
-      showToast(`Welcome, Staff ${staffId}. Level ${clearance} clearance activated.`, "info");
+
+    try {
+      // V3 strictly requires a single object for the payload
+      const user = await login({ email, password });
+      
+      // Block customers from accessing the admin panel
+      if (!isAdminUser(user?.role)) {
+        await sessionStore.logout();
+        setError("This account is a Customer account. Use the store login instead, or sign in with an Owner / Admin account.");
+        setLoading(false);
+        return;
+      }
+
+      // V3 strict state update
+      sessionStore.setAuthenticated(user);
+      
       router.push("/admin");
-    }, 600);
-  };
+      router.refresh();
+    } catch (err: any) {
+      if (err instanceof ApiError) {
+        setError(err.detail || "Invalid email or password.");
+      } else {
+        setError(err.message || "An unexpected error occurred.");
+      }
+      setLoading(false);
+    }
+  }
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center p-6 text-[var(--color-ink)]">
-      <div className="max-w-md w-full border border-[var(--color-line)] bg-white p-8 sm:p-10 shadow-none">
-        <div className="text-center mb-8">
-          <div className="mx-auto size-12 border border-[var(--color-line)] bg-[var(--color-stone)] grid place-items-center text-[var(--color-ink)] mb-3">
-            <Lock className="size-5" />
+    <div className="flex min-h-screen items-center justify-center bg-platinum p-4">
+      <div className="w-full max-w-md bg-surface p-8 border border-line shadow-sm">
+        <div className="flex flex-col items-center mb-8">
+          <div className="flex h-12 w-12 items-center justify-center bg-ink text-white mb-4 rounded-full">
+            <ShieldCheck className="h-6 w-6" />
           </div>
-          <span className="text-[10px] font-mono uppercase tracking-[0.16em] text-[var(--color-slate)] block">
-            Institutional Operations Deck
-          </span>
-          <h1 className="font-serif text-2xl font-medium tracking-tight text-[var(--color-ink)] mt-1">
-            Staff Portal Sign In
-          </h1>
-          <p className="text-xs text-[var(--color-slate)] mt-1">
-            Restricted access for certified gemologists, vault custodians, and logistics officers.
-          </p>
+          <h1 className="text-2xl font-medium text-ink">Luxandor Admin</h1>
+          <p className="text-sm text-slate mt-2">Sign in to manage the platform</p>
         </div>
 
-        <form onSubmit={handleLogin} className="space-y-5 font-mono text-xs">
+        {error && (
+          <div className="mb-6 p-4 bg-out/10 border border-out text-out text-sm text-center">
+            {error}
+          </div>
+        )}
+
+        <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-[11px] font-semibold uppercase tracking-wider text-[var(--color-ink)] mb-1.5">
-              Staff Identifier
+            <label className="block text-xs font-medium text-ink uppercase tracking-widest mb-2" htmlFor="email">
+              Email Address
             </label>
             <input
-              type="text"
+              id="email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full h-11 border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none focus:ring-1 focus:ring-ink transition-colors"
               required
-              value={staffId}
-              onChange={(e) => setStaffId(e.target.value)}
-              placeholder="e.g. KL-ST-04"
-              className="w-full h-11 border border-[var(--color-line)] bg-white px-3.5 text-xs font-mono text-[var(--color-ink)] focus:border-[var(--color-loupe)] focus:outline-none"
             />
           </div>
 
           <div>
-            <label className="block text-[11px] font-semibold uppercase tracking-wider text-[var(--color-ink)] mb-1.5">
-              Security Passcode / Hardware Key
+            <label className="block text-xs font-medium text-ink uppercase tracking-widest mb-2" htmlFor="password">
+              Password
             </label>
             <input
+              id="password"
               type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full h-11 border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none focus:ring-1 focus:ring-ink transition-colors"
               required
-              value={passcode}
-              onChange={(e) => setPasscode(e.target.value)}
-              placeholder="••••••••"
-              className="w-full h-11 border border-[var(--color-line)] bg-white px-3.5 text-xs font-mono text-[var(--color-ink)] focus:border-[var(--color-loupe)] focus:outline-none"
             />
-          </div>
-
-          <div>
-            <label className="block text-[11px] font-semibold uppercase tracking-wider text-[var(--color-ink)] mb-1.5">
-              Target Clearance Session
-            </label>
-            <select
-              value={clearance}
-              onChange={(e) => setClearance(e.target.value)}
-              className="w-full h-11 border border-[var(--color-line)] bg-white px-3.5 text-xs font-mono text-[var(--color-ink)] focus:border-[var(--color-loupe)] focus:outline-none"
-            >
-              <option value="L1">L1 · Customer Concierge</option>
-              <option value="L2">L2 · Dispatch Escort</option>
-              <option value="L3">L3 · Certifying Gemologist (Loupe Desk)</option>
-              <option value="L4">L4 · Vault Safe Custodian</option>
-              <option value="L5">L5 · Chief Gemologist &amp; Master Admin</option>
-            </select>
           </div>
 
           <button
             type="submit"
             disabled={loading}
-            className="w-full h-12 flex items-center justify-center gap-2 bg-[var(--color-ink)] text-white text-xs font-mono uppercase tracking-[0.14em] hover:bg-[var(--color-loupe)] transition-colors disabled:opacity-50 mt-2"
+            className="w-full h-11 mt-4 flex items-center justify-center bg-ink text-white text-xs font-medium uppercase tracking-widest hover:bg-loupe-deep transition-colors disabled:opacity-50"
           >
-            {loading ? "Authenticating Session..." : "Authorize Terminal Entry"}
+            {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sign In"}
           </button>
         </form>
-
-        <div className="mt-8 pt-6 border-t border-[var(--color-line)] text-center">
-          <Link
-            href="/"
-            className="text-[11px] font-mono text-[var(--color-slate)] hover:text-[var(--color-ink)] hover:underline inline-flex items-center gap-1"
-          >
-            &larr; Return to Public Diamond Boutique
-          </Link>
-        </div>
       </div>
     </div>
   );

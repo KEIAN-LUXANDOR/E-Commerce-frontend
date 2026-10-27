@@ -1,69 +1,111 @@
 "use client";
 
-import { Check, ShoppingBag } from "lucide-react";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { mainVariant } from "@/lib/catalog/product";
-import { addToCart, isInCart, useCart } from "@/lib/shop/cart";
-import { setMiniCartOpen, showToast } from "@/lib/stores";
+import { Check, ShoppingBag, Loader2 } from "lucide-react";
+import { primaryVariant } from "@/lib/catalog/product";
+import { addToCart, useCart } from "@/lib/shop/cart";
+import * as storesMod from "@/lib/stores";
 import type { Product } from "@/lib/types/product";
 import { cn } from "@/lib/utils";
 
-/**
- * "Add to cart" (and "Buy now", which adds then goes straight to the cart).
- * Each diamond is one of a kind, so once it's in the cart the button says so.
- */
-export function AddToCartButton({ product, mode = "add", className, size = "md" }: { product: Product; mode?: "add" | "buy"; className?: string; size?: "sm" | "md" }) {
-  const router = useRouter();
-  const cart = useCart();
-  const variant = mainVariant(product);
-  const inCart = isInCart(variant?.id, cart);
-  const soldOut = !variant || !variant.inStock;
-  const [busy, setBusy] = useState(false);
+interface AddToCartButtonProps {
+  product: Product;
+  compact?: boolean;
+}
 
-  async function onClick(e: React.MouseEvent) {
-    e.preventDefault();
-    e.stopPropagation();
+export function AddToCartButton({ product, compact = false }: AddToCartButtonProps) {
+  const [pending, setPending] = useState(false);
+  const cart = useCart();
+  const variant = primaryVariant(product);
+  
+  // Check if the current variant is in the cart
+  const inCart = variant 
+    ? cart?.items?.some((item: any) => item.variantId === variant.id) 
+    : false;
+
+  async function handleClick() {
+    if (!variant || !variant.inStock) return;
+
+    // Safely get the mini cart store reference
+    const miniCart = (storesMod as any).miniCartOpenStore ?? (storesMod as any).miniCartStore;
+    const openMiniCart = () => {
+      if (typeof miniCart?.open === "function") miniCart.open();
+      else if (typeof miniCart?.set === "function") miniCart.set(true);
+      else if (typeof (storesMod as any).setMiniCartOpen === "function") {
+        (storesMod as any).setMiniCartOpen(true);
+      }
+    };
+
     if (inCart) {
-      if (mode === "buy") router.push("/cart");
-      else setMiniCartOpen(true);
+      openMiniCart();
       return;
     }
-    setBusy(true);
-    const result = await addToCart(product);
-    setBusy(false);
-    if (!result.ok) {
-      showToast(result.message, "error");
-      return;
+
+    setPending(true);
+    try {
+      await addToCart(product);
+      openMiniCart();
+    } finally {
+      setPending(false);
     }
-    if (mode === "buy") {
-      router.push("/cart");
-      return;
-    }
-    setMiniCartOpen(true);
   }
 
-  const base = mode === "buy" ? "btn btn-secondary" : "btn btn-primary";
-  const sizing = size === "sm" ? "min-h-10 px-3 text-xs" : "";
+  if (!variant || !variant.inStock) {
+    return null; // Sold-out logic is typically handled at the parent level (e.g., BuyBox/ProductCard)
+  }
 
-  if (soldOut) {
+  if (compact) {
     return (
-      <button type="button" disabled className={cn("btn btn-secondary", sizing, className)}>
-        Sold
+      <button
+        onClick={handleClick}
+        disabled={pending}
+        className={cn(
+          "flex h-9 w-9 shrink-0 items-center justify-center rounded-[3px] border transition-colors",
+          inCart 
+            ? "border-line bg-surface text-ink hover:bg-platinum" 
+            : "border-transparent bg-ink text-white hover:bg-loupe-deep",
+          pending && "opacity-50 cursor-not-allowed"
+        )}
+        aria-label={inCart ? "In your cart" : "Add to cart"}
+      >
+        {pending ? (
+          <Loader2 className="h-4 w-4 animate-spin" />
+        ) : inCart ? (
+          <Check className="h-4 w-4" />
+        ) : (
+          <ShoppingBag className="h-4 w-4" />
+        )}
       </button>
     );
   }
 
-  let label = "Add to cart";
-  if (mode === "buy") label = "Buy now";
-  if (inCart && mode === "add") label = "In your cart";
-  if (busy) label = "Adding…";
-
   return (
-    <button type="button" onClick={onClick} disabled={busy} className={cn(base, sizing, className)}>
-      {mode === "add" && inCart && <Check className="size-4" aria-hidden />}
-      {mode === "add" && !inCart && <ShoppingBag className="size-4" aria-hidden />}
-      {label}
+    <button
+      onClick={handleClick}
+      disabled={pending}
+      className={cn(
+        "flex h-11 w-full items-center justify-center gap-2 rounded-[3px] border px-6 text-xs font-medium uppercase tracking-widest transition-colors",
+        inCart
+          ? "border-line bg-surface text-ink hover:bg-platinum"
+          : "border-transparent bg-ink text-white hover:bg-loupe-deep",
+        pending && "opacity-50 cursor-not-allowed"
+      )}
+    >
+      {pending ? (
+        <>
+          <Loader2 className="h-4 w-4 animate-spin" />
+          <span>Adding...</span>
+        </>
+      ) : inCart ? (
+        <>
+          <Check className="h-4 w-4" />
+          <span>In Your Cart</span>
+        </>
+      ) : (
+        <span>Add to Cart</span>
+      )}
     </button>
   );
 }
+
+export default AddToCartButton;

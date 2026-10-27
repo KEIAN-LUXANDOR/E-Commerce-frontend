@@ -1,33 +1,28 @@
 "use client";
 
-import { User } from "lucide-react";
 import Link from "next/link";
-import { useSession } from "@/lib/session";
+import { User } from "lucide-react";
+import { sessionStore } from "@/lib/session";
 
-function getAccountLabel(session: ReturnType<typeof useSession>): string {
-  if (session.status === "user") {
-    return session.user.fullName.split(" ")[0];
-  }
-  if (session.status === "guest") {
-    return "Log in";
-  }
-  return "Account";
-}
-
-/** Header link: "Log in" when signed out, the customer's first name when signed in. */
 export function AccountLink() {
-  const session = useSession();
-  const signedIn = session.status === "user";
-  const label = getAccountLabel(session);
+  const session = sessionStore.useSession();
+  const isAuthenticated = session?.status === "authenticated";
+  
+  // Safely extract the user's first name if logged in
+  const name = session?.user?.fullName?.split(" ")[0] || "Account";
 
   return (
     <Link
-      href={signedIn ? "/account" : "/login"}
-      className="inline-flex min-h-10 items-center gap-1.5 rounded-[3px] px-2 text-sm hover:text-loupe"
-      aria-label={signedIn ? `Your account, ${session.user.fullName}` : undefined}
+      href={isAuthenticated ? "/account" : "/login"}
+      aria-label={isAuthenticated ? "My Account" : "Log in"}
+      className="relative inline-flex h-10 w-10 xl:w-auto xl:px-3 items-center justify-center gap-2 text-ink hover:bg-platinum transition-colors rounded-[3px]"
     >
-      <User className="size-4" aria-hidden />
-      <span className="max-w-28 truncate">{label}</span>
+      <User className="h-5 w-5" />
+      <span className="hidden xl:inline-block text-xs font-medium">
+        {isAuthenticated ? name : "Log in"}
+      </span>
     </Link>
   );
 }
+
+export default AccountLink;

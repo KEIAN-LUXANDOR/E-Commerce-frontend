@@ -1,150 +1,148 @@
 "use client";
 
-import * as React from "react";
-import Image from "next/image";
 import Link from "next/link";
-import { DiamondArt } from "@/components/art/DiamondArt";
-import { Dialog } from "@/components/ui/dialog";
-import { Price } from "@/components/ui/Price";
-import { Button } from "@/components/ui/button";
-import { removeFromCart, useCart } from "@/lib/shop/cart";
-import { setMiniCartOpen, useMiniCartOpen } from "@/lib/stores";
-import { ShieldCheck, ArrowRight, ShoppingBag } from "lucide-react";
+import { X, ShoppingBag } from "lucide-react";
+import { useCart, removeFromCart } from "@/lib/shop/cart";
+import { formatINR } from "@/lib/format";
+import { ProductImage } from "@/components/product/ProductImage";
 
-/**
- * Slide-in quick cart drawer from the header.
- * Allows customers to inspect their selected diamonds before moving to checkout.
- */
+import * as storesMod from "@/lib/stores";
+
 export function MiniCartDrawer() {
-  const isOpen = useMiniCartOpen();
+  const miniCartStoreObj = (storesMod as any).miniCartOpenStore ?? (storesMod as any).miniCartStore;
+  const isOpenHook = miniCartStoreObj?.useValue ?? (() => false);
+  const isOpen = typeof isOpenHook === "function" ? isOpenHook() : false;
+
   const cart = useCart();
-  const cartItems = cart.lines;
-  const handleClose = () => setMiniCartOpen(false);
+  const items = cart?.items || [];
+  const itemCount = cart?.itemCount || 0;
+  const subtotal = cart?.subtotalPaise || 0;
 
-  const itemCount = cart.itemCount;
-  const isCartEmpty = itemCount === 0;
-
-  let titleText = "Your Diamond Order";
-  if (!isCartEmpty) {
-    titleText = `Your Diamond Order (${itemCount})`;
+  function handleClose() {
+    if (typeof miniCartStoreObj?.close === "function") {
+      miniCartStoreObj.close();
+    } else if (typeof miniCartStoreObj?.set === "function") {
+      miniCartStoreObj.set(false);
+    } else if (typeof (storesMod as any).setMiniCartOpen === "function") {
+      (storesMod as any).setMiniCartOpen(false);
+    }
   }
 
-  // Footer action rendered when cart has items
-  let drawerFooter: React.ReactNode = undefined;
-  if (!isCartEmpty) {
-    drawerFooter = (
-      <div className="space-y-3">
-        <div className="flex items-center gap-1.5 text-xs text-[var(--color-slate)]">
-          <ShieldCheck className="h-4 w-4 text-[var(--color-ok)] shrink-0" aria-hidden="true" />
-          <span>All diamonds reserved with insured delivery coverage.</span>
-        </div>
-        <Link href="/cart" onClick={handleClose} className="block">
-          <Button variant="primary" size="lg" className="w-full flex items-center justify-between">
-            <span>Review Order &amp; Checkout</span>
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </Button>
-        </Link>
-      </div>
-    );
-  }
+  if (!isOpen) return null;
 
   return (
-    <Dialog
-      open={isOpen}
-      onClose={handleClose}
-      title={titleText}
-      side="right"
-      footer={drawerFooter}
-    >
-      {isCartEmpty ? (
-        <div className="py-16 text-center space-y-4">
-          <div className="mx-auto grid size-12 place-items-center bg-[var(--color-stone)] border border-[var(--color-line)] text-[var(--color-slate)]">
-            <ShoppingBag className="h-6 w-6" aria-hidden="true" />
-          </div>
-          <div>
-            <p className="font-serif text-xl text-[var(--color-ink)]">Your Vault is Empty</p>
-            <p className="mt-1 text-xs text-[var(--color-slate)] max-w-xs mx-auto leading-relaxed">
-              Every loose diamond at Keian Luxandor is laser-inscribed and certified. Begin by exploring our curated parcels.
-            </p>
-          </div>
-          <div className="pt-2">
-            <Link href="/shop" onClick={handleClose}>
-              <Button variant="primary" size="md">
-                Browse Loose Diamonds
-              </Button>
-            </Link>
+    <div className="fixed inset-0 z-50 overflow-hidden" role="dialog" aria-modal="true">
+      <div 
+        className="absolute inset-0 bg-ink/40 transition-opacity" 
+        onClick={handleClose} 
+      />
+      <div className="absolute inset-y-0 right-0 flex max-w-full">
+        <div className="w-screen max-w-md transform bg-surface shadow-2xl transition-transform">
+          <div className="flex h-full flex-col">
+            <div className="flex items-center justify-between border-b border-line px-4 py-4 sm:px-6">
+              <h2 className="text-lg font-medium text-ink flex items-center gap-2">
+                <ShoppingBag className="h-5 w-5" />
+                Cart ({itemCount})
+              </h2>
+              <button
+                type="button"
+                className="text-slate hover:text-ink transition-colors"
+                onClick={handleClose}
+              >
+                <X className="h-6 w-6" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-y-auto px-4 py-6 sm:px-6">
+              {items.length === 0 ? (
+                <div className="flex flex-col items-center justify-center h-full text-center space-y-4">
+                  <div className="h-16 w-16 rounded-full bg-platinum flex items-center justify-center text-slate">
+                    <ShoppingBag className="h-8 w-8" />
+                  </div>
+                  <p className="text-ink font-medium">Your cart is empty</p>
+                  <button
+                    onClick={handleClose}
+                    className="text-xs font-medium uppercase tracking-widest text-loupe hover:underline"
+                  >
+                    Continue Shopping
+                  </button>
+                </div>
+              ) : (
+                <ul className="divide-y divide-line">
+                  {items.map((item: any) => {
+                    const p = item.product;
+                    if (!p) return null;
+                    const itemPrice = item.pricePaise ?? item.unitPricePaise ?? p.variants?.[0]?.pricePaise;
+
+                    return (
+                      <li key={item.variantId} className="flex py-6">
+                        <div className="h-24 w-24 flex-shrink-0 overflow-hidden border border-line bg-platinum relative">
+                          {/* FIX: sizes prop added here */}
+                          <ProductImage product={p} sizes="96px" className="object-contain" />
+                        </div>
+                        <div className="ml-4 flex flex-1 flex-col">
+                          <div>
+                            <div className="flex justify-between text-sm font-medium text-ink">
+                              <h3>
+                                <Link href={`/diamond/${p.slug}`} onClick={handleClose} className="hover:underline">
+                                  {p.name}
+                                </Link>
+                              </h3>
+                              <p className="ml-4 tabular-nums">{itemPrice ? formatINR(itemPrice) : "—"}</p>
+                            </div>
+                            {p.diamond && (
+                              <p className="mt-1 text-xs text-slate">
+                                {p.diamond.color} · {p.diamond.clarity} · {p.diamond.lab}
+                              </p>
+                            )}
+                          </div>
+                          <div className="flex flex-1 items-end justify-between text-sm">
+                            <button
+                              type="button"
+                              onClick={() => removeFromCart(item.variantId)}
+                              className="text-xs font-medium text-slate hover:text-out"
+                            >
+                              Remove
+                            </button>
+                          </div>
+                        </div>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+
+            {items.length > 0 && (
+              <div className="border-t border-line px-4 py-6 sm:px-6 bg-surface">
+                <div className="flex justify-between text-base font-medium text-ink mb-4">
+                  <p>Subtotal</p>
+                  <p className="tabular-nums">{formatINR(subtotal)}</p>
+                </div>
+                <p className="mt-0.5 text-xs text-slate mb-6">
+                  Shipping and taxes calculated at checkout.
+                </p>
+                <div className="space-y-3">
+                  <Link
+                    href="/cart"
+                    onClick={handleClose}
+                    className="flex h-11 items-center justify-center border border-ink px-6 text-xs font-medium uppercase tracking-widest text-ink hover:bg-platinum transition-colors"
+                  >
+                    View Cart
+                  </Link>
+                  <Link
+                    href="/checkout"
+                    onClick={handleClose}
+                    className="flex h-11 items-center justify-center bg-ink px-6 text-xs font-medium uppercase tracking-widest text-white hover:bg-loupe-deep transition-colors"
+                  >
+                    Checkout Securely
+                  </Link>
+                </div>
+              </div>
+            )}
           </div>
         </div>
-      ) : (
-        <ul className="divide-y divide-[var(--color-line)]">
-          {cartItems.map((item) => {
-            let mediaContent = (
-              <DiamondArt
-                shape={item.product.diamond?.shape ?? "ROUND"}
-                title={item.product.name}
-                className="h-full w-full"
-              />
-            );
-
-            const imageUrl = item.product.images[0]?.url;
-            if (imageUrl) {
-              mediaContent = (
-                <Image
-                  src={imageUrl}
-                  alt={item.product.images[0]?.altText ?? item.product.name}
-                  fill
-                  unoptimized
-                  sizes="80px"
-                  className="object-contain p-1.5"
-                />
-              );
-            }
-
-            return (
-              <li key={item.variantId} className="flex gap-4 py-4 first:pt-0">
-                <Link
-                  href={`/diamond/${item.product.slug}`}
-                  onClick={handleClose}
-                  className="relative size-20 shrink-0 border border-[var(--color-line)] bg-[var(--color-stone)] p-1.5 hover:border-[var(--color-ink)] transition-colors"
-                >
-                  {mediaContent}
-                </Link>
-
-                <div className="min-w-0 flex-1 space-y-1">
-                  <Link
-                    href={`/diamond/${item.product.slug}`}
-                    onClick={handleClose}
-                    className="font-medium text-xs text-[var(--color-ink)] hover:text-[var(--color-loupe)] block truncate"
-                  >
-                    {item.product.name}
-                  </Link>
-
-                  {item.product.diamond && (
-                    <p className="text-[11px] text-[var(--color-slate)]">
-                      {item.product.diamond.carat.toFixed(2)} ct · {item.product.diamond.shape} · {item.product.diamond.lab}
-                    </p>
-                  )}
-
-                  <div className="pt-2 flex items-center justify-between">
-                    {item.pricePaise !== null ? (
-                      <Price paise={item.pricePaise} className="font-mono text-xs font-semibold text-[var(--color-ink)]" />
-                    ) : (
-                      <span className="text-xs text-[var(--color-out)]">Unavailable</span>
-                    )}
-                    <button
-                      type="button"
-                      onClick={() => void removeFromCart(item.variantId)}
-                      className="text-[11px] text-[var(--color-slate)] hover:text-[var(--color-out)] hover:underline uppercase tracking-[0.04em]"
-                    >
-                      Remove
-                    </button>
-                  </div>
-                </div>
-              </li>
-            );
-          })}
-        </ul>
-      )}
-    </Dialog>
+      </div>
+    </div>
   );
 }
