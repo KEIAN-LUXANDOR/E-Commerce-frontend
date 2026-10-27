@@ -1,254 +1,153 @@
 "use client";
 
-/**
- * Privilege Code & Promo Manager
- * Route: /admin/coupons
- *
- * Manage high-value client privilege discounts:
- *   - Code string, discount rate percentage, minimum order threshold
- *   - Usage quota and expiration date
- *   - Active / Revoked status
- *
- * Human-Centric Rules:
- *   - Zero nested ternaries.
- */
+import { useState, type FormEvent } from "react";
+import { AdminHeader, AdminTable, ErrorNote, Loading, NotConnected, useAdminQuery } from "@/components/admin/AdminBits";
+import { isEnabled } from "@/config/features";
+import { createCoupon, deleteCoupon, listCoupons, updateCoupon } from "@/lib/api/admin";
+import type { Coupon, CouponRequest, CouponType } from "@/lib/types/admin";
+import { formatINR } from "@/lib/format";
 
-import * as React from "react";
-import { Tag, Plus, CheckCircle, Trash2, X } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { showToast } from "@/lib/stores";
-
-interface Coupon {
-  code: string;
-  ratePercent: number;
-  minOrderINR: number;
-  timesUsed: number;
-  maxUses: number;
-  expiresOn: string;
-  isActive: boolean;
-}
-
-const INITIAL_COUPONS: Coupon[] = [
-  {
-    code: "KEIAN10",
-    ratePercent: 10,
-    minOrderINR: 500000,
-    timesUsed: 14,
-    maxUses: 50,
-    expiresOn: "2026-12-31",
-    isActive: true,
-  },
-  {
-    code: "VIP15",
-    ratePercent: 15,
-    minOrderINR: 1000000,
-    timesUsed: 6,
-    maxUses: 20,
-    expiresOn: "2026-11-30",
-    isActive: true,
-  },
-  {
-    code: "WELCOME5",
-    ratePercent: 5,
-    minOrderINR: 200000,
-    timesUsed: 42,
-    maxUses: 100,
-    expiresOn: "2027-01-31",
-    isActive: true,
-  },
-];
+const EMPTY: CouponRequest = {
+  code: "",
+  description: "",
+  type: "PERCENT",
+  value: 10,
+  minOrderPaise: 0,
+  maxDiscountPaise: null,
+  startsAt: "",
+  endsAt: null,
+  usageLimit: null,
+  active: true,
+};
 
 export default function AdminCouponsPage() {
-  const [coupons, setCoupons] = React.useState<Coupon[]>(INITIAL_COUPONS);
-  const [showAddModal, setShowAddModal] = React.useState(false);
+  const enabled = isEnabled("adminCoupons");
+  const coupons = useAdminQuery("adminCoupons", listCoupons, []);
+  const [form, setForm] = useState(EMPTY);
+  const [valueInput, setValueInput] = useState("10");
+  const [minOrder, setMinOrder] = useState("0");
+  const [discountCap, setDiscountCap] = useState("");
+  const [usageLimit, setUsageLimit] = useState("");
+  const [showForm, setShowForm] = useState(false);
+  const [busy, setBusy] = useState(false);
+  const [error, setError] = useState<string>();
 
-  const [code, setCode] = React.useState("");
-  const [percent, setPercent] = React.useState("10");
-  const [minOrder, setMinOrder] = React.useState("500000");
-
-  function handleCreate(e: React.FormEvent) {
-    e.preventDefault();
-    if (!code.trim()) return;
-
-    const newCoupon: Coupon = {
-      code: code.trim().toUpperCase(),
-      ratePercent: Number(percent),
-      minOrderINR: Number(minOrder),
-      timesUsed: 0,
-      maxUses: 50,
-      expiresOn: "2026-12-31",
-      isActive: true,
-    };
-
-    setCoupons([newCoupon, ...coupons]);
-    setShowAddModal(false);
-    setCode("");
-    showToast(`Privilege code ${newCoupon.code} created.`);
+  function setType(type: CouponType) {
+    setForm((current) => ({ ...current, type }));
+    setValueInput(type === "PERCENT" ? "10" : "");
   }
 
-  function handleToggle(codeToToggle: string) {
-    setCoupons(
-      coupons.map((c) =>
-        c.code === codeToToggle ? { ...c, isActive: !c.isActive } : c
-      )
-    );
-    showToast(`Privilege code ${codeToToggle} updated.`);
+  function requestBody(): CouponRequest {
+    const enteredValue = Number(valueInput);
+    return {
+      ...form,
+      code: form.code.trim().toUpperCase(),
+      description: form.description.trim(),
+      value: form.type === "PERCENT" ? enteredValue : Math.round(enteredValue * 100),
+      minOrderPaise: Math.round(Number(minOrder) * 100),
+      maxDiscountPaise: form.type === "PERCENT" && discountCap ? Math.round(Number(discountCap) * 100) : null,
+      startsAt: new Date(form.startsAt).toISOString(),
+      endsAt: form.endsAt ? new Date(form.endsAt).toISOString() : null,
+      usageLimit: usageLimit ? Number(usageLimit) : null,
+    };
+  }
+
+  async function create(event: FormEvent<HTMLFormElement>) {
+    event.preventDefault();
+    setBusy(true);
+    setError(undefined);
+    try {
+      await createCoupon(requestBody());
+      setForm(EMPTY);
+      setValueInput("10");
+      setMinOrder("0");
+      setDiscountCap("");
+      setUsageLimit("");
+      setShowForm(false);
+      coupons.reload();
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Could not create coupon.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function toggle(coupon: Coupon) {
+    setBusy(true);
+    setError(undefined);
+    try {
+      const body: CouponRequest = {
+        code: coupon.code,
+        description: coupon.description,
+        type: coupon.type,
+        value: coupon.value,
+        minOrderPaise: coupon.minOrderPaise,
+        maxDiscountPaise: coupon.maxDiscountPaise,
+        startsAt: coupon.startsAt,
+        endsAt: coupon.endsAt,
+        usageLimit: coupon.usageLimit,
+        active: !coupon.active,
+      };
+      await updateCoupon(coupon.id, body);
+      coupons.reload();
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Could not update coupon.");
+    } finally {
+      setBusy(false);
+    }
+  }
+
+  async function remove(coupon: Coupon) {
+    if (!window.confirm(`Delete coupon ${coupon.code}?`)) return;
+    setBusy(true);
+    setError(undefined);
+    try {
+      await deleteCoupon(coupon.id);
+      coupons.reload();
+    } catch (cause) {
+      setError(cause instanceof Error ? cause.message : "Could not delete coupon.");
+    } finally {
+      setBusy(false);
+    }
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-[var(--color-line)] pb-4">
-        <div>
-          <h1 className="font-serif text-3xl text-[var(--color-ink)]">
-            Privilege Codes &amp; Concessions
-          </h1>
-          <p className="font-mono text-xs text-[var(--color-slate)] mt-1">
-            Private client promotional tokens applied during Step 3 of checkout
-          </p>
-        </div>
-        <Button
-          onClick={() => setShowAddModal(true)}
-          className="flex items-center gap-2 font-mono text-xs uppercase tracking-wider"
-        >
-          <Plus className="size-4" />
-          <span>New Privilege Code</span>
-        </Button>
-      </div>
-
-      <div className="border border-[var(--color-line)] bg-white overflow-x-auto">
-        <table className="w-full text-left font-sans text-xs">
-          <thead className="bg-[var(--color-stone)] border-b border-[var(--color-line)] font-mono text-[10px] uppercase tracking-[0.08em] text-[var(--color-ink)]">
-            <tr>
-              <th className="py-3 px-4">Privilege Code</th>
-              <th className="py-3 px-4">Discount Rate</th>
-              <th className="py-3 px-4">Min. Acquisition</th>
-              <th className="py-3 px-4">Redemption Quota</th>
-              <th className="py-3 px-4">Expiration</th>
-              <th className="py-3 px-4">Status</th>
-              <th className="py-3 px-4 text-right">Actions</th>
+    <div className="space-y-5">
+      <AdminHeader title="Coupons" description="Create and manage checkout discount codes." action={<button type="button" disabled={!enabled} onClick={() => setShowForm((open) => !open)} className="btn btn-primary disabled:opacity-50">{showForm ? "Close form" : "New coupon"}</button>} />
+      {!enabled && <NotConnected feature="adminCoupons" endpoints={["GET/POST /api/v1/admin/coupons"]} />}
+      {error && <ErrorNote message={error} />}
+      {coupons.error && <ErrorNote message={coupons.error} />}
+      {showForm && enabled && (
+        <form onSubmit={create} className="grid gap-4 border border-line bg-white p-5 sm:grid-cols-2">
+          <label className="space-y-1 text-sm">Code<input required minLength={3} maxLength={20} value={form.code} onChange={(e) => setForm((current) => ({ ...current, code: e.target.value.toUpperCase() }))} className="field" /></label>
+          <label className="space-y-1 text-sm">Description<input required value={form.description} onChange={(e) => setForm((current) => ({ ...current, description: e.target.value }))} className="field" /></label>
+          <label className="space-y-1 text-sm">Discount type<select value={form.type} onChange={(e) => setType(e.target.value as CouponType)} className="field"><option value="PERCENT">Percent</option><option value="FLAT">Fixed amount</option></select></label>
+          <label className="space-y-1 text-sm">{form.type === "PERCENT" ? "Discount (%)" : "Discount (₹)"}<input required type="number" min={form.type === "PERCENT" ? 1 : 0.01} max={form.type === "PERCENT" ? 100 : undefined} step={form.type === "PERCENT" ? 1 : 0.01} value={valueInput} onChange={(e) => setValueInput(e.target.value)} className="field" /></label>
+          <label className="space-y-1 text-sm">Minimum order (₹)<input required type="number" min="0" step="0.01" value={minOrder} onChange={(e) => setMinOrder(e.target.value)} className="field" /></label>
+          {form.type === "PERCENT" && <label className="space-y-1 text-sm">Maximum discount (₹, optional)<input type="number" min="0.01" step="0.01" value={discountCap} onChange={(e) => setDiscountCap(e.target.value)} className="field" /></label>}
+          <label className="space-y-1 text-sm">Starts on<input required type="datetime-local" value={form.startsAt} onChange={(e) => setForm((current) => ({ ...current, startsAt: e.target.value }))} className="field" /></label>
+          <label className="space-y-1 text-sm">Ends on (optional)<input type="datetime-local" value={form.endsAt ?? ""} onChange={(e) => setForm((current) => ({ ...current, endsAt: e.target.value || null }))} className="field" /></label>
+          <label className="space-y-1 text-sm">Usage limit (optional)<input type="number" min="1" step="1" value={usageLimit} onChange={(e) => setUsageLimit(e.target.value)} className="field" /></label>
+          <div className="flex items-end"><button type="submit" disabled={busy} className="btn btn-primary">{busy ? "Creating..." : "Create coupon"}</button></div>
+        </form>
+      )}
+      {coupons.loading && <Loading />}
+      {coupons.data && coupons.data.length === 0 && <p className="border border-line bg-white p-6 text-sm text-slate">No coupons created.</p>}
+      {coupons.data && coupons.data.length > 0 && (
+        <AdminTable>
+          <thead><tr><th>Code</th><th>Discount</th><th>Minimum</th><th>Usage</th><th>Validity</th><th>Status</th><th /></tr></thead>
+          <tbody>{coupons.data.map((coupon) => (
+            <tr key={coupon.id}>
+              <td>{coupon.code}<span className="block text-xs text-slate">{coupon.description}</span></td>
+              <td>{coupon.type === "PERCENT" ? `${coupon.value}%` : formatINR(coupon.value)}</td>
+              <td>{formatINR(coupon.minOrderPaise)}</td>
+              <td>{coupon.usedCount}{coupon.usageLimit === null ? "" : ` / ${coupon.usageLimit}`}</td>
+              <td>{new Date(coupon.startsAt).toLocaleDateString()}{coupon.endsAt ? ` – ${new Date(coupon.endsAt).toLocaleDateString()}` : ""}</td>
+              <td>{coupon.active ? "Active" : "Inactive"}</td>
+              <td className="space-x-3 text-right"><button type="button" disabled={busy} className="btn-link" onClick={() => void toggle(coupon)}>{coupon.active ? "Deactivate" : "Activate"}</button><button type="button" disabled={busy} className="btn-link text-out" onClick={() => void remove(coupon)}>Delete</button></td>
             </tr>
-          </thead>
-          <tbody className="divide-y divide-[var(--color-line)] font-mono text-xs">
-            {coupons.map((c) => (
-              <tr key={c.code} className="hover:bg-[var(--color-stone)]/40 transition-colors">
-                <td className="py-3.5 px-4 font-bold text-[var(--color-ink)] flex items-center gap-2">
-                  <Tag className="size-3.5 text-[var(--color-muted)]" />
-                  <span>{c.code}</span>
-                </td>
-                <td className="py-3.5 px-4 font-semibold text-[var(--color-ink)]">
-                  {c.ratePercent}% OFF
-                </td>
-                <td className="py-3.5 px-4 text-[var(--color-slate)]">
-                  ₹{c.minOrderINR.toLocaleString("en-IN")}
-                </td>
-                <td className="py-3.5 px-4 text-[var(--color-slate)]">
-                  {c.timesUsed} / {c.maxUses} used
-                </td>
-                <td className="py-3.5 px-4 text-[var(--color-slate)]">
-                  {c.expiresOn}
-                </td>
-                <td className="py-3.5 px-4">
-                  {c.isActive ? (
-                    <span className="px-2 py-0.5 bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] uppercase">
-                      Active
-                    </span>
-                  ) : (
-                    <span className="px-2 py-0.5 bg-stone-100 text-stone-600 border border-stone-200 text-[10px] uppercase">
-                      Disabled
-                    </span>
-                  )}
-                </td>
-                <td className="py-3.5 px-4 text-right">
-                  <button
-                    type="button"
-                    onClick={() => handleToggle(c.code)}
-                    className="text-xs uppercase underline text-[var(--color-ink)] hover:text-[var(--color-slate)]"
-                  >
-                    {c.isActive ? "Deactivate" : "Activate"}
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {showAddModal && (
-        <div className="fixed inset-0 z-50 bg-black/60 flex items-center justify-center p-4">
-          <div className="bg-white border border-[var(--color-line)] max-w-md w-full p-6 space-y-4 shadow-xl">
-            <div className="flex items-center justify-between border-b border-[var(--color-line)] pb-3">
-              <h3 className="font-serif text-xl text-[var(--color-ink)]">
-                Create Privilege Code
-              </h3>
-              <button
-                type="button"
-                onClick={() => setShowAddModal(false)}
-                className="text-[var(--color-slate)] hover:text-[var(--color-ink)]"
-              >
-                <X className="size-5" />
-              </button>
-            </div>
-
-            <form onSubmit={handleCreate} className="space-y-4">
-              <div className="space-y-1">
-                <label className="font-mono text-[10px] uppercase text-[var(--color-slate)] block">
-                  Code
-                </label>
-                <Input
-                  type="text"
-                  placeholder="e.g. VIP20"
-                  value={code}
-                  onChange={(e) => setCode(e.target.value)}
-                  className="font-mono text-xs uppercase"
-                  required
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="font-mono text-[10px] uppercase text-[var(--color-slate)] block">
-                  Discount Percentage (%)
-                </label>
-                <Input
-                  type="number"
-                  min="1"
-                  max="50"
-                  value={percent}
-                  onChange={(e) => setPercent(e.target.value)}
-                  className="font-mono text-xs"
-                  required
-                />
-              </div>
-
-              <div className="space-y-1">
-                <label className="font-mono text-[10px] uppercase text-[var(--color-slate)] block">
-                  Minimum Order (₹)
-                </label>
-                <Input
-                  type="number"
-                  value={minOrder}
-                  onChange={(e) => setMinOrder(e.target.value)}
-                  className="font-mono text-xs"
-                  required
-                />
-              </div>
-
-              <div className="pt-2 flex justify-end gap-3 border-t border-[var(--color-line)]">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setShowAddModal(false)}
-                  className="font-mono text-xs uppercase"
-                >
-                  Cancel
-                </Button>
-                <Button type="submit" className="font-mono text-xs uppercase">
-                  Issue Privilege Code
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
+          ))}</tbody>
+        </AdminTable>
       )}
     </div>
   );

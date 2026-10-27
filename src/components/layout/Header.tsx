@@ -2,7 +2,8 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { Search, User, Heart, ShoppingBag, Menu, X } from "lucide-react";
+import { Search, Heart, ShoppingBag, Menu, X } from "lucide-react";
+import { AccountLink } from "@/components/layout/AccountLink";
 import { useCartCount } from "@/lib/shop/cart";
 import { setMiniCartOpen } from "@/lib/stores";
 
@@ -69,9 +70,9 @@ export function Header() {
             <Search className="h-5 w-5" strokeWidth={1.5} />
           </Link>
           
-          <Link href="/account" aria-label="Account" className="text-ink hover:text-loupe transition-colors hidden sm:block">
-            <User className="h-5 w-5" strokeWidth={1.5} />
-          </Link>
+          <div className="hidden sm:block">
+            <AccountLink />
+          </div>
           
           <Link href="/wishlist" aria-label="Wishlist" className="text-ink hover:text-loupe transition-colors hidden sm:block">
             <Heart className="h-5 w-5" strokeWidth={1.5} />
@@ -109,7 +110,9 @@ export function Header() {
               <Link href="/education" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium uppercase tracking-widest text-ink">Education</Link>
               <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium uppercase tracking-widest text-ink">Our Story</Link>
               <div className="h-px w-full bg-line my-2" />
-              <Link href="/account" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium uppercase tracking-widest text-ink">My Account</Link>
+              <div onClick={() => setMobileMenuOpen(false)}>
+                <AccountLink mobile />
+              </div>
               <Link href="/wishlist" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium uppercase tracking-widest text-ink">Wishlist</Link>
             </nav>
           </div>

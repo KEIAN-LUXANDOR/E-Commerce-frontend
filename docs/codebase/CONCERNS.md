@@ -6,7 +6,10 @@
 |---|---|---|---|
 | High | Old and current storefront implementations coexist. `src/components/store/` and `src/components/shop/` include legacy modules excluded by `tsconfig.json`. | Future imports can reintroduce incompatible product models or missing exports. | `[ASK USER]` Decide whether to archive/remove the old implementation or retain it as a supported compatibility surface. |
 | Medium | `npm run lint` remains red (109 errors, 108 warnings in the observed run), while tests, typecheck, and production build pass. | Unrelated lint debt obscures future regressions. | Triage lint errors in a separate, scoped cleanup. |
-| Medium | Order, payment, tracking, invoice, return, coupon, and admin API operations are feature-gated off by default. | Visible flows may be unavailable until backend contracts are implemented and enabled. | Confirm endpoints and enable/test each feature only after backend readiness. |
+| High | Many frontend API contracts have no matching backend controller: planned admin, payment, invoice, returns, tracking, newsletter, enquiry, banners, featured products, and delivery PIN APIs. | These operations cannot work against the inspected backend. | Keep these paths gated or use only existing routes. |
+| Medium | Public `GET /actuator/health` is configured with `management.endpoint.health.show-details=always`. | Health responses expose component details to unauthenticated callers. | Hide details on the public endpoint or protect a separate detailed health endpoint. |
+| Medium | Payment, tracking, invoice, return, coupon, and admin API operations are feature-gated off by default; core order endpoints are implemented. | Optional workflows remain unavailable until backend contracts are implemented. | Keep unsupported switches off. |
+| High | Backend did not respond on port 8080 during the current check; PostgreSQL accepted connections on port 5433. | Frontend API calls fail until Spring Boot is running. | Start the backend and inspect its startup logs; the port probe alone cannot establish why it stopped. |
 | Low | No CI/CD or automated security/monitoring configuration was detected. | Build/test checks may not run automatically; runtime issues have limited telemetry. | `[ASK USER]` Confirm whether CI and production observability are in scope. |
 
 ## Technical Debt
@@ -14,7 +17,7 @@
 | Debt | Evidence | Risk | Suggested fix |
 |---|---|---|---|
 | Legacy store and shop components use removed store exports and old product types | `src/components/store/`, `src/components/shop/`, `src/lib/stores.ts`, `tsconfig.json` | Reintroducing files into current routes causes type/build failures | Consolidate around `src/lib/shop/` and current `Product` type, or explicitly archive the old modules |
-| Feature/API work is partly planned and feature-gated | `src/config/features.ts`, `src/lib/api/orders.ts` | UI may be present but backend operation is disabled | Track endpoint readiness and test each enabled feature |
+| Optional API work is planned and feature-gated | `src/config/features.ts`, `src/lib/api/orders.ts` | Optional UI may be unavailable until backend contracts exist | Track endpoint readiness and test each enabled feature |
 | Setup route descriptions are stale | `SETUP.md`, current `src/app/` | Incorrect onboarding and route assumptions | Keep setup docs aligned with the active route graph |
 
 ## Security and Performance Notes
@@ -50,6 +53,9 @@ account, and admin-shell paths among the most changed files.
 - `src/lib/shop/cart.ts`
 - `src/lib/shop/wishlist.ts`
 - `src/config/features.ts`
+- `docs/API-ENDPOINTS.md`
+- `../backend/backend/src/main/java/com/keianluxandor/backend`
+- `../backend/backend/src/main/resources/application.properties`
 - `src/lib/site.ts`
 - `SETUP.md`
 - `src/app/(shop)/shop/[[...category]]/page.tsx`

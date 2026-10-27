@@ -4,7 +4,7 @@ import { useState } from "react";
 import { Check, ShoppingBag, Loader2 } from "lucide-react";
 import { primaryVariant } from "@/lib/catalog/product";
 import { addToCart, useCart } from "@/lib/shop/cart";
-import * as storesMod from "@/lib/stores";
+import { miniCartOpenStore } from "@/lib/stores";
 import type { Product } from "@/lib/types/product";
 import { cn } from "@/lib/utils";
 
@@ -19,39 +19,36 @@ export function AddToCartButton({ product, compact = false }: AddToCartButtonPro
   const variant = primaryVariant(product);
   
   // Check if the current variant is in the cart
-  const inCart = variant 
-    ? cart?.items?.some((item: any) => item.variantId === variant.id) 
+  const inCart = variant
+    ? cart?.items?.some((item) => item.variantId === variant.id)
     : false;
 
   async function handleClick() {
     if (!variant || !variant.inStock) return;
 
-    // Safely get the mini cart store reference
-    const miniCart = (storesMod as any).miniCartOpenStore ?? (storesMod as any).miniCartStore;
-    const openMiniCart = () => {
-      if (typeof miniCart?.open === "function") miniCart.open();
-      else if (typeof miniCart?.set === "function") miniCart.set(true);
-      else if (typeof (storesMod as any).setMiniCartOpen === "function") {
-        (storesMod as any).setMiniCartOpen(true);
-      }
-    };
-
     if (inCart) {
-      openMiniCart();
+      miniCartOpenStore.open();
       return;
     }
 
     setPending(true);
     try {
       await addToCart(product);
-      openMiniCart();
+      miniCartOpenStore.open();
     } finally {
       setPending(false);
     }
   }
 
   if (!variant || !variant.inStock) {
-    return null; // Sold-out logic is typically handled at the parent level (e.g., BuyBox/ProductCard)
+    return (
+      <button type="button" disabled className={cn(
+        "flex min-h-11 items-center justify-center rounded-[3px] border border-line px-4 text-xs font-medium uppercase tracking-widest text-slate",
+        compact ? "h-9 min-h-9 w-auto px-2 text-[10px]" : "w-full",
+      )}>
+        Sold out
+      </button>
+    );
   }
 
   if (compact) {

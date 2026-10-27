@@ -7,7 +7,7 @@ import { Loader2 } from "lucide-react";
 import { login, resendVerification } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
 import { sessionStore } from "@/lib/session";
-import { normaliseEmail, validateLogin, type FieldErrors } from "@/lib/validators";
+import { normaliseEmail, safeNextPath, validateLogin, type FieldErrors } from "@/lib/validators";
 
 export function LoginForm() {
   const router = useRouter();
@@ -16,13 +16,12 @@ export function LoginForm() {
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [loading, setLoading] = useState(false);
-  const [needsVerification, setNeedsVerification] = useState(false);
+  const [verificationMessage, setVerificationMessage] = useState("");
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     setError("");
     setFieldErrors({});
-    setNeedsVerification(false);
 
     const normalizedEmail = normaliseEmail(email);
     const validation = validateLogin({ email: normalizedEmail, password });
@@ -44,51 +43,40 @@ export function LoginForm() {
       
       sessionStore.setAuthenticated(user);
 
-      router.push("/account");
+      const next = new URLSearchParams(window.location.search).get("next");
+      router.push(safeNextPath(next));
       router.refresh();
-    } catch (err: any) {
+    } catch (err: unknown) {
       if (err instanceof ApiError) {
         if (err.status === 403 && err.code === "EMAIL_NOT_VERIFIED") {
-          setNeedsVerification(true);
           setError("Please verify your email address before logging in.");
         } else if (err.errors) {
-          const apiErrors: FieldErrors = {};
-          err.errors.forEach((e: any) => { apiErrors[e.field] = e.message; });
-          setFieldErrors(apiErrors);
+          setFieldErrors(Object.fromEntries(err.errors.map(({ field, message }) => [field, message])));
         } else {
           setError(err.detail || "Invalid email or password.");
         }
       } else {
-        setError(err.message || "An unexpected error occurred.");
+        setError(err instanceof Error ? err.message : "An unexpected error occurred.");
       }
       setLoading(false);
     }
   }
 
   async function handleResend() {
+    setVerificationMessage("");
     try {
       await resendVerification(normaliseEmail(email));
-      setError("Verification email sent! Please check your inbox.");
-      setNeedsVerification(false);
-    } catch (err: any) {
-      setError(err.detail || "Failed to resend verification email.");
+      setVerificationMessage("If verification is needed, a new email has been sent.");
+    } catch (err: unknown) {
+      setVerificationMessage(err instanceof Error ? err.message : "Could not resend verification email.");
     }
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-md mx-auto">
+    <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md mx-auto">
       {error && (
         <div className="bg-out/5 border border-out p-4 text-sm text-out text-center">
           <p>{error}</p>
-          {needsVerification && (
-            <button
-              type="button"
-              onClick={handleResend}
-              className="mt-3 font-medium underline hover:opacity-80 transition-opacity"
-            >
-              Resend verification email
-            </button>
-          )}
         </div>
       )}
 
@@ -136,12 +124,17 @@ export function LoginForm() {
       <button
         type="submit"
         disabled={loading}
-        className="w-full h-11 flex items-center justify-center bg-ink text-white text-xs font-medium uppercase tracking-widest hover:bg-loupe-deep transition-colors disabled:opacity-50"
+        className="btn btn-primary min-h-11 w-full justify-center"
       >
         {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sign In"}
       </button>
 
-      <div className="text-center text-sm text-slate pt-2">
+      {verificationMessage && <p role="status" className="text-center text-sm text-slate">{verificationMessage}</p>}
+      <button type="button" onClick={() => void handleResend()} disabled={!email.trim()} className="w-full py-1 text-center text-sm font-medium text-ink underline underline-offset-4 disabled:text-slate disabled:no-underline">
+        Resend verification email
+      </button>
+
+      <div className="text-center text-sm text-slate">
         Don&apos;t have an account?{" "}
         <Link href="/register" className="font-medium text-ink hover:underline">
           Create Account

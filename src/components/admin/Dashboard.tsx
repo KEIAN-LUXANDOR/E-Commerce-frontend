@@ -24,7 +24,7 @@ export function Dashboard() {
           <StatCard label="Waiting for payment" value={String(summary.data.awaitingPayment)} note="Held for 15 minutes" href="/admin/orders?status=PENDING_PAYMENT" />
           <StatCard label="Paid today" value={formatINR(summary.data.paidToday.totalPaise)} note={`${summary.data.paidToday.count} orders`} />
           <StatCard label="Last 30 days" value={formatINR(summary.data.last30Days.totalPaise)} note={`${summary.data.last30Days.count} orders · ${summary.data.soldLast30Days} diamonds`} />
-          <StatCard label="Diamonds on sale" value={String(summary.data.activeDiamonds)} href="/admin/diamonds?status=ACTIVE" />
+          <StatCard label="Diamonds on sale" value={String(summary.data.activeDiamonds)} href="/admin/inventory" />
           <StatCard label="Open returns" value={String(summary.data.openReturns)} href="/admin/returns" />
           <StatCard label="New enquiries" value={String(summary.data.newEnquiries)} note="Messages and viewings" href="/admin/enquiries" />
         </div>
@@ -78,7 +78,7 @@ export function Dashboard() {
         <Link href="/admin/diamonds/new" className="btn btn-primary">
           Add a diamond
         </Link>
-        <Link href="/admin/diamonds/import" className="btn btn-secondary">
+        <Link href="/admin/import" className="btn btn-secondary">
           Import diamonds from CSV
         </Link>
         <Link href="/admin/packing" className="btn btn-secondary">

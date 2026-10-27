@@ -42,10 +42,10 @@ Observed during this repair:
 
 - `npm run typecheck`: passed.
 - `npm test`: 14 test files and 40 tests passed.
-- `npm run build`: passed and generated the current route graph. With the local
-  backend unavailable, the home page's new-arrivals fetch logs a failure and
-  returns an empty list.
-- Focused ESLint on repaired route/search/API files: passed.
+- `npm run build`: passed and generated the current route graph. The home
+  page's new-arrivals fetch logs a prerender-cancellation warning; this does not
+  establish whether the backend is unavailable.
+- Focused ESLint on repaired route/search/API and admin action files: passed.
 - `npm run lint`: still fails repository-wide (109 errors, 108 warnings in
   the observed run); these include existing issues outside the repaired scope.
 

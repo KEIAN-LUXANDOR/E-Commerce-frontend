@@ -29,6 +29,6 @@ describe("admin access and inventory", () => {
   });
 
   it("renders the inventory screen", () => {
-    expect(renderToString(<DiamondList />)).toContain("Inventory Diamonds");
+    expect(renderToString(<DiamondList />)).toContain("Diamond inventory");
   });
 });

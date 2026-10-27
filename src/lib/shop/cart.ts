@@ -3,19 +3,20 @@
 import { useSyncExternalStore } from "react";
 import { createLocalStore } from "@/lib/local-store";
 import { sessionStore } from "@/lib/session";
-import { apiFetch } from "@/lib/api/client";
+import { ApiError, apiFetch } from "@/lib/api/client";
+import type { Cart } from "@/lib/api/cart";
 import type { Product } from "@/lib/types/product";
-
-// Safe toast import fallback
-import * as storesMod from "@/lib/stores";
-const toastStoreObj = storesMod as Record<string, any>;
-const showToast = typeof toastStoreObj.showToast === "function" 
-  ? toastStoreObj.showToast 
-  : (msg: string) => console.log(msg);
+import { showToast } from "@/lib/stores";
 
 const localCartStore = createLocalStore<string[]>("kl_guest_cart_v1", []);
 
-let serverCart: any = null;
+interface CartSnapshot {
+  items: Array<Pick<Cart["items"][number], "variantId">>;
+  itemCount: number;
+  subtotalPaise: number;
+}
+
+let serverCart: CartSnapshot | null = null;
 const cartListeners = new Set<() => void>();
 
 function notifyCart() {
@@ -24,11 +25,11 @@ function notifyCart() {
 
 export async function fetchServerCart() {
   try {
-    const data = await apiFetch<any>("/account/cart");
+    const data = await apiFetch<Cart>("/account/cart");
     serverCart = data;
     notifyCart();
     return data;
-  } catch (e) {
+  } catch {
     return null;
   }
 }
@@ -46,8 +47,11 @@ export async function addToCart(product: Product) {
       await apiFetch(`/account/cart/items/${variant.id}`, { method: "PUT" });
       await fetchServerCart();
       showToast("Added to cart");
-    } catch (e: any) {
-      showToast(e.detail || "Could not add to cart", { tone: "error" });
+    } catch (cause: unknown) {
+      showToast(
+        cause instanceof ApiError ? cause.detail || "Could not add to cart" : "Could not add to cart",
+        { tone: "error" },
+      );
     }
   } else {
     const current = localCartStore.read();
@@ -64,8 +68,11 @@ export async function removeFromCart(variantId: string) {
     try {
       await apiFetch(`/account/cart/items/${variantId}`, { method: "DELETE" });
       await fetchServerCart();
-    } catch (e: any) {
-      showToast(e.detail || "Could not remove item", { tone: "error" });
+    } catch (cause: unknown) {
+      showToast(
+        cause instanceof ApiError ? cause.detail || "Could not remove item" : "Could not remove item",
+        { tone: "error" },
+      );
     }
   } else {
     const current = localCartStore.read();
@@ -75,7 +82,7 @@ export async function removeFromCart(variantId: string) {
 
 // Cache for the local cart snapshot to prevent infinite loops in useSyncExternalStore
 let cachedLocalIds: string[] = [];
-let cachedLocalCart: any = { items: [], itemCount: 0, subtotalPaise: 0 };
+let cachedLocalCart: CartSnapshot = { items: [], itemCount: 0, subtotalPaise: 0 };
 
 export const cartStore = {
   get: () => serverCart,

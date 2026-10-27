@@ -1,6 +1,5 @@
 /**
- * Orders. PLANNED endpoints: shapes follow the backend's orders table (V11) and
- * docs/API-ENDPOINTS.md section "Planned: orders and payment".
+ * Customer order response follows the implemented backend order endpoints.
  */
 
 export type OrderStatus = "PENDING_PAYMENT" | "PAID" | "SHIPPED" | "DELIVERED" | "CANCELLED" | "REFUNDED";
@@ -52,7 +51,7 @@ export interface Order {
   totalPaise: number;
   currency: "INR";
   shippingAddress: ShippingAddress;
-  shipment: Shipment | null;
+  shipment?: Shipment | null;
   /** A return request on this order, if any (planned "returns") */
   returnRequest?: ReturnRequestSummary | null;
 }

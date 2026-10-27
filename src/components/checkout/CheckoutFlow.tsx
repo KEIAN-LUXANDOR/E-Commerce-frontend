@@ -79,8 +79,7 @@ export function CheckoutFlow() {
     setCheckoutError(null);
     try {
       const order = await createOrder(addressId);
-      // Pushing to success page to see the 15m timer (Razorpay step handled elsewhere)
-      router.push(`/checkout/success?order=${order.orderNumber}`);
+      router.push(`/account/orders/${encodeURIComponent(order.orderNumber)}`);
     } catch (err) {
       setCheckoutError(
         err instanceof ApiError

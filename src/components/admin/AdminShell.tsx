@@ -19,9 +19,9 @@ import { sessionStore } from "@/lib/session";
 
 const NAV = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
-  { label: "Inventory", href: "/admin/diamonds", icon: Gem },
+  { label: "Inventory", href: "/admin/inventory", icon: Gem },
   { label: "Orders", href: "/admin/orders", icon: ShoppingCart },
-  { label: "Customers", href: "/admin/customers", icon: Users },
+  { label: "Customers", href: "/admin/clients", icon: Users },
   { label: "Enquiries", href: "/admin/enquiries", icon: MessageSquare },
   { label: "Coupons", href: "/admin/coupons", icon: Ticket },
   { label: "Settings", href: "/admin/settings", icon: Settings },
@@ -80,7 +80,8 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
 
           <nav className="flex-1 space-y-1 p-4 overflow-y-auto">
             {NAV.map((item) => {
-              const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`);
+              const isInventoryRoute = item.href === "/admin/inventory" && pathname.startsWith("/admin/diamonds");
+              const isActive = pathname === item.href || pathname.startsWith(`${item.href}/`) || isInventoryRoute;
               const Icon = item.icon;
               return (
                 <Link

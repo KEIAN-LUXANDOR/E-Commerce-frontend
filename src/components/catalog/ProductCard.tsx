@@ -49,7 +49,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
         <p className="mb-4 flex-1 text-xs text-slate">
           {subtitle}
         </p>
-        <div className="mt-auto flex items-center justify-between gap-3">
+        <div className="mt-auto space-y-3">
           <span className="text-sm font-medium text-ink">
             {variant ? formatINR(variant.pricePaise) : "Price on request"}
             {crossedOutPrice !== null && (
@@ -58,7 +58,7 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
               </span>
             )}
           </span>
-          <AddToCartButton product={product} compact />
+          <AddToCartButton product={product} />
         </div>
       </div>
     </article>
