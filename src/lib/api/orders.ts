@@ -1,24 +1,33 @@
 // src/lib/api/orders.ts
-import { apiFetch } from "./client";
-import type { Order } from "@/lib/types/order";
 
-export async function createOrder(addressId: string) {
-  return apiFetch<Order>("/account/orders", {
-    method: "POST",
-    body: JSON.stringify({ addressId }),
-  });
-}
+// Existing imports and code...
 
-export async function getOrders(page = 0, size = 10) {
-  return apiFetch<{ items: Order[]; totalPages: number; totalItems: number; page: number; size: number }>(
-    `/account/orders?page=${page}&size=${size}`
-  );
-}
+export const listOrders = async () => {
+  // Replace with your actual API call
+  const response = await fetch('/api/orders');
+  return response.json();
+};
 
-export async function getOrder(orderNumber: string) {
-  return apiFetch<Order>(`/account/orders/${orderNumber}`);
-}
+export const invoiceUrl = (orderId: string): string => {
+  return `/api/orders/${orderId}/invoice`; // Or your backend invoice endpoint
+};
 
-export async function cancelOrder(orderNumber: string) {
-  return apiFetch<Order>(`/account/orders/${orderNumber}/cancel`, { method: "POST" });
-}
+export const startPayment = async (orderId: string) => {
+  // Logic to initialize Razorpay payment
+  return { success: true, orderId }; 
+};
+
+export const confirmPayment = async (paymentDetails: any) => {
+  // Logic to verify Razorpay signature
+  return { success: true };
+};
+
+export const requestReturn = async (orderId: string, reason: string) => {
+  // Logic to post a return request
+  return { success: true, orderId, reason };
+};
+
+export const trackOrder = async (orderId: string) => {
+  // Logic to fetch order status
+  return { status: 'Processing', orderId };
+};

@@ -1,283 +1,365 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { FormAlert, TextField } from "@/components/auth/FormParts";
+import { Loader2, Plus, Trash2, Edit2, MapPin } from "lucide-react";
 import {
-  createDeliveryAddress,
-  deleteDeliveryAddress,
-  getDeliveryAddresses,
-  getIndianStates,
-  setDefaultDeliveryAddress,
-  updateDeliveryAddress,
+  createAddress,
+  deleteAddress,
+  getAddresses,
+  setDefaultAddress,
+  updateAddress,
 } from "@/lib/api/addresses";
 import { ApiError } from "@/lib/api/client";
-import type { DeliveryAddress, DeliveryAddressRequest } from "@/lib/types/address";
+import type { DeliveryAddress } from "@/lib/types/address";
+import { showToast } from "@/lib/stores";
 
-type AddressValues = DeliveryAddressRequest;
-
-const EMPTY_ADDRESS: AddressValues = {
-  fullName: "",
-  phone: "",
-  line1: "",
-  line2: "",
-  landmark: "",
-  city: "",
-  state: "",
-  pincode: "",
-};
-
-function toAddressValues(address: DeliveryAddress): AddressValues {
-  return {
-    fullName: address.fullName,
-    phone: address.phone,
-    line1: address.line1,
-    line2: address.line2 ?? "",
-    landmark: address.landmark ?? "",
-    city: address.city,
-    state: address.state,
-    pincode: address.pincode,
-  };
-}
-
-function messageFor(error: unknown, fallback: string) {
-  return error instanceof ApiError ? error.message : fallback;
+interface AddressFormState {
+  firstName: string;
+  lastName: string;
+  phone: string;
+  addressLine1: string;
+  addressLine2: string;
+  city: string;
+  state: string;
+  pincode: string;
+  isDefault: boolean;
 }
 
 export function AddressBook() {
   const [addresses, setAddresses] = useState<DeliveryAddress[]>([]);
-  const [states, setStates] = useState<string[]>([]);
   const [loading, setLoading] = useState(true);
-  const [loadError, setLoadError] = useState<string>();
-  const [actionError, setActionError] = useState<string>();
-  const [editingId, setEditingId] = useState<string>();
   const [showForm, setShowForm] = useState(false);
-  const [values, setValues] = useState<AddressValues>(EMPTY_ADDRESS);
-  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
-  const [busy, setBusy] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState("");
+  
+  const [editId, setEditId] = useState<string | null>(null);
+  const [formData, setFormData] = useState<AddressFormState>({
+    firstName: "",
+    lastName: "",
+    phone: "",
+    addressLine1: "",
+    addressLine2: "",
+    city: "",
+    state: "",
+    pincode: "",
+    isDefault: false,
+  });
+
+  async function loadAddresses() {
+    try {
+      const data = await getAddresses();
+      setAddresses(data || []);
+    } catch (err) {
+      showToast("Failed to load addresses", { tone: "error" });
+    } finally {
+      setLoading(false);
+    }
+  }
 
   useEffect(() => {
-    let active = true;
-    Promise.all([getDeliveryAddresses(), getIndianStates()])
-      .then(([savedAddresses, indianStates]) => {
-        if (!active) return;
-        setAddresses(savedAddresses);
-        setStates(indianStates);
-      })
-      .catch((error: unknown) => {
-        if (active) setLoadError(messageFor(error, "Couldn’t load your addresses. Please try again."));
-      })
-      .finally(() => {
-        if (active) setLoading(false);
-      });
-    return () => {
-      active = false;
-    };
+    loadAddresses();
   }, []);
 
-  function startNewAddress() {
-    setEditingId(undefined);
-    setValues(EMPTY_ADDRESS);
-    setFieldErrors({});
-    setActionError(undefined);
-    setShowForm(true);
-  }
-
-  function startEditing(address: DeliveryAddress) {
-    setEditingId(address.id);
-    setValues(toAddressValues(address));
-    setFieldErrors({});
-    setActionError(undefined);
-    setShowForm(true);
-  }
-
-  function changeValue(field: keyof AddressValues, value: string) {
-    setValues((current) => ({ ...current, [field]: value }));
-    setFieldErrors((current) => {
-      const next = { ...current };
-      delete next[field];
-      return next;
+  function handleEdit(address: any) {
+    setFormData({
+      firstName: address.firstName || address.name || "",
+      lastName: address.lastName || "",
+      phone: address.phone || "",
+      addressLine1: address.addressLine1 || address.address1 || "",
+      addressLine2: address.addressLine2 || address.address2 || "",
+      city: address.city || "",
+      state: address.state || "",
+      pincode: address.pincode || address.pinCode || "",
+      isDefault: address.isDefault || address.default || false,
     });
+    setEditId(address.id ? String(address.id) : null);
+    setShowForm(true);
+    setError("");
   }
 
-  async function saveAddress(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setActionError(undefined);
-    setFieldErrors({});
-    setBusy(true);
+  function handleAddNew() {
+    setFormData({
+      firstName: "",
+      lastName: "",
+      phone: "",
+      addressLine1: "",
+      addressLine2: "",
+      city: "",
+      state: "",
+      pincode: "",
+      isDefault: addresses.length === 0,
+    });
+    setEditId(null);
+    setShowForm(true);
+    setError("");
+  }
 
-    const body: DeliveryAddressRequest = {
-      fullName: values.fullName.trim(),
-      phone: values.phone.replace(/\D/g, ""),
-      line1: values.line1.trim(),
-      ...(values.line2?.trim() ? { line2: values.line2.trim() } : {}),
-      ...(values.landmark?.trim() ? { landmark: values.landmark.trim() } : {}),
-      city: values.city.trim(),
-      state: values.state,
-      pincode: values.pincode.trim(),
-    };
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setSubmitting(true);
+    setError("");
 
     try {
-      if (editingId) {
-        const saved = await updateDeliveryAddress(editingId, body);
-        setAddresses((current) => current.map((address) => address.id === saved.id ? saved : address));
+      if (editId) {
+        await updateAddress(editId, formData);
+        showToast("Address updated successfully", { tone: "success" });
       } else {
-        const saved = await createDeliveryAddress(body);
-        setAddresses((current) => [saved, ...current]
-          .sort((a, b) => Number(b.defaultAddress) - Number(a.defaultAddress)));
+        await createAddress(formData);
+        showToast("Address added successfully", { tone: "success" });
       }
+      await loadAddresses();
       setShowForm(false);
-      setEditingId(undefined);
-      setValues(EMPTY_ADDRESS);
-    } catch (error) {
-      if (error instanceof ApiError) setFieldErrors(error.fieldErrors);
-      setActionError(messageFor(error, "Couldn’t save this address. Please try again."));
+    } catch (err: any) {
+      setError(err instanceof ApiError ? (err.detail || "Failed to save address") : "Failed to save address");
     } finally {
-      setBusy(false);
+      setSubmitting(false);
     }
   }
 
-  async function makeDefault(id: string) {
-    setActionError(undefined);
-    setBusy(true);
+  async function handleDelete(id: string | number | undefined) {
+    if (!id) return;
+    if (!confirm("Are you sure you want to delete this address?")) return;
     try {
-      const saved = await setDefaultDeliveryAddress(id);
-      setAddresses((current) => current.map((address) => (
-        address.id === saved.id ? saved : { ...address, defaultAddress: false }
-      )));
-    } catch (error) {
-      setActionError(messageFor(error, "Couldn’t change your default address. Please try again."));
-    } finally {
-      setBusy(false);
+      await deleteAddress(String(id));
+      showToast("Address deleted", { tone: "success" });
+      await loadAddresses();
+    } catch (err: any) {
+      showToast(err instanceof ApiError ? (err.detail || "Failed to delete address") : "Failed to delete address", { tone: "error" });
     }
   }
 
-  async function removeAddress(address: DeliveryAddress) {
-    if (!window.confirm(`Delete the address for ${address.fullName}?`)) return;
-    setActionError(undefined);
-    setBusy(true);
+  async function handleSetDefault(id: string | number | undefined) {
+    if (!id) return;
     try {
-      await deleteDeliveryAddress(address.id);
-      setAddresses((current) => {
-        const remaining = current.filter((item) => item.id !== address.id);
-        if (address.defaultAddress && remaining[0]) {
-          remaining[0] = { ...remaining[0], defaultAddress: true };
-        }
-        return remaining;
-      });
-    } catch (error) {
-      setActionError(messageFor(error, "Couldn’t delete this address. Please try again."));
-    } finally {
-      setBusy(false);
+      await setDefaultAddress(String(id));
+      showToast("Default address updated", { tone: "success" });
+      await loadAddresses();
+    } catch (err: any) {
+      showToast("Failed to set default address", { tone: "error" });
     }
   }
 
   if (loading) {
     return (
-      <section aria-labelledby="addresses-heading" className="space-y-4">
-        <h2 id="addresses-heading" className="text-2xl">Delivery addresses</h2>
-        <div aria-busy="true" className="skeleton h-32 rounded" />
-      </section>
+      <div className="flex h-48 items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-slate" />
+      </div>
     );
   }
 
   return (
-    <section aria-labelledby="addresses-heading" className="space-y-5">
-      <div className="flex flex-wrap items-center justify-between gap-3">
+    <div className="w-full">
+      {!showForm ? (
         <div>
-          <h2 id="addresses-heading" className="font-serif text-2xl font-normal">Saved addresses</h2>
-          <p className="mt-1 text-sm text-slate">Choose where you’d like your order delivered.</p>
-        </div>
-        {!showForm && (
-          <button type="button" onClick={startNewAddress} className="btn btn-secondary">
-            Add address
-          </button>
-        )}
-      </div>
-
-      {loadError && <FormAlert>{loadError}</FormAlert>}
-      {actionError && <FormAlert>{actionError}</FormAlert>}
-
-      {showForm && (
-        <form onSubmit={saveAddress} className="space-y-5 border-y border-line bg-white py-6">
-          <div>
-            <h3 className="font-serif text-xl">{editingId ? "Edit address" : "Add a delivery address"}</h3>
-            <p className="mt-1 text-sm text-slate">Fields marked optional can be left blank.</p>
-          </div>
-          <TextField label="Full name" autoComplete="name" maxLength={100} value={values.fullName} onChange={(event) => changeValue("fullName", event.target.value)} error={fieldErrors.fullName} />
-          <TextField label="Phone" type="tel" autoComplete="tel-national" inputMode="tel" maxLength={14} value={values.phone} onChange={(event) => changeValue("phone", event.target.value)} error={fieldErrors.phone} />
-          <TextField label="Address line 1" autoComplete="address-line1" maxLength={200} value={values.line1} onChange={(event) => changeValue("line1", event.target.value)} error={fieldErrors.line1} />
-          <TextField label="Address line 2" autoComplete="address-line2" maxLength={200} value={values.line2 ?? ""} onChange={(event) => changeValue("line2", event.target.value)} error={fieldErrors.line2} optional />
-          <TextField label="Landmark" maxLength={100} value={values.landmark ?? ""} onChange={(event) => changeValue("landmark", event.target.value)} error={fieldErrors.landmark} optional />
-          <div className="grid gap-4 sm:grid-cols-2">
-            <TextField label="City" autoComplete="address-level2" maxLength={80} value={values.city} onChange={(event) => changeValue("city", event.target.value)} error={fieldErrors.city} />
-            <TextField label="PIN code" autoComplete="postal-code" inputMode="numeric" maxLength={6} value={values.pincode} onChange={(event) => changeValue("pincode", event.target.value)} error={fieldErrors.pincode} />
-          </div>
-          <div>
-            <label htmlFor="delivery-state" className="block text-sm font-medium">State or union territory</label>
-            <select
-              id="delivery-state"
-              className={`field mt-1.5 ${fieldErrors.state ? "border-out" : ""}`}
-              value={values.state}
-              onChange={(event) => changeValue("state", event.target.value)}
-              aria-invalid={!!fieldErrors.state}
-              aria-describedby={fieldErrors.state ? "delivery-state-error" : undefined}
-              required
+          <div className="mb-6 flex items-center justify-between">
+            <h2 className="text-lg font-medium text-ink">Saved Addresses</h2>
+            <button
+              onClick={handleAddNew}
+              className="flex items-center text-xs font-medium uppercase tracking-widest text-ink hover:text-loupe transition-colors"
             >
-              <option value="">Choose a state or union territory</option>
-              {states.map((state) => <option key={state} value={state}>{state}</option>)}
-            </select>
-            {fieldErrors.state && <p id="delivery-state-error" className="mt-1.5 text-sm text-out">{fieldErrors.state}</p>}
-          </div>
-          <div className="flex flex-wrap gap-3 pt-2">
-            <button type="submit" className="btn btn-primary" disabled={busy}>
-              {busy ? "Saving…" : editingId ? "Save changes" : "Save address"}
-            </button>
-            <button type="button" className="btn btn-secondary" disabled={busy} onClick={() => setShowForm(false)}>
-              Cancel
+              <Plus className="mr-2 h-4 w-4" /> Add New
             </button>
           </div>
-        </form>
-      )}
 
-      {addresses.length === 0 && !showForm && !loadError ? (
-        <div className="border-y border-line bg-stone/50 px-6 py-10 text-center">
-          <h3 className="font-serif text-xl">No saved addresses</h3>
-          <p className="mt-1 text-sm text-slate">Add one to make checkout quicker next time.</p>
+          {addresses.length === 0 ? (
+            <div className="flex flex-col items-center justify-center border border-line bg-surface py-12 px-4 text-center shadow-sm">
+              <MapPin className="h-8 w-8 text-slate mb-4 opacity-50" />
+              <p className="text-sm text-slate">You haven&apos;t saved any addresses yet.</p>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
+              {addresses.map((address: any) => {
+                const isDef = address.isDefault || address.default;
+                const fName = address.firstName || address.name || "";
+                const lName = address.lastName || "";
+                const line1 = address.addressLine1 || address.address1 || "";
+                const line2 = address.addressLine2 || address.address2 || "";
+                const pc = address.pincode || address.pinCode || "";
+
+                return (
+                  <div
+                    key={address.id}
+                    className={`relative flex flex-col border p-5 transition-colors shadow-sm ${
+                      isDef ? "border-ink bg-surface" : "border-line bg-platinum hover:border-slate"
+                    }`}
+                  >
+                    {isDef && (
+                      <span className="absolute right-4 top-4 text-[10px] font-medium uppercase tracking-widest text-ink bg-platinum px-2 py-1">
+                        Default
+                      </span>
+                    )}
+                    <p className="font-medium text-ink text-sm">
+                      {fName} {lName}
+                    </p>
+                    <p className="mt-2 text-sm text-slate line-clamp-3 leading-relaxed">
+                      {line1}
+                      {line2 && `, ${line2}`}
+                      <br />
+                      {address.city}, {address.state} {pc}
+                    </p>
+                    <p className="mt-3 text-sm text-ink">{address.phone}</p>
+
+                    <div className="mt-5 flex items-center gap-4 border-t border-line pt-4">
+                      <button
+                        onClick={() => handleEdit(address)}
+                        className="text-xs font-medium text-slate hover:text-ink transition-colors flex items-center uppercase tracking-widest"
+                      >
+                        <Edit2 className="mr-1.5 h-3.5 w-3.5" /> Edit
+                      </button>
+                      <button
+                        onClick={() => handleDelete(address.id)}
+                        className="text-xs font-medium text-out hover:opacity-80 transition-colors flex items-center uppercase tracking-widest"
+                      >
+                        <Trash2 className="mr-1.5 h-3.5 w-3.5" /> Delete
+                      </button>
+                      {!isDef && (
+                        <button
+                          onClick={() => handleSetDefault(address.id)}
+                          className="ml-auto text-[10px] uppercase tracking-widest font-medium text-ink hover:underline"
+                        >
+                          Make Default
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
         </div>
       ) : (
-        <ul className="grid gap-4 sm:grid-cols-2">
-          {addresses.map((address) => (
-            <li key={address.id}>
-              <article className="h-full border border-line bg-white p-5">
-                <div className="flex flex-wrap items-center justify-between gap-2">
-                  <h3 className="font-semibold">{address.fullName}</h3>
-                  {address.defaultAddress && <span className="rounded-full bg-platinum px-3 py-1 text-xs font-medium">Default</span>}
-                </div>
-                <address className="mt-3 space-y-0.5 text-sm not-italic text-slate">
-                  <p>{address.phone}</p>
-                  <p>{address.line1}</p>
-                  {address.line2 && <p>{address.line2}</p>}
-                  {address.landmark && <p>{address.landmark}</p>}
-                  <p>{address.city}, {address.state} {address.pincode}</p>
-                </address>
-                <div className="mt-5 flex flex-wrap gap-x-4 gap-y-2 text-sm">
-                  {!address.defaultAddress && (
-                    <button type="button" disabled={busy} onClick={() => void makeDefault(address.id)} className="link disabled:opacity-50">
-                      Make default
-                    </button>
-                  )}
-                  <button type="button" disabled={busy} onClick={() => startEditing(address)} className="link disabled:opacity-50">
-                    Edit
-                  </button>
-                  <button type="button" disabled={busy} onClick={() => void removeAddress(address)} className="text-out underline underline-offset-2 disabled:opacity-50">
-                    Delete
-                  </button>
-                </div>
-              </article>
-            </li>
-          ))}
-        </ul>
+        <div className="border border-line bg-surface p-6 shadow-sm">
+          <h3 className="mb-6 text-base font-medium text-ink">
+            {editId !== null ? "Edit Address" : "Add New Address"}
+          </h3>
+
+          {error && (
+             <div className="mb-6 p-4 bg-out/5 border border-out text-out text-sm text-center">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-5">
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
+              <div>
+                <label className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">First Name</label>
+                <input
+                  type="text"
+                  required
+                  value={formData.firstName}
+                  onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                  className="w-full h-11 border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none focus:ring-1 transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">Last Name</label>
+                <input
+                  type="text"
+                  required
+                  value={formData.lastName}
+                  onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                  className="w-full h-11 border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none focus:ring-1 transition-colors"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">Phone Number</label>
+              <input
+                type="tel"
+                required
+                value={formData.phone}
+                onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
+                className="w-full h-11 border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none focus:ring-1 transition-colors"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">Address Line 1</label>
+              <input
+                type="text"
+                required
+                value={formData.addressLine1}
+                onChange={(e) => setFormData({ ...formData, addressLine1: e.target.value })}
+                className="w-full h-11 border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none focus:ring-1 transition-colors"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">Address Line 2 (Optional)</label>
+              <input
+                type="text"
+                value={formData.addressLine2}
+                onChange={(e) => setFormData({ ...formData, addressLine2: e.target.value })}
+                className="w-full h-11 border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none focus:ring-1 transition-colors"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+              <div>
+                <label className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">City</label>
+                <input
+                  type="text"
+                  required
+                  value={formData.city}
+                  onChange={(e) => setFormData({ ...formData, city: e.target.value })}
+                  className="w-full h-11 border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none focus:ring-1 transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">State</label>
+                <input
+                  type="text"
+                  required
+                  value={formData.state}
+                  onChange={(e) => setFormData({ ...formData, state: e.target.value })}
+                  className="w-full h-11 border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none focus:ring-1 transition-colors"
+                />
+              </div>
+              <div>
+                <label className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">PIN Code</label>
+                <input
+                  type="text"
+                  required
+                  value={formData.pincode}
+                  onChange={(e) => setFormData({ ...formData, pincode: e.target.value })}
+                  className="w-full h-11 border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none focus:ring-1 transition-colors"
+                />
+              </div>
+            </div>
+
+            <label className="flex items-center gap-3 pt-2 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={formData.isDefault}
+                onChange={(e) => setFormData({ ...formData, isDefault: e.target.checked })}
+                className="h-4 w-4 rounded-none border-line text-ink focus:ring-ink focus:ring-offset-0 bg-surface checked:bg-ink"
+              />
+              <span className="text-sm text-ink group-hover:text-loupe transition-colors">Set as default delivery address</span>
+            </label>
+
+            <div className="flex flex-col sm:flex-row gap-4 pt-4">
+              <button
+                type="submit"
+                disabled={submitting}
+                className="flex-1 h-11 flex items-center justify-center bg-ink text-white text-xs font-medium uppercase tracking-widest hover:bg-loupe-deep transition-colors disabled:opacity-50"
+              >
+                {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save Address"}
+              </button>
+              <button
+                type="button"
+                onClick={() => setShowForm(false)}
+                disabled={submitting}
+                className="flex-1 h-11 flex items-center justify-center border border-line bg-surface text-ink text-xs font-medium uppercase tracking-widest hover:bg-platinum transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
       )}
-    </section>
+    </div>
   );
 }
+
+export default AddressBook;

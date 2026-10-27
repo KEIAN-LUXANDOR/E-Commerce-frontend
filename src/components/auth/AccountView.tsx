@@ -1,125 +1,60 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useEffect, useRef, useState } from "react";
-import { AddressBook } from "@/components/auth/AddressBook";
-import { FormAlert } from "@/components/auth/FormParts";
-import { logout, resendVerification } from "@/lib/api/auth";
-import { ApiError } from "@/lib/api/client";
-import { setSessionUser, useSession } from "@/lib/session";
+import { sessionStore } from "@/lib/session";
+import { User, LogOut, MapPin, ShoppingBag } from "lucide-react";
+import Link from "next/link";
 
-const joined = (iso: string) =>
-  new Intl.DateTimeFormat("en-IN", { day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Kolkata" }).format(new Date(iso));
-
-/** Signed-in customer's details from GET /auth/me, with log out. */
 export function AccountView() {
   const router = useRouter();
-  const session = useSession();
-  const [error, setError] = useState<string>();
-  const [busy, setBusy] = useState(false);
-  const [verificationBusy, setVerificationBusy] = useState(false);
-  const [verificationMessage, setVerificationMessage] = useState<string>();
-  // Set while logging out, so we go home instead of being sent to the login page
-  const leaving = useRef(false);
+  const session = sessionStore.useSession();
+  const user = session?.user;
 
-  // Session ended on the server (expired or logged out elsewhere): go to login
-  useEffect(() => {
-    if (session.status === "guest" && !leaving.current) router.replace("/login?next=/account");
-  }, [session.status, router]);
-
-  async function onLogout() {
-    setBusy(true);
-    setError(undefined);
-    try {
-      await logout();
-      leaving.current = true;
-      setSessionUser(null);
-      router.replace("/");
-      router.refresh();
-    } catch (err) {
-      // 401 means the session had already ended, which is what the shopper wanted anyway
-      if (err instanceof ApiError && err.status === 401) {
-        leaving.current = true;
-        setSessionUser(null);
-        router.replace("/");
-        return;
-      }
-      setError(err instanceof ApiError ? err.message : "Couldn’t log you out. Please try again.");
-      setBusy(false);
-    }
+  if (session.status !== "authenticated" || !user) {
+    return null;
   }
 
-  async function onResendVerification() {
-    if (session.status !== "user") return;
-    setVerificationBusy(true);
-    setError(undefined);
-    setVerificationMessage(undefined);
-    try {
-      const response = await resendVerification(session.user.email);
-      setVerificationMessage(response.message);
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Couldn’t send the verification email. Please try again.");
-    } finally {
-      setVerificationBusy(false);
-    }
+  async function handleLogout() {
+    await sessionStore.logout();
+    router.push("/login");
   }
-
-  if (session.status !== "user") {
-    return (
-      <div aria-busy="true" className="space-y-3">
-        <div className="skeleton h-6 w-48 rounded" />
-        <div className="skeleton h-24 rounded" />
-      </div>
-    );
-  }
-
-  const u = session.user;
-  const rows: [string, string][] = [
-    ["Name", u.fullName],
-    ["Email", u.email],
-    ["Mobile", u.phone ?? "Not added"],
-    ["Member since", joined(u.createdAt)],
-  ];
 
   return (
-    <div className="space-y-8">
-      {error && <FormAlert>{error}</FormAlert>}
-      <section aria-labelledby="details" className="rounded-[3px] border border-line bg-surface p-6">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h2 id="details" className="text-2xl">
-            Your details
-          </h2>
-          {u.role === "ADMIN" && <span className="rounded-full bg-ink px-3 py-1 text-xs font-medium text-white">Admin</span>}
+    <div className="mx-auto max-w-4xl px-4 py-12">
+      <div className="flex items-center justify-between border-b border-line pb-6 mb-8">
+        <div>
+          <h1 className="text-2xl font-serif tracking-widest text-ink">My Account</h1>
+          <p className="text-sm text-slate mt-1">{user.email}</p>
         </div>
-        <dl className="mt-4 divide-y divide-line text-sm">
-          {rows.map(([k, v]) => (
-            <div key={k} className="flex flex-wrap justify-between gap-2 py-3">
-              <dt className="text-slate">{k}</dt>
-              <dd className="font-medium">{v}</dd>
-            </div>
-          ))}
-        </dl>
-        {!u.emailVerified && (
-            <div className="mt-4 space-y-3">
-              <p className="text-sm text-slate">Your email isn’t verified yet. You can log in and shop, but must verify before placing an order.</p>
-              {verificationMessage && <FormAlert tone="info">{verificationMessage}</FormAlert>}
-              <button type="button" onClick={onResendVerification} disabled={verificationBusy} className="btn btn-secondary">
-                {verificationBusy ? "Sending…" : "Resend verification email"}
-              </button>
-            </div>
-          )}
-      </section>
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-out hover:opacity-80 transition-opacity"
+        >
+          <LogOut className="h-4 w-4" /> Sign Out
+        </button>
+      </div>
 
-      <AddressBook />
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <Link href="/account/addresses" className="border border-line bg-surface p-6 hover:border-ink transition-colors group">
+          <MapPin className="h-6 w-6 text-ink mb-4 group-hover:scale-110 transition-transform" />
+          <h2 className="text-sm font-medium uppercase tracking-widest text-ink mb-1">Addresses</h2>
+          <p className="text-xs text-slate">Manage your shipping and billing addresses.</p>
+        </Link>
 
-      <section aria-labelledby="coming" className="text-sm text-slate">
-        <h2 id="coming" className="sr-only">Coming soon</h2>
-        <p>Orders and your wishlist will appear here as they’re added.</p>
-      </section>
+        <Link href="/account/orders" className="border border-line bg-surface p-6 hover:border-ink transition-colors group">
+          <ShoppingBag className="h-6 w-6 text-ink mb-4 group-hover:scale-110 transition-transform" />
+          <h2 className="text-sm font-medium uppercase tracking-widest text-ink mb-1">Orders</h2>
+          <p className="text-xs text-slate">View your order history and tracking status.</p>
+        </Link>
 
-      <button type="button" onClick={onLogout} disabled={busy} className="btn btn-secondary">
-        {busy ? "Logging out…" : "Log out"}
-      </button>
+        <Link href="/account/profile" className="border border-line bg-surface p-6 hover:border-ink transition-colors group">
+          <User className="h-6 w-6 text-ink mb-4 group-hover:scale-110 transition-transform" />
+          <h2 className="text-sm font-medium uppercase tracking-widest text-ink mb-1">Profile</h2>
+          <p className="text-xs text-slate">Update your personal information and password.</p>
+        </Link>
+      </div>
     </div>
   );
 }
+
+export default AccountView;

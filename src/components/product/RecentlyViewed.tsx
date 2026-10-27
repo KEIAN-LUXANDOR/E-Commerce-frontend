@@ -1,26 +1,40 @@
 "use client";
 
-import { DiamondCard } from "@/components/shop/DiamondCard";
-import { useRecentlyViewed } from "@/lib/stores";
+import { useEffect, useState } from "react";
+import Link from "next/link";
 
-/** Diamonds this shopper opened recently, kept in their browser only. */
-export function RecentlyViewed({ excludeSlug }: { excludeSlug?: string }) {
-  const items = useRecentlyViewed()
-    .filter((d) => d.slug !== excludeSlug)
-    .slice(0, 4);
-  if (!items.length) return null;
+export function RecentlyViewed({ currentId }: { currentId?: string }) {
+  const [items, setItems] = useState<any[]>([]);
+
+  useEffect(() => {
+    try {
+      const recent = JSON.parse(localStorage.getItem("recent_diamonds") || "[]");
+      setItems(recent.filter((p: any) => p.id !== currentId).slice(0, 4));
+    } catch (e) {}
+  }, [currentId]);
+
+  if (items.length === 0) return null;
+
   return (
-    <section aria-labelledby="recently-viewed" className="mt-20">
-      <h2 id="recently-viewed" className="text-3xl">
-        Recently viewed
-      </h2>
-      <ul className="mt-6 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-4">
-        {items.map((d) => (
-          <li key={d.slug}>
-            <DiamondCard diamond={d} />
-          </li>
+    <div className="mt-24 border-t border-line pt-12">
+      <h2 className="text-xl font-serif text-ink mb-6 text-center">Recently Viewed</h2>
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {items.map((product) => (
+          <Link key={product.id} href={`/diamond/${product.id}`} className="group block border border-line bg-surface hover:border-ink transition-colors">
+            <div className="aspect-square bg-platinum flex items-center justify-center text-xs uppercase text-slate tracking-widest">
+              {product.shape}
+            </div>
+            <div className="p-4 text-center border-t border-line">
+              <h3 className="text-sm font-medium text-ink mb-1 truncate">
+                {product.name || `${product.carat} ct ${product.shape}`}
+              </h3>
+              <p className="text-xs text-slate">${product.price?.toLocaleString()}</p>
+            </div>
+          </Link>
         ))}
-      </ul>
-    </section>
+      </div>
+    </div>
   );
 }
+
+export default RecentlyViewed;

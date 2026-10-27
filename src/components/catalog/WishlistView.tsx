@@ -1,77 +1,41 @@
 "use client";
 
+import { Trash2 } from "lucide-react";
 import Link from "next/link";
-import { useEffect, useState } from "react";
-import { Heart } from "lucide-react";
-import { ProductCard } from "@/components/catalog/ProductCard";
-import { EmptyState } from "@/components/common/EmptyState";
-import { Spinner } from "@/components/common/Spinner";
-import { fetchProductsBySlug } from "@/lib/api/products-browser";
-import { getWishlist } from "@/lib/api/wishlist";
-import { useSession } from "@/lib/session";
-import { useGuestWishlist, useWishlist } from "@/lib/shop/wishlist";
-import type { Product } from "@/lib/types/product";
+import { useWishlist } from "@/lib/shop/wishlist";
 
-/**
- * Logged in: the account's saved diamonds (GET /account/wishlist).
- * Guest: the diamonds saved in this browser, loaded live from the catalogue.
- */
 export function WishlistView() {
-  const session = useSession();
-  const saved = useWishlist();
-  const guest = useGuestWishlist();
-  const [products, setProducts] = useState<Product[] | null>(null);
-  const [error, setError] = useState<string>();
+  const { ids, toggle } = useWishlist();
 
-  const signedIn = session.status === "user";
-  const guestKey = guest.map((g) => g.slug).join(",");
-  // Reload when the saved set changes (e.g. guest hearts moved into the account after login)
-  const savedKey = saved.ids.join(",");
-
-  useEffect(() => {
-    if (session.status === "loading") return;
-    const ctrl = new AbortController();
-    let load: Promise<Product[]> = Promise.resolve([]);
-    if (signedIn) load = getWishlist().then((list) => list.map((e) => e.product));
-    else if (guestKey) load = fetchProductsBySlug(guestKey.split(","), ctrl.signal);
-    load.then(setProducts).catch((e: unknown) => {
-      if ((e as Error).name !== "AbortError") setError("We couldn’t load your saved diamonds. Please try again in a minute.");
-    });
-    return () => ctrl.abort();
-  }, [session.status, signedIn, guestKey, savedKey]);
-
-  if (error) return <p className="mt-10 text-out">{error}</p>;
-  if (!products) return <Spinner className="mt-10" label="Loading saved diamonds" />;
-
-  // Hide anything un-saved since the list loaded
-  const visible = products.filter((p) => saved.ids.includes(p.id));
-
-  if (visible.length === 0) {
+  if (!ids || ids.length === 0) {
     return (
-      <EmptyState className="mt-10" icon={<Heart className="size-8" />} title="No saved diamonds yet" action={{ label: "Browse diamonds", href: "/diamonds" }}>
-        Tap the heart on any diamond to keep it here.
-      </EmptyState>
+      <div className="p-12 text-center border border-line bg-surface">
+        <p className="text-sm text-slate mb-4">Your wishlist is empty.</p>
+        <Link href="/diamonds" className="text-xs font-medium uppercase tracking-widest text-ink hover:underline">
+          Browse Diamonds
+        </Link>
+      </div>
     );
   }
 
   return (
-    <div className="mt-8">
-      {!signedIn && (
-        <p className="mb-6 border border-line bg-stone px-4 py-3 text-sm">
-          These are saved on this device only.{" "}
-          <Link href="/login?next=/wishlist" className="link">
-            Log in
-          </Link>{" "}
-          to keep them in your account and see them on any device.
-        </p>
-      )}
-      <ul className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
-        {visible.map((p) => (
-          <li key={p.id}>
-            <ProductCard product={p} />
-          </li>
-        ))}
-      </ul>
+    <div className="space-y-4">
+      {ids.map((id) => (
+        <div key={id} className="flex items-center justify-between border border-line p-4 bg-surface">
+          <Link href={`/diamond/${id}`} className="text-sm font-medium text-ink hover:underline">
+            Diamond #{id}
+          </Link>
+          <button 
+            onClick={() => toggle(id, "remove")} 
+            className="text-out hover:opacity-80 p-2 transition-opacity"
+            aria-label="Remove from wishlist"
+          >
+            <Trash2 className="h-4 w-4" />
+          </button>
+        </div>
+      ))}
     </div>
   );
 }
+
+export default WishlistView;

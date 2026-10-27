@@ -96,7 +96,7 @@ export default async function DiamondsPage({ params, searchParams }: DiamondsPag
       {loadError ? (
         <ListingState kind="error" message={loadError} resetHref={basePath} />
       ) : !pageData || pageData.items.length === 0 ? (
-        <ListingState kind="empty" resetHref={basePath} />
+        <ListingState kind="empty" />
       ) : view === "list" ? (
         <ProductTable products={pageData.items} />
       ) : (

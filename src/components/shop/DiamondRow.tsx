@@ -1,39 +1,28 @@
-import Link from "next/link";
-import { DiamondCard } from "@/components/shop/DiamondCard";
-import type { DiamondSummary } from "@/lib/types/catalog";
+"use client";
 
-/** A titled row of up to four diamonds; hidden when there are none. */
-export function DiamondRow({
-  title,
-  diamonds,
-  link,
-  id,
-}: {
-  title: string;
-  diamonds: DiamondSummary[];
-  link?: { href: string; label: string };
-  id: string;
-}) {
-  if (!diamonds.length) return null;
+import Link from "next/link";
+
+export function DiamondRow({ product }: { product: any }) {
+  if (!product) return null;
   return (
-    <section aria-labelledby={id}>
-      <div className="flex items-end justify-between gap-4">
-        <h2 id={id} className="text-3xl sm:text-4xl">
-          {title}
-        </h2>
-        {link && (
-          <Link href={link.href} className="link shrink-0 text-sm">
-            {link.label}
-          </Link>
-        )}
-      </div>
-      <ul className="mt-6 grid grid-cols-2 gap-x-4 gap-y-10 sm:gap-x-6 md:grid-cols-4">
-        {diamonds.map((d) => (
-          <li key={d.id}>
-            <DiamondCard diamond={d} />
-          </li>
-        ))}
-      </ul>
-    </section>
+    <tr className="hover:bg-platinum/50 transition-colors">
+      <td className="p-4">
+        <Link href={`/diamond/${product.id}`} className="font-medium text-ink hover:underline">
+          {product.shape}
+        </Link>
+      </td>
+      <td className="p-4">{product.carat}</td>
+      <td className="p-4">{product.color}</td>
+      <td className="p-4">{product.clarity}</td>
+      <td className="p-4">{product.cut}</td>
+      <td className="p-4 font-medium text-ink">${product.price?.toLocaleString()}</td>
+      <td className="p-4 text-right">
+        <Link href={`/diamond/${product.id}`} className="text-[10px] uppercase tracking-widest font-medium text-ink hover:underline">
+          View
+        </Link>
+      </td>
+    </tr>
   );
 }
+
+export default DiamondRow;

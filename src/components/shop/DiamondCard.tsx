@@ -1,64 +1,39 @@
-import Link from "next/link";
-import { ProductImage } from "@/components/product/ProductImage";
-import { WishlistButton } from "@/components/shop/WishlistButton";
-import { Price } from "@/components/ui/Price";
-import { diamondTitle, originLabel } from "@/lib/catalog-labels";
-import type { DiamondSummary } from "@/lib/types/catalog";
+"use client";
 
-/** One diamond as a card: face-up view, the four grades and the price. */
-export function DiamondCard({ diamond, priority }: { diamond: DiamondSummary; priority?: boolean }) {
-  const title = diamondTitle(diamond);
-  const sizes = "(min-width: 1280px) 22vw, (min-width: 768px) 30vw, 50vw";
+import Link from "next/link";
+import { Heart } from "lucide-react";
+
+export function DiamondCard({ product }: { product: any }) {
+  if (!product) return null;
 
   return (
-    <article className="group relative flex flex-col">
-      <Link href={`/product/${diamond.slug}`} className="flex flex-col">
-        <div className="relative aspect-square overflow-hidden bg-platinum">
-          <div className="absolute inset-[12%] transition-opacity duration-300 group-hover:opacity-0">
-            <ProductImage media={diamond.media[0]} shape={diamond.shape} alt={`${title} diamond`} sizes={sizes} priority={priority} />
-          </div>
-          {/* Side profile appears on hover */}
-          <div className="absolute inset-[12%] opacity-0 transition-opacity duration-300 group-hover:opacity-100" aria-hidden>
-            <ProductImage media={diamond.media[1]} shape={diamond.shape} fallbackView="profile" alt="" sizes={sizes} />
-          </div>
-          <span className="absolute bottom-3 left-3 rounded-full bg-surface px-2.5 py-1 text-xs">
-            {originLabel(diamond.origin)}, {diamond.lab}
-          </span>
-          {(diamond.isNew || !diamond.available) && (
-            <span className={`absolute left-3 top-3 rounded-full px-2.5 py-1 text-xs font-medium ${diamond.available ? "bg-ink text-white" : "bg-surface text-out"}`}>
-              {diamond.available ? "New" : "Sold"}
-            </span>
-          )}
-        </div>
-
-        <div className="mt-3">
-          <h3 className="font-sans text-[0.9375rem] font-medium leading-snug group-hover:underline">{title}</h3>
-          {/* The grades a buyer compares first */}
-          <dl className="mt-1.5 flex flex-wrap gap-x-3 text-sm text-slate">
-            <div className="flex gap-1">
-              <dt className="sr-only">Colour</dt>
-              <dd>{diamond.color}</dd>
-            </div>
-            <div className="flex gap-1">
-              <dt className="sr-only">Clarity</dt>
-              <dd>{diamond.clarity}</dd>
-            </div>
-            <div className="flex gap-1">
-              <dt className="sr-only">Cut</dt>
-              <dd>{diamond.cut === "EXCELLENT" ? "Excellent cut" : diamond.cut === "VERY_GOOD" ? "Very good cut" : "Good cut"}</dd>
-            </div>
-          </dl>
-          <p className="mt-2 font-medium">
-            <Price paise={diamond.pricePaise} />
-          </p>
+    <div className="group flex flex-col border border-line bg-surface hover:border-ink transition-colors relative">
+      <div className="absolute top-2 right-2 z-10">
+        <button className="p-2 border border-line bg-surface hover:border-ink transition-colors" aria-label="Save">
+          <Heart className="h-4 w-4 text-ink" />
+        </button>
+      </div>
+      <Link href={`/diamond/${product.id}`} className="block aspect-square relative bg-platinum overflow-hidden">
+        <div className="absolute inset-0 flex items-center justify-center text-slate text-xs uppercase tracking-widest">
+          {product.shape}
         </div>
       </Link>
-
-      <WishlistButton
-        slug={diamond.slug}
-        name={title}
-        className="absolute right-2 top-2 grid size-10 place-items-center rounded-full bg-surface/70 text-ink hover:bg-surface"
-      />
-    </article>
+      <div className="p-4 flex flex-col flex-1">
+        <Link href={`/diamond/${product.id}`} className="text-sm font-medium text-ink hover:underline mb-1 truncate">
+          {product.name || `${product.carat} ct ${product.shape}`}
+        </Link>
+        <p className="text-xs text-slate mb-4 flex-1">
+          {product.color} Color • {product.clarity} Clarity • {product.cut} Cut
+        </p>
+        <div className="flex items-center justify-between mt-auto">
+          <span className="text-sm font-medium text-ink">${product.price?.toLocaleString()}</span>
+          <button className="text-[10px] uppercase tracking-widest font-medium text-ink hover:underline">
+            View Details
+          </button>
+        </div>
+      </div>
+    </div>
   );
 }
+
+export default DiamondCard;

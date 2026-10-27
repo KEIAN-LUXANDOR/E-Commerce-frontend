@@ -1,40 +1,28 @@
+import * as React from "react";
 import type { Metadata } from "next";
-import Link from "next/link";
-import { Suspense } from "react";
 import { ResetPasswordForm } from "@/components/auth/ResetPasswordForm";
 
-export const metadata: Metadata = { title: "Reset password", robots: { index: false, follow: false } };
+export const metadata: Metadata = {
+  title: "Reset Password | Luxandor",
+  description: "Reset your Luxandor account password.",
+};
 
-type Props = PageProps<"/reset-password">;
-
-export default function ResetPasswordPage({ searchParams }: Props) {
+export default function ResetPasswordPage() {
   return (
-    <div className="w-full max-w-sm">
-      <h1 className="text-4xl">Reset your password</h1>
-      <p className="mt-2 text-slate">Choose a new password for your account.</p>
-      <div className="mt-8">
-        <Suspense fallback={<div className="skeleton h-48 rounded" />}>
-          <ResetPasswordContent searchParams={searchParams} />
-        </Suspense>
+    <div className="flex min-h-screen items-center justify-center bg-platinum px-4 py-12 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md space-y-8 bg-surface p-8 shadow-sm border border-line">
+        <div>
+          <h2 className="mt-6 text-center text-2xl font-serif tracking-widest text-ink">
+            Reset Password
+          </h2>
+          <p className="mt-2 text-center text-sm text-slate">
+            Enter your new password below
+          </p>
+        </div>
+        <React.Suspense fallback={<div className="text-center text-sm text-slate">Loading...</div>}>
+          <ResetPasswordForm />
+        </React.Suspense>
       </div>
-      <p className="mt-5 text-center text-sm">
-        <Link href="/login" className="link">Back to log in</Link>
-      </p>
     </div>
   );
-}
-
-async function ResetPasswordContent({ searchParams }: Pick<Props, "searchParams">) {
-  const sp = await searchParams;
-  const token = Array.isArray(sp.token) ? sp.token[0] : sp.token;
-
-  if (!token) {
-    return <FormAlertMissingToken />;
-  }
-
-  return <ResetPasswordForm token={token} />;
-}
-
-function FormAlertMissingToken() {
-  return <p role="alert" className="text-sm text-out">This reset link is incomplete. Request a new password reset link.</p>;
 }

@@ -1,30 +1,26 @@
+import * as React from "react";
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { RegisterForm } from "@/components/auth/RegisterForm";
-import { safeNextPath } from "@/lib/validators";
 
-export const metadata: Metadata = { title: "Create Client Account", robots: { index: false, follow: false } };
+export const metadata: Metadata = {
+  title: "Create Account | Luxandor",
+  description: "Create a new Luxandor account.",
+};
 
-type Props = PageProps<"/register">;
-
-export default function RegisterPage({ searchParams }: Props) {
+export default function RegisterPage() {
   return (
-    <div className="w-full">
-      <div className="mb-6 space-y-1 text-center">
-        <h1 className="font-serif text-3xl text-[var(--color-ink)]">Create Client Account</h1>
-        <p className="font-sans text-xs text-[var(--color-slate)]">
-          Join our private collector circle for verified GIA/IGI acquisitions, direct atelier pricing, and armoured delivery.
-        </p>
+    <div className="flex min-h-screen items-center justify-center bg-platinum px-4 py-12 sm:px-6 lg:px-8">
+      <div className="w-full max-w-md space-y-8 bg-surface p-8 shadow-sm border border-line">
+        <div>
+          <h2 className="mt-6 text-center text-2xl font-serif tracking-widest text-ink">
+            Create Account
+          </h2>
+          <p className="mt-2 text-center text-sm text-slate">
+            Join Luxandor for exclusive collections
+          </p>
+        </div>
+        <RegisterForm />
       </div>
-      <Suspense fallback={<div className="skeleton h-96 rounded" />}>
-        <Form searchParams={searchParams} />
-      </Suspense>
     </div>
   );
-}
-
-async function Form({ searchParams }: Pick<Props, "searchParams">) {
-  const sp = await searchParams;
-  const next = Array.isArray(sp.next) ? sp.next[0] : sp.next;
-  return <RegisterForm next={safeNextPath(next)} />;
 }

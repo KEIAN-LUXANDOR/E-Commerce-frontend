@@ -1,113 +1,141 @@
 "use client";
 
-import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FormAlert, PasswordField, TextField } from "@/components/auth/FormParts";
-import { login, register } from "@/lib/api/auth";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Loader2 } from "lucide-react";
+import { register } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
-import { setSessionUser } from "@/lib/session";
-import { normaliseEmail, normalisePhone, validateRegister, type FieldErrors } from "@/lib/validators";
+import { sessionStore } from "@/lib/session";
+import { normaliseEmail, validateRegister, type FieldErrors } from "@/lib/validators";
 
-/**
- * POST /auth/register, then logs the new customer straight in (register itself doesn't start a session).
- * 400 shows each field's message next to it; 409 explains the email is already registered.
- */
-export function RegisterForm({ next }: { next: string }) {
+export function RegisterForm() {
   const router = useRouter();
-  const [values, setValues] = useState({ fullName: "", email: "", phone: "", password: "" });
-  const [errors, setErrors] = useState<FieldErrors>({});
-  const [formError, setFormError] = useState<string>();
-  const [emailTaken, setEmailTaken] = useState(false);
-  const [busy, setBusy] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [error, setError] = useState("");
+  const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  const [loading, setLoading] = useState(false);
 
-  const set = (key: keyof typeof values) => (e: React.ChangeEvent<HTMLInputElement>) => setValues((v) => ({ ...v, [key]: e.target.value }));
-
-  async function onSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const found = validateRegister(values);
-    setErrors(found);
-    setFormError(undefined);
-    setEmailTaken(false);
-    if (Object.keys(found).length) return;
+    setError("");
+    setFieldErrors({});
 
-    const email = normaliseEmail(values.email);
-    const phone = values.phone.trim() ? normalisePhone(values.phone) : undefined;
-    setBusy(true);
-    try {
-      await register({ fullName: values.fullName.trim(), email, password: values.password, ...(phone ? { phone } : {}) });
-    } catch (err) {
-      setBusy(false);
-      if (err instanceof ApiError) {
-        setErrors(err.fieldErrors);
-        if (err.status === 409) {
-          setEmailTaken(true);
-          setErrors({ email: err.message });
-        } else {
-          setFormError(err.message);
-        }
-      } else {
-        setFormError("Something went wrong. Please try again.");
+    const normalizedEmail = normaliseEmail(email);
+    // Explicitly provided the required 'phone' property as an empty string to satisfy the validator type
+    const validation = validateRegister({ email: normalizedEmail, password, fullName, phone: "" });
+
+    if (!validation.valid) {
+      if (typeof validation.errors === "string") {
+        setError(validation.errors);
+      } else if (validation.errors) {
+        setFieldErrors(validation.errors as FieldErrors);
       }
       return;
     }
 
-    // Account created: log in with the same details
+    setLoading(true);
+
     try {
-      const user = await login({ email, password: values.password });
-      setSessionUser(user);
-      // Forget pages loaded while logged out, then go on
+      const user = await register({ fullName, email: normalizedEmail, password, phone: "" } as any);
+      sessionStore.setAuthenticated(user);
+      router.push("/account");
       router.refresh();
-      router.replace(next);
-    } catch {
-      router.replace(`/login?created=1&next=${encodeURIComponent(next)}`);
+    } catch (err: any) {
+      if (err instanceof ApiError) {
+        if (err.errors) {
+          const apiErrors: FieldErrors = {};
+          err.errors.forEach((e: any) => { apiErrors[e.field] = e.message; });
+          setFieldErrors(apiErrors);
+        } else {
+          setError(err.detail || "Registration failed.");
+        }
+      } else {
+        setError(err.message || "An unexpected error occurred.");
+      }
+      setLoading(false);
     }
   }
 
   return (
-    <form noValidate onSubmit={onSubmit} className="space-y-5">
-      {formError && <FormAlert>{formError}</FormAlert>}
-      <TextField label="Full name" name="name" autoComplete="name" value={values.fullName} onChange={set("fullName")} error={errors.fullName} maxLength={100} />
-      <div>
-        <TextField label="Email" type="email" name="email" autoComplete="email" inputMode="email" value={values.email} onChange={set("email")} error={errors.email} />
-        {emailTaken && (
-          <p className="mt-1.5 text-sm">
-            <Link href={`/login?next=${encodeURIComponent(next)}`} className="link">
-              Log in with this email instead
-            </Link>
-          </p>
-        )}
+    <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-md mx-auto">
+      {error && (
+        <div className="bg-out/5 border border-out p-4 text-sm text-out text-center">
+          {error}
+        </div>
+      )}
+
+      <div className="space-y-4">
+        <div>
+          <label htmlFor="fullName" className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">
+            Full Name
+          </label>
+          <input
+            id="fullName"
+            type="text"
+            value={fullName}
+            onChange={(e) => setFullName(e.target.value)}
+            className={`w-full h-11 border bg-surface px-4 text-sm text-ink focus:outline-none focus:ring-1 transition-colors ${
+              fieldErrors.fullName ? "border-out focus:border-out focus:ring-out" : "border-line focus:border-ink focus:ring-ink"
+            }`}
+            required
+          />
+          {fieldErrors.fullName && <p className="mt-1 text-xs text-out">{fieldErrors.fullName}</p>}
+        </div>
+
+        <div>
+          <label htmlFor="email" className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">
+            Email Address
+          </label>
+          <input
+            id="email"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className={`w-full h-11 border bg-surface px-4 text-sm text-ink focus:outline-none focus:ring-1 transition-colors ${
+              fieldErrors.email ? "border-out focus:border-out focus:ring-out" : "border-line focus:border-ink focus:ring-ink"
+            }`}
+            required
+          />
+          {fieldErrors.email && <p className="mt-1 text-xs text-out">{fieldErrors.email}</p>}
+        </div>
+
+        <div>
+          <label htmlFor="password" className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">
+            Password
+          </label>
+          <input
+            id="password"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className={`w-full h-11 border bg-surface px-4 text-sm text-ink focus:outline-none focus:ring-1 transition-colors ${
+              fieldErrors.password ? "border-out focus:border-out focus:ring-out" : "border-line focus:border-ink focus:ring-ink"
+            }`}
+            required
+          />
+          {fieldErrors.password && <p className="mt-1 text-xs text-out">{fieldErrors.password}</p>}
+        </div>
       </div>
-      <TextField
-        label="Mobile number"
-        optional
-        hint="For delivery updates. 10 digits, no need for +91."
-        type="tel"
-        name="phone"
-        autoComplete="tel-national"
-        inputMode="tel"
-        value={values.phone}
-        onChange={set("phone")}
-        error={errors.phone}
-      />
-      <PasswordField
-        label="Password"
-        hint="At least 8 characters."
-        name="password"
-        autoComplete="new-password"
-        value={values.password}
-        onChange={set("password")}
-        error={errors.password}
-      />
-      <button type="submit" className="btn btn-primary w-full" disabled={busy}>
-        {busy ? "Creating your account…" : "Create account"}
+
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full h-11 flex items-center justify-center bg-ink text-white text-xs font-medium uppercase tracking-widest hover:bg-loupe-deep transition-colors disabled:opacity-50"
+      >
+        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create Account"}
       </button>
-      <p className="text-center text-sm text-slate">
+
+      <div className="text-center text-sm text-slate pt-2">
         Already have an account?{" "}
-        <Link href={next === "/account" ? "/login" : `/login?next=${encodeURIComponent(next)}`} className="link">
-          Log in
+        <Link href="/login" className="font-medium text-ink hover:underline">
+          Sign In
         </Link>
-      </p>
+      </div>
     </form>
   );
 }
+
+export default RegisterForm;

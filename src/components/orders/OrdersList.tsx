@@ -1,95 +1,69 @@
 "use client";
 
-import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useState } from "react";
-import { ChevronRight, Package } from "lucide-react";
-import { EmptyState } from "@/components/common/EmptyState";
-import { NotAvailableYet } from "@/components/common/NotAvailableYet";
-import { Spinner } from "@/components/common/Spinner";
-import { formatDate, OrderStatusBadge } from "@/components/orders/OrderBits";
-import { isEnabled } from "@/config/features";
-import { listOrders } from "@/lib/api/orders";
-import { formatINR } from "@/lib/format";
-import type { OrderListPage } from "@/lib/types/order";
+import Link from "next/link";
+import { Loader2 } from "lucide-react";
+import { apiFetch } from "@/lib/api/client";
 
-/** My orders (GET /account/orders, planned). */
 export function OrdersList() {
-  const enabled = isEnabled("orders");
-  const [page, setPage] = useState(0);
-  const [data, setData] = useState<OrderListPage | null>(null);
-  const [error, setError] = useState<string>();
+  const [orders, setOrders] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (!enabled) return;
-    let active = true;
-    listOrders(page, 10)
-      .then((d) => {
-        if (active) setData(d);
-      })
-      .catch((e: unknown) => {
-        if (active) setError(e instanceof Error ? e.message : "Couldn’t load your orders.");
-      });
-    return () => {
-      active = false;
-    };
-  }, [enabled, page]);
+    async function loadOrders() {
+      try {
+        const data = await apiFetch("/orders") as any;
+        setOrders(data?.content || data || []);
+      } catch (err) {
+        console.error(err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    loadOrders();
+  }, []);
 
-  if (!enabled) {
+  if (loading) {
     return (
-      <NotAvailableYet title="Online order history is coming soon" whatsappText="Hello Keian Luxandor, I'd like an update on my order.">
-        If you’ve placed an order with us, message or call us with your name and we’ll give you an update straight away.
-      </NotAvailableYet>
+      <div className="flex h-48 items-center justify-center border border-line bg-surface">
+        <Loader2 className="h-6 w-6 animate-spin text-slate" />
+      </div>
     );
   }
-  if (error) return <p className="text-out">{error}</p>;
-  if (!data) return <Spinner label="Loading your orders" />;
-  if (data.items.length === 0) {
+
+  if (orders.length === 0) {
     return (
-      <EmptyState icon={<Package className="size-8" />} title="No orders yet" action={{ label: "Browse diamonds", href: "/diamonds" }}>
-        When you buy a diamond, its order and delivery updates will appear here.
-      </EmptyState>
+      <div className="p-12 text-center border border-line bg-surface">
+        <p className="text-slate mb-4">You haven't placed any orders yet.</p>
+        <Link href="/diamonds" className="text-xs font-medium uppercase tracking-widest text-ink hover:underline">
+          Start Shopping
+        </Link>
+      </div>
     );
   }
 
   return (
-    <div>
-      <ul className="divide-y divide-line border-y border-line">
-        {data.items.map((o) => (
-          <li key={o.orderNumber}>
-            <Link href={`/account/orders/${encodeURIComponent(o.orderNumber)}`} className="flex items-center gap-4 py-4 hover:bg-stone sm:px-3">
-              <span className="relative size-14 shrink-0 border border-line bg-stone">
-                {o.firstItemImageUrl && <Image src={o.firstItemImageUrl} alt="" fill unoptimized sizes="56px" className="object-contain" />}
-              </span>
-              <span className="min-w-0 flex-1">
-                <span className="flex flex-wrap items-center gap-2">
-                  <span className="font-medium">Order {o.orderNumber}</span>
-                  <OrderStatusBadge status={o.status} />
-                </span>
-                <span className="mt-1 block truncate text-sm text-slate">
-                  {o.firstItemName}
-                  {o.itemCount > 1 && ` and ${o.itemCount - 1} more`} · {formatDate(o.createdAt)}
-                </span>
-              </span>
-              <span className="text-right tabular-nums">{formatINR(o.totalPaise)}</span>
-              <ChevronRight className="size-4 text-slate" aria-hidden />
+    <div className="space-y-4">
+      {orders.map((order) => (
+        <div key={order.id} className="border border-line bg-surface p-6 flex flex-col sm:flex-row justify-between sm:items-center gap-4 hover:border-ink transition-colors">
+          <div>
+            <Link href={`/account/orders/${order.id}`} className="text-base font-medium text-ink hover:underline block mb-1">
+              Order #{order.orderNumber || order.id}
             </Link>
-          </li>
-        ))}
-      </ul>
-      {data.totalPages > 1 && (
-        <div className="mt-6 flex items-center justify-between text-sm">
-          <button type="button" className="btn btn-secondary" disabled={page === 0} onClick={() => setPage((p) => p - 1)}>
-            Newer
-          </button>
-          <span className="text-slate">
-            Page {page + 1} of {data.totalPages}
-          </span>
-          <button type="button" className="btn btn-secondary" disabled={page >= data.totalPages - 1} onClick={() => setPage((p) => p + 1)}>
-            Older
-          </button>
+            <p className="text-xs text-slate">
+              {new Date(order.createdAt || order.placedAt).toLocaleDateString()} • {order.items?.length || 0} items
+            </p>
+          </div>
+          <div className="flex items-center gap-6">
+            <span className="text-sm font-medium text-ink">${order.total?.toLocaleString()}</span>
+            <span className="inline-block px-2 py-1 bg-platinum text-[10px] font-medium uppercase tracking-widest text-ink">
+              {order.status}
+            </span>
+          </div>
         </div>
-      )}
+      ))}
     </div>
   );
 }
+
+export default OrdersList;

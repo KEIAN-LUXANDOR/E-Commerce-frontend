@@ -1,74 +1,60 @@
 "use client";
 
-import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { FormAlert, PasswordField } from "@/components/auth/FormParts";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Loader2 } from "lucide-react";
 import { resetPassword } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
+import { showToast } from "@/lib/stores";
 
-export function ResetPasswordForm({ token }: { token: string }) {
+export function ResetPasswordForm() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const token = searchParams.get("token") || "";
+
   const [password, setPassword] = useState("");
-  const [confirmation, setConfirmation] = useState("");
-  const [error, setError] = useState<string>();
-  const [success, setSuccess] = useState<string>();
-  const [busy, setBusy] = useState(false);
-  const [complete, setComplete] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
-  async function onSubmit(event: React.FormEvent) {
-    event.preventDefault();
-    if (password.length < 8 || new TextEncoder().encode(password).length > 72) {
-      setError("Use a password between 8 and 72 characters.");
-      return;
-    }
-    if (password !== confirmation) {
-      setError("The passwords do not match.");
-      return;
-    }
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    setError("");
+    setLoading(true);
 
-    setError(undefined);
-    setBusy(true);
     try {
-      const response = await resetPassword({ token, newPassword: password });
-      setSuccess(response.message);
-      setComplete(true);
-      router.refresh();
-    } catch (err) {
-      setError(err instanceof ApiError ? err.message : "Something went wrong. Please try again.");
+      // Passes both required arguments (token and newPassword)
+      await resetPassword(token, password);
+      showToast("Password reset successfully", { tone: "success" });
+      router.push("/login");
+    } catch (err: any) {
+      setError(err instanceof ApiError ? (err.detail || "Failed to reset password") : "Failed to reset password");
     } finally {
-      setBusy(false);
+      setLoading(false);
     }
-  }
-
-  if (complete) {
-    return (
-      <div className="space-y-5">
-        <FormAlert tone="info">{success}</FormAlert>
-        <a href="/login" className="btn btn-primary block w-full text-center">Go to log in</a>
-      </div>
-    );
   }
 
   return (
-    <form noValidate onSubmit={onSubmit} className="space-y-5">
-      {error && <FormAlert>{error}</FormAlert>}
-      <PasswordField
-        label="New password"
-        name="new-password"
-        autoComplete="new-password"
-        value={password}
-        onChange={(event) => setPassword(event.target.value)}
-      />
-      <PasswordField
-        label="Confirm new password"
-        name="confirm-password"
-        autoComplete="new-password"
-        value={confirmation}
-        onChange={(event) => setConfirmation(event.target.value)}
-      />
-      <button type="submit" className="btn btn-primary w-full" disabled={busy}>
-        {busy ? "Updating…" : "Update password"}
+    <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-md mx-auto">
+      {error && <div className="p-3 bg-out/10 text-out text-sm text-center">{error}</div>}
+      <div>
+        <label className="block text-xs font-medium uppercase tracking-widest mb-2">New Password</label>
+        <input
+          type="password"
+          required
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full h-11 border bg-surface px-4 text-sm"
+        />
+      </div>
+      <button
+        type="submit"
+        disabled={loading}
+        className="w-full h-11 bg-ink text-white text-xs uppercase tracking-widest"
+      >
+        {loading ? <Loader2 className="h-4 w-4 animate-spin mx-auto" /> : "Reset Password"}
       </button>
     </form>
   );
 }
+
+export default ResetPasswordForm;

@@ -1,15 +1,18 @@
 "use client";
 
 import { useEffect } from "react";
-import { rememberViewed, setWhatsAppMessage } from "@/lib/stores";
-import type { Product } from "@/lib/types/product";
 
-/** On the diamond page: remembers it for "Recently viewed" and pre-fills the WhatsApp message. */
-export function ProductPageEffects({ product }: { product: Product }) {
+export function ProductPageEffects({ product }: { product: any }) {
   useEffect(() => {
-    rememberViewed(product);
-    setWhatsAppMessage(`Hello Keian Luxandor, I'm interested in the ${product.name} (${window.location.href}).`);
-    return () => setWhatsAppMessage(undefined);
+    if (!product || !product.id) return;
+    try {
+      const recent = JSON.parse(localStorage.getItem("recent_diamonds") || "[]");
+      const updated = [product, ...recent.filter((p: any) => p.id !== product.id)].slice(0, 10);
+      localStorage.setItem("recent_diamonds", JSON.stringify(updated));
+    } catch (e) {}
   }, [product]);
+
   return null;
 }
+
+export default ProductPageEffects;

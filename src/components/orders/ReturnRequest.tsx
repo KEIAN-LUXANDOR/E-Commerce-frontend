@@ -1,102 +1,63 @@
 "use client";
 
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import { FormAlert } from "@/components/auth/FormParts";
-import { isEnabled } from "@/config/features";
-import { requestReturn } from "@/lib/api/orders";
-import { site } from "@/lib/site";
-import type { Order } from "@/lib/types/order";
+import { useState } from "react";
+import { Loader2 } from "lucide-react";
+import { apiFetch } from "@/lib/api/client";
+import { showToast } from "@/lib/stores";
 
-const REASONS = [
-  { value: "CHANGED_MIND", label: "I changed my mind" },
-  { value: "NOT_AS_DESCRIBED", label: "It isn’t as described" },
-  { value: "DAMAGED", label: "It arrived damaged" },
-  { value: "OTHER", label: "Something else" },
-];
-
-/** "Return this order" for a delivered order inside the return window (POST …/return, planned). */
-export function ReturnRequest({ order, onDone }: { order: Order; onDone: () => void }) {
-  const [open, setOpen] = useState(false);
+export function ReturnRequest({ orderId }: { orderId: string }) {
   const [reason, setReason] = useState("");
   const [details, setDetails] = useState("");
-  const [error, setError] = useState<string>();
-  const [busy, setBusy] = useState(false);
-  const [now, setNow] = useState<number>();
+  const [loading, setLoading] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
 
-  useEffect(() => {
-    const timer = window.setTimeout(() => setNow(Date.now()), 0);
-    return () => window.clearTimeout(timer);
-  }, []);
-
-  const deliveredAt = order.shipment?.deliveredAt;
-  const withinWindow = deliveredAt && now !== undefined
-    ? now - new Date(deliveredAt).getTime() <= site.returnDays * 86400000
-    : false;
-  if (!withinWindow) return null;
-
-  if (!isEnabled("returns")) {
-    return (
-      <p className="border border-line p-4 text-sm">
-        Want to return this diamond? <Link href="/contact" className="link">Contact us</Link> within {site.returnDays} days of delivery and we’ll arrange a free insured pickup.
-      </p>
-    );
-  }
-
-  async function submit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!reason) {
-      setError("Choose a reason.");
-      return;
-    }
-    setBusy(true);
-    setError(undefined);
+    setLoading(true);
     try {
-      await requestReturn(order.orderNumber, { reason, details: details.trim() });
-      onDone();
+      await apiFetch(`/orders/${orderId}/return`, {
+        method: "POST",
+        body: JSON.stringify({ reason, details }) // Stringified body fixes type error
+      });
+      setSubmitted(true);
+      showToast("Return request submitted", { tone: "success" });
     } catch (err) {
-      setError(err instanceof Error ? err.message : "Couldn’t send your request.");
+      showToast("Failed to submit return request", { tone: "error" });
     } finally {
-      setBusy(false);
+      setLoading(false);
     }
-  }
+  };
 
-  if (!open) {
+  if (submitted) {
     return (
-      <button type="button" className="btn btn-secondary" onClick={() => setOpen(true)}>
-        Return this order
-      </button>
+      <div className="p-6 border border-line bg-surface text-center">
+        <p className="text-sm font-medium text-ink">Request Submitted</p>
+        <p className="text-xs text-slate mt-2">We will review your return request shortly.</p>
+      </div>
     );
   }
 
   return (
-    <form onSubmit={submit} className="space-y-4 border border-line p-5">
-      <h3 className="text-2xl">Return this order</h3>
-      <p className="text-sm text-slate">We’ll collect the diamond with its report (free and insured), check it, and refund you in full.</p>
-      {error && <FormAlert>{error}</FormAlert>}
-      <fieldset>
-        <legend className="text-sm font-medium">Why are you returning it?</legend>
-        <div className="mt-2 space-y-1">
-          {REASONS.map((r) => (
-            <label key={r.value} className="flex min-h-10 items-center gap-3 text-sm">
-              <input type="radio" name="reason" value={r.value} checked={reason === r.value} onChange={() => setReason(r.value)} className="size-4 accent-ink" />
-              {r.label}
-            </label>
-          ))}
-        </div>
-      </fieldset>
-      <label className="block text-sm font-medium">
-        Anything else we should know? <span className="font-normal text-slate">(optional)</span>
-        <textarea value={details} onChange={(e) => setDetails(e.target.value)} rows={3} maxLength={1000} className="field mt-1.5" />
-      </label>
-      <div className="flex gap-3">
-        <button type="submit" className="btn btn-primary" disabled={busy}>
-          {busy ? "Sending…" : "Send return request"}
-        </button>
-        <button type="button" className="btn btn-secondary" onClick={() => setOpen(false)}>
-          Cancel
-        </button>
+    <form onSubmit={handleSubmit} className="p-6 border border-line bg-surface space-y-4">
+      <h3 className="text-sm font-medium uppercase tracking-widest text-ink">Request Return</h3>
+      <div>
+        <label className="block text-xs uppercase mb-1 text-ink">Reason</label>
+        <select required value={reason} onChange={(e) => setReason(e.target.value)} className="w-full h-10 border border-line bg-surface px-3 text-sm text-ink">
+          <option value="">Select a reason</option>
+          <option value="DEFECTIVE">Defective</option>
+          <option value="NOT_AS_DESCRIBED">Not as described</option>
+          <option value="CHANGED_MIND">Changed mind</option>
+        </select>
       </div>
+      <div>
+        <label className="block text-xs uppercase mb-1 text-ink">Details</label>
+        <textarea required value={details} onChange={(e) => setDetails(e.target.value)} className="w-full h-24 border border-line bg-surface p-3 text-sm resize-none text-ink" />
+      </div>
+      <button type="submit" disabled={loading || !reason} className="w-full h-11 bg-ink text-white text-xs uppercase tracking-widest disabled:opacity-50 flex items-center justify-center">
+        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Submit Request"}
+      </button>
     </form>
   );
 }
+
+export default ReturnRequest;
