@@ -19,12 +19,14 @@
 - Formatter: `[TODO]` No formatter configuration was found.
 - TypeScript `strict` is enabled. The current `tsconfig.json` excludes tests and
   several retained legacy storefront modules from the TypeScript program.
+- The canonical Vitest configuration is `vitest.config.mts`; `npm test`
+  selects it explicitly.
 - Commands: `npm run lint`, `npm run typecheck`, `npm test`.
 
 ## Imports and Modules
 
 - Use `@/` for imports rooted at `src/`; configured in `tsconfig.json` and
-  `vitest.config.ts`.
+  `vitest.config.mts`.
 - Feature components import typed helpers from `src/lib/` rather than building
   request URLs independently.
 - No universal barrel-export convention is enforced; imports generally point
@@ -56,7 +58,7 @@
 
 - `tsconfig.json`
 - `eslint.config.mjs`
-- `vitest.config.ts`
+- `vitest.config.mts`
 - `package.json`
 - `src/lib/api/client.ts`
 - `src/lib/local-store.ts`

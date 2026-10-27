@@ -31,6 +31,9 @@ Evidence: `src/lib/api/client.ts`, `src/lib/api/auth.ts`,
   CSRF token and retries once after a CSRF failure.
 - Public configuration includes `NEXT_PUBLIC_SITE_URL`,
   `NEXT_PUBLIC_WHATSAPP_NUMBER`, and `NEXT_PUBLIC_FEATURES`.
+- Orders, payments, tracking, invoices, returns, coupons, and admin endpoints
+  are feature-gated off by default. Their contracts are not fully documented
+  in `docs/api.md`, so these flows are not verified end to end.
 - No environment template file is present; `SETUP.md` documents local values.
 - No credential values from `.env.local` are included here.
 

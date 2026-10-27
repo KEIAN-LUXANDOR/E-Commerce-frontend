@@ -1,12 +1,13 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Suspense } from "react";
-import { getProduct, getSimilar } from "@/lib/api/products";
+import { getProduct } from "@/lib/api/products";
+import { getSimilarDiamonds } from "@/lib/api/catalog";
 import { BuyBox } from "@/components/diamond/BuyBox";
 import { DiamondGallery } from "@/components/diamond/DiamondGallery";
 import { SpecTable } from "@/components/diamond/SpecTable";
 import { GradeScales } from "@/components/diamond/GradeScale";
-import { ProductCard } from "@/components/catalog/ProductCard";
+import { DiamondCard } from "@/components/store/diamond-card";
 
 interface DiamondDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -23,15 +24,13 @@ export default function DiamondDetailPage(props: DiamondDetailPageProps) {
 async function DiamondDetailContent({ params }: DiamondDetailPageProps) {
   const { slug } = await params;
 
-  const result = await getProduct(slug);
-  const product = result.product;
+  const product = await getProduct(slug);
   if (!product) {
     notFound();
   }
 
-  const similar = await getSimilar(product);
-
   const d = product.diamond;
+  const similar = d ? await getSimilarDiamonds(slug) : [];
 
   return (
     <div className="page py-8 sm:py-12 space-y-12">
@@ -92,8 +91,8 @@ async function DiamondDetailContent({ params }: DiamondDetailPageProps) {
             </Link>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {similar.map((item) => (
-              <ProductCard key={item.id} product={item} />
+            {similar.map((diamond) => (
+              <DiamondCard key={diamond.id} diamond={diamond} />
             ))}
           </div>
         </div>

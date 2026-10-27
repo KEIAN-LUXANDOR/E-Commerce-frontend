@@ -6,18 +6,19 @@ import { CheckCircle2, ShieldCheck, Mail } from "lucide-react";
 import { getCheckoutEligibility } from "@/lib/api/account";
 import { resendVerification } from "@/lib/api/auth";
 import { createOrder } from "@/lib/api/orders";
-import { createAddress } from "@/lib/api/addresses";
-import { apiFetch, ApiError } from "@/lib/api/client";
+import { createAddress, getAddresses } from "@/lib/api/addresses";
+import { ApiError } from "@/lib/api/client";
 import { sessionStore } from "@/lib/session";
 import { AddressSelector } from "./address-selector";
 import { CartView } from "./CartView";
+import type { DeliveryAddress, DeliveryAddressRequest } from "@/lib/types/address";
 
 export function CheckoutFlow() {
   const router = useRouter();
   const session = sessionStore.useSession();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [addressId, setAddressId] = useState<string | null>(null);
-  const [addresses, setAddresses] = useState<any[]>([]);
+  const [addresses, setAddresses] = useState<DeliveryAddress[]>([]);
   
   const [loading, setLoading] = useState(true);
   const [emailVerified, setEmailVerified] = useState(true);
@@ -28,27 +29,30 @@ export function CheckoutFlow() {
   useEffect(() => {
     async function initCheckout() {
       try {
-        await getCheckoutEligibility();
-        setEmailVerified(true);
+        const eligibility = await getCheckoutEligibility();
+        setEmailVerified(eligibility.canCheckout);
       } catch (err) {
         if (err instanceof ApiError && err.code === "EMAIL_NOT_VERIFIED") {
           setEmailVerified(false);
+          setCheckoutError(err.message);
+        } else {
+          setEmailVerified(false);
+          setCheckoutError(err instanceof Error ? err.message : "Could not verify checkout eligibility.");
         }
       }
 
-      // Fetch the saved addresses for the selector
       try {
-        const addrs = await apiFetch<any[]>("/account/addresses");
-        setAddresses(addrs || []);
-        if (addrs && addrs.length > 0) {
-          const defaultAddr = addrs.find((a: any) => a.defaultAddress) || addrs[0];
+        const addrs = await getAddresses();
+        setAddresses(addrs);
+        if (addrs.length > 0) {
+          const defaultAddr = addrs.find((address) => address.defaultAddress) || addrs[0];
           setAddressId(defaultAddr.id);
         }
-      } catch (e) {
-        // Safe fail - just show an empty list
+      } catch (err) {
+        setCheckoutError(err instanceof Error ? err.message : "Could not load delivery addresses.");
+      } finally {
+        setLoading(false);
       }
-      
-      setLoading(false);
     }
     initCheckout();
   }, []);
@@ -62,6 +66,7 @@ export function CheckoutFlow() {
       setTimeout(() => setVerifyingStatus("idle"), 60000);
     } catch (err) {
       setVerifyingStatus("idle");
+      setCheckoutError(err instanceof Error ? err.message : "Could not resend the verification email.");
     }
   }
 
@@ -77,15 +82,18 @@ export function CheckoutFlow() {
       // Pushing to success page to see the 15m timer (Razorpay step handled elsewhere)
       router.push(`/checkout/success?order=${order.orderNumber}`);
     } catch (err) {
-      if (err instanceof ApiError) {
-        setCheckoutError(err.detail || "An error occurred placing your order.");
-      }
+      setCheckoutError(
+        err instanceof ApiError
+          ? err.detail || err.message
+          : err instanceof Error
+            ? err.message
+            : "An error occurred placing your order.",
+      );
       setPlacingOrder(false);
     }
   }
 
-  // Matches (req: DeliveryAddressRequest) => Promise<DeliveryAddress>
-  async function handleNewAddress(req: any) {
+  async function handleNewAddress(req: DeliveryAddressRequest): Promise<DeliveryAddress> {
     const newAddr = await createAddress(req);
     setAddresses((prev) => [...prev, newAddr]);
     setAddressId(newAddr.id);
@@ -98,6 +106,11 @@ export function CheckoutFlow() {
 
   return (
     <div className="grid grid-cols-1 gap-8 lg:grid-cols-12 items-start">
+      {checkoutError && (
+        <p role="alert" className="border-l-2 border-out bg-out-tint p-3 text-sm text-out lg:col-span-12">
+          {checkoutError}
+        </p>
+      )}
       <div className="lg:col-span-7 space-y-6">
         
         {/* STEP 1: CONTACT */}
@@ -151,7 +164,7 @@ export function CheckoutFlow() {
             <div className="mt-6 space-y-6">
               <AddressSelector 
                 selectedId={addressId} 
-                onSelect={(addr: any) => setAddressId(addr?.id || null)}
+                onSelect={(address) => setAddressId(address.id)}
                 savedAddresses={addresses}
                 onNewAddress={handleNewAddress}
               />
@@ -178,12 +191,6 @@ export function CheckoutFlow() {
           
           {step === 3 && (
             <div className="mt-6 space-y-6">
-              {checkoutError && (
-                <div className="border-l-2 border-out bg-out-tint p-3 text-sm text-out">
-                  {checkoutError}
-                </div>
-              )}
-              
               <button
                 onClick={handlePlaceOrder}
                 disabled={placingOrder}

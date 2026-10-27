@@ -1,12 +1,19 @@
+import {
+  CLARITY_VALUES,
+  COLOR_VALUES,
+  SHAPE_VALUES,
+  type ProductQuery,
+} from "@/lib/types/product";
+
 /**
  * Parses natural language search queries to extract diamond attributes.
  * Example: "1.5 ct oval lab F VS1 under 3 lakh"
  */
-export function parseDiamondSearchText(query: string): Record<string, any> {
+export function parseDiamondSearchText(query: string): Partial<ProductQuery> {
   if (!query) return {};
 
   const q = query.toLowerCase();
-  const filters: Record<string, any> = {};
+  const filters: Partial<ProductQuery> = {};
 
   // 1. Carat (e.g., "1.5 ct", "0.90 carat")
   const caratMatch = q.match(/(?:^|\s)(\d+(?:\.\d+)?)\s*(?:ct|carats?)/);
@@ -27,26 +34,22 @@ export function parseDiamondSearchText(query: string): Record<string, any> {
   }
 
   // 3. Shape
-  const shapes = [
-    "ROUND", "OVAL", "PRINCESS", "CUSHION", "EMERALD", 
-    "PEAR", "MARQUISE", "HEART", "RADIANT", "ASSCHER"
-  ];
-  const matchedShapes = shapes.filter(s => q.includes(s.toLowerCase()));
+  const matchedShapes = SHAPE_VALUES.filter((shape) => q.includes(shape.toLowerCase()));
   if (matchedShapes.length > 0) {
     filters.shape = matchedShapes;
   }
 
   // 4. Color (Matches whole words D through K)
   const colorMatch = q.match(/\b([d-k])\b/);
-  if (colorMatch && colorMatch[1]) {
-    filters.color = [colorMatch[1].toUpperCase()];
+  const matchedColor = COLOR_VALUES.find((color) => color.toLowerCase() === colorMatch?.[1]);
+  if (matchedColor) {
+    filters.color = [matchedColor];
   }
 
   // 5. Clarity
-  const clarities = ["FL", "IF", "VVS1", "VVS2", "VS1", "VS2", "SI1", "SI2"];
-  const matchedClarity = clarities.find(c => {
+  const matchedClarity = CLARITY_VALUES.find((clarity) => {
     // Ensure we match whole words (e.g., "VS1" but not inside another word)
-    const regex = new RegExp(`\\b${c.toLowerCase()}\\b`);
+    const regex = new RegExp(`\\b${clarity.toLowerCase()}\\b`);
     return regex.test(q);
   });
   if (matchedClarity) {

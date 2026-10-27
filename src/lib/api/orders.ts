@@ -1,33 +1,70 @@
-// src/lib/api/orders.ts
+import { requireFeature } from "@/config/features";
+import { apiFetch } from "@/lib/api/client";
+import type {
+  Order,
+  OrderListPage,
+  PaymentConfirmation,
+  PaymentSession,
+  TrackingResult,
+} from "@/lib/types/order";
 
-// Existing imports and code...
+export function listOrders(page = 0, size = 20): Promise<OrderListPage> {
+  requireFeature("orders");
+  const query = new URLSearchParams({ page: String(page), size: String(size) });
+  return apiFetch<OrderListPage>(`/account/orders?${query}`, { cache: "no-store" });
+}
 
-export const listOrders = async () => {
-  // Replace with your actual API call
-  const response = await fetch('/api/orders');
-  return response.json();
-};
+export function getOrder(orderNumber: string): Promise<Order | null> {
+  requireFeature("orders");
+  return apiFetch<Order | null>(`/account/orders/${encodeURIComponent(orderNumber)}`, {
+    allow404: true,
+    cache: "no-store",
+  });
+}
 
-export const invoiceUrl = (orderId: string): string => {
-  return `/api/orders/${orderId}/invoice`; // Or your backend invoice endpoint
-};
+export function createOrder(addressId: string): Promise<Order> {
+  requireFeature("orders");
+  return apiFetch<Order>("/account/orders", {
+    method: "POST",
+    body: { addressId },
+  });
+}
 
-export const startPayment = async (orderId: string) => {
-  // Logic to initialize Razorpay payment
-  return { success: true, orderId }; 
-};
+export function startPayment(orderNumber: string): Promise<PaymentSession> {
+  requireFeature("payments");
+  return apiFetch<PaymentSession>(`/account/orders/${encodeURIComponent(orderNumber)}/payment`, {
+    method: "POST",
+  });
+}
 
-export const confirmPayment = async (paymentDetails: any) => {
-  // Logic to verify Razorpay signature
-  return { success: true };
-};
+export function confirmPayment(
+  orderNumber: string,
+  payment: PaymentConfirmation,
+): Promise<Order> {
+  requireFeature("payments");
+  return apiFetch<Order>(`/account/orders/${encodeURIComponent(orderNumber)}/payment`, {
+    method: "PUT",
+    body: payment,
+  });
+}
 
-export const requestReturn = async (orderId: string, reason: string) => {
-  // Logic to post a return request
-  return { success: true, orderId, reason };
-};
+export function invoiceUrl(orderNumber: string): string {
+  requireFeature("invoices");
+  return `/api/account/orders/${encodeURIComponent(orderNumber)}/invoice`;
+}
 
-export const trackOrder = async (orderId: string) => {
-  // Logic to fetch order status
-  return { status: 'Processing', orderId };
-};
+export function requestReturn(orderNumber: string, reason: string): Promise<Order> {
+  requireFeature("returns");
+  return apiFetch<Order>(`/account/orders/${encodeURIComponent(orderNumber)}/return`, {
+    method: "POST",
+    body: { reason },
+  });
+}
+
+export function trackOrder(orderNumber: string): Promise<TrackingResult> {
+  requireFeature("orderTracking");
+  return apiFetch<TrackingResult>("/orders/track", {
+    method: "POST",
+    body: { orderNumber },
+  });
+}

@@ -28,10 +28,10 @@
 
 ## Route Map
 
-Current route families include:
+Routes present in `src/app/` include:
 
 - Storefront: `/`, `/diamonds/[[...type]]`, `/diamond/[slug]`, `/search`,
-  `/cart`, `/checkout`, `/compare`, `/wishlist`.
+  `/cart`, `/checkout`, `/checkout/success`, `/wishlist`.
 - Account: `/account`, `/account/addresses`, `/account/orders`,
   `/account/orders/[orderNumber]`, `/account/vault`.
 - Authentication: `/login`, `/register`, `/verify-email`,
@@ -40,8 +40,12 @@ Current route families include:
 - Editorial and service: `/education/*`, `/about`, `/contact`, `/faq`,
   `/shipping`, `/returns`, `/privacy`, `/terms`, `/order-tracking`.
 - Compatibility routes: `/shop/*` redirects to `/diamonds`; `/product/[slug]`
-  redirects to `/diamond/[slug]`. Old diamond route pages were removed because
-  they overlapped with the optional catch-all `/diamonds/[[...type]]`.
+  redirects to `/diamond/[slug]`.
+
+There is no `/compare` page in the current route tree; compare remains out of
+scope. The plan's `/(shop)/diamonds/[type]/[slug]` route does not exist: the
+active PDP is `/diamond/[slug]`. `next build` successfully generated the
+current route graph during this repair.
 
 The route table above is corroborated by `src/app/` and the successful
 `next build` route report.

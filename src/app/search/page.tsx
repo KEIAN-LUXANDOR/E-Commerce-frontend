@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import Link from "next/link";
 import { getProducts } from "@/lib/api/products";
 import { parseShopParams, toApiSearch } from "@/lib/catalog/query";
@@ -13,7 +14,22 @@ interface SearchPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export default async function SearchPage({ searchParams }: SearchPageProps) {
+export default function SearchPage(props: SearchPageProps) {
+  return (
+    <Suspense
+      fallback={
+        <div className="page py-8 sm:py-12" aria-busy="true">
+          <p className="eyebrow">Search</p>
+          <p role="status" className="mt-1 text-sm text-slate">Loading search results...</p>
+        </div>
+      }
+    >
+      <SearchResultsPage {...props} />
+    </Suspense>
+  );
+}
+
+async function SearchResultsPage({ searchParams }: SearchPageProps) {
   const rawSearch = await searchParams;
   
   const rawQ = typeof rawSearch.q === "string" ? rawSearch.q.trim() : "";
@@ -76,7 +92,7 @@ export default async function SearchPage({ searchParams }: SearchPageProps) {
       {pageData && pageData.totalPages > 1 && (
         <Pagination
           basePath="/search"
-          query={mergedFilters as any}
+          query={mergedFilters}
           view={view}
           totalPages={pageData.totalPages}
         />

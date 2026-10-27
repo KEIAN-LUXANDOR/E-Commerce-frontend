@@ -1,6 +1,5 @@
 import { apiFetch } from "@/lib/api/client";
-import type { MessageResponse } from "@/lib/api/auth";
-import type { User } from "@/lib/types/auth";
+import type { MessageResponse, User } from "@/lib/types/auth";
 
 export interface UpdateProfileRequest {
   fullName: string;

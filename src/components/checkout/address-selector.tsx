@@ -163,6 +163,7 @@ interface NewAddressFormProps {
 function NewAddressForm({ onSubmit, onCancel }: NewAddressFormProps) {
   const [submitting, setSubmitting] = React.useState(false);
   const [errors, setErrors] = React.useState<Partial<Record<keyof DeliveryAddressRequest, string>>>({});
+  const [submitError, setSubmitError] = React.useState<string | null>(null);
 
   const [form, setForm] = React.useState<DeliveryAddressRequest>({
     fullName: "",
@@ -196,8 +197,11 @@ function NewAddressForm({ onSubmit, onCancel }: NewAddressFormProps) {
     e.preventDefault();
     if (!validate()) return;
     setSubmitting(true);
+    setSubmitError(null);
     try {
       await onSubmit(form);
+    } catch (error) {
+      setSubmitError(error instanceof Error ? error.message : "Could not save this address.");
     } finally {
       setSubmitting(false);
     }
@@ -208,6 +212,7 @@ function NewAddressForm({ onSubmit, onCancel }: NewAddressFormProps) {
   return (
     <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4 p-4 border border-[var(--color-line)] bg-white">
       <p className="font-serif text-base text-[var(--color-ink)]">New Delivery Address</p>
+      {submitError && <p role="alert" className="text-sm text-red-600">{submitError}</p>}
 
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <Field id="fullName" label="Full Name" required error={errors.fullName}>

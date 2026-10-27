@@ -2,13 +2,11 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
 import { Search, User, Heart, ShoppingBag, Menu, X } from "lucide-react";
 import { useCartCount } from "@/lib/shop/cart";
 import { setMiniCartOpen } from "@/lib/stores";
 
 export function Header() {
-  const pathname = usePathname();
   const cartCount = useCartCount();
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -20,10 +18,11 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  // Close mobile menu on route change
   useEffect(() => {
-    setMobileMenuOpen(false);
-  }, [pathname]);
+    const closeMobileMenu = () => setMobileMenuOpen(false);
+    window.addEventListener("popstate", closeMobileMenu);
+    return () => window.removeEventListener("popstate", closeMobileMenu);
+  }, []);
 
   return (
     <header
@@ -106,12 +105,12 @@ export function Header() {
               </button>
             </div>
             <nav className="flex flex-col gap-6 px-4 py-8">
-              <Link href="/diamonds" className="text-sm font-medium uppercase tracking-widest text-ink">Diamonds</Link>
-              <Link href="/education" className="text-sm font-medium uppercase tracking-widest text-ink">Education</Link>
-              <Link href="/about" className="text-sm font-medium uppercase tracking-widest text-ink">Our Story</Link>
+              <Link href="/diamonds" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium uppercase tracking-widest text-ink">Diamonds</Link>
+              <Link href="/education" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium uppercase tracking-widest text-ink">Education</Link>
+              <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium uppercase tracking-widest text-ink">Our Story</Link>
               <div className="h-px w-full bg-line my-2" />
-              <Link href="/account" className="text-sm font-medium uppercase tracking-widest text-ink">My Account</Link>
-              <Link href="/wishlist" className="text-sm font-medium uppercase tracking-widest text-ink">Wishlist</Link>
+              <Link href="/account" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium uppercase tracking-widest text-ink">My Account</Link>
+              <Link href="/wishlist" onClick={() => setMobileMenuOpen(false)} className="text-sm font-medium uppercase tracking-widest text-ink">Wishlist</Link>
             </nav>
           </div>
         </div>

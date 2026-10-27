@@ -2,6 +2,8 @@
 import { apiFetch, clearCsrfToken } from "./client";
 import type { User, RegisterInput, LoginInput, MessageResponse } from "@/lib/types/auth";
 
+export type { MessageResponse } from "@/lib/types/auth";
+
 export async function register(data: RegisterInput): Promise<User> {
   return apiFetch<User>("/auth/register", {
     method: "POST",
@@ -48,9 +50,21 @@ export async function forgotPassword(email: string): Promise<MessageResponse> {
   });
 }
 
-export async function resetPassword(token: string, newPassword: string): Promise<MessageResponse> {
+export const requestPasswordReset = forgotPassword;
+
+export function resetPassword(input: { token: string; newPassword: string }): Promise<MessageResponse>;
+export function resetPassword(token: string, newPassword: string): Promise<MessageResponse>;
+export function resetPassword(
+  input: string | { token: string; newPassword: string },
+  newPassword?: string,
+): Promise<MessageResponse> {
+  const credentials = typeof input === "string" ? { token: input, newPassword } : input;
+  if (!credentials.newPassword) {
+    throw new Error("A new password is required.");
+  }
+
   return apiFetch<MessageResponse>("/auth/reset-password", {
     method: "POST",
-    body: JSON.stringify({ token, newPassword }),
+    body: JSON.stringify(credentials),
   });
 }

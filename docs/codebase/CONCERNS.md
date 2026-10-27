@@ -4,11 +4,10 @@
 
 | Severity | Concern | Impact | Suggested action |
 |---|---|---|---|
-| High | Old and current storefront implementations coexist. `src/components/store/` and `src/components/shop/` contain stale store APIs; `tsconfig.json` excludes them, and legacy route pages now redirect. | Future imports can reintroduce missing exports, incompatible product models, or route conflicts. | `[ASK USER]` Decide whether to archive/remove the old implementation or keep it as a supported compatibility surface. |
-| Medium | Three of 132 Vitest tests fail in the observed run. The two storefront failures reference old `useWishlist` exports; the WhatsApp link assertion requires configuration. | Test suite is not fully green; regressions in current routes could be obscured by stale tests. | Update/retire legacy tests against the active components and configure the WhatsApp number in test setup. |
-| Low | Old component modules remain in the repository after their routes were migrated. The user confirmed legacy URL redirects should remain. | The old component compatibility intent is not yet known. | `[ASK USER]` Decide whether to archive them or keep them supported; setup route docs now reflect redirects. |
-| Medium | Company-specific details and planned features are incomplete or disabled by default. | Contact links may be empty; checkout/payment/order features may be unavailable. | Confirm company details and enable each feature only after its backend endpoint is ready. |
-| Low | No CI/CD or automated security/monitoring configuration was detected. | Build/test checks may not run automatically on changes; runtime issues have limited telemetry. | `[ASK USER]` Confirm whether CI and production observability are expected for this repository. |
+| High | Old and current storefront implementations coexist. `src/components/store/` and `src/components/shop/` include legacy modules excluded by `tsconfig.json`. | Future imports can reintroduce incompatible product models or missing exports. | `[ASK USER]` Decide whether to archive/remove the old implementation or retain it as a supported compatibility surface. |
+| Medium | `npm run lint` remains red (109 errors, 108 warnings in the observed run), while tests, typecheck, and production build pass. | Unrelated lint debt obscures future regressions. | Triage lint errors in a separate, scoped cleanup. |
+| Medium | Order, payment, tracking, invoice, return, coupon, and admin API operations are feature-gated off by default. | Visible flows may be unavailable until backend contracts are implemented and enabled. | Confirm endpoints and enable/test each feature only after backend readiness. |
+| Low | No CI/CD or automated security/monitoring configuration was detected. | Build/test checks may not run automatically; runtime issues have limited telemetry. | `[ASK USER]` Confirm whether CI and production observability are in scope. |
 
 ## Technical Debt
 
@@ -36,8 +35,7 @@
 
 The scan observed only two recent commits, so its high-churn ranking is not a
 strong statistical signal. It listed the cart, checkout, search, root layout,
-account, and admin-shell paths among the most changed files. These areas should
-be changed with focused tests and route-level verification.
+account, and admin-shell paths among the most changed files.
 
 ## `[ASK USER]` Questions
 
@@ -56,7 +54,7 @@ be changed with focused tests and route-level verification.
 - `SETUP.md`
 - `src/app/(shop)/shop/[[...category]]/page.tsx`
 - `src/app/(shop)/product/[slug]/page.tsx`
-- `src/components/layout/__tests__/layout.test.tsx`
-- `src/components/store/__tests__/parity.test.tsx`
-- `src/components/store/__tests__/catalog.test.tsx`
+- `package.json`
+- `vitest.config.mts`
+- `next.config.ts`
 - `compose.yaml`

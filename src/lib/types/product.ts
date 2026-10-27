@@ -41,6 +41,7 @@ export interface Diamond {
   quickShip: boolean;
   // ---- planned (certificate details). Shown only when the backend sends them. ----
   certificateNumber?: string | null;
+  certificateUrl?: string | null;
   verifyUrl?: string | null;
   laserInscription?: boolean;
   lengthMm?: number | null;

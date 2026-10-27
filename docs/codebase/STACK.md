@@ -59,7 +59,7 @@ These scripts are defined in `package.json`. Run them from the frontend workspac
 | Variable | Use | Default / requirement |
 |---|---|---|
 | `API_URL` | Server API origin and rewrite target | Defaults to `http://localhost:8080`; set for the deployed backend |
-| `NEXT_PUBLIC_USE_MOCK_API` | Enables the `/api` and `/images` rewrites when exactly `"false"` | Set to `false` to use the backend |
+| `NEXT_PUBLIC_USE_MOCK_API` | Controls the API/image rewrites; rewrites are enabled only when exactly `"false"` | Set to `false` to route requests to the backend; the default does not provide a complete mock API |
 | `NEXT_PUBLIC_SITE_URL` | Canonical metadata base URL | Defaults to `http://localhost:3000` |
 | `NEXT_PUBLIC_WHATSAPP_NUMBER` | WhatsApp link destination, digits with country code | Optional; empty hides the destination |
 | `NEXT_PUBLIC_FEATURES` | Enables named planned features, or `all` | Empty means all feature switches remain off |
@@ -67,6 +67,10 @@ These scripts are defined in `package.json`. Run them from the frontend workspac
 Sources: `next.config.ts`, `src/lib/api/config.ts`, `src/lib/site.ts`,
 `src/config/features.ts`, `SETUP.md`. No `.env.example` or `.env.template` is
 present. Do not copy values from local environment files into documentation.
+
+Browser API calls use same-origin `/api`; server-side calls use `API_URL`.
+`next.config.ts` rewrites `/api/*` to backend `/api/v1/*` only when
+`NEXT_PUBLIC_USE_MOCK_API=false`.
 
 ## Evidence
 

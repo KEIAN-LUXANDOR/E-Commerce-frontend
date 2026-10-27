@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getProducts } from "@/lib/api/products";
@@ -15,7 +16,22 @@ interface DiamondsPageProps {
   searchParams: Promise<Record<string, string | string[] | undefined>>;
 }
 
-export default async function DiamondsPage({ params, searchParams }: DiamondsPageProps) {
+export default function DiamondsPage(props: DiamondsPageProps) {
+  return (
+    <Suspense
+      fallback={
+        <div className="page py-8 sm:py-12" aria-busy="true">
+          <p className="eyebrow">Catalogue</p>
+          <p role="status" className="mt-1 text-sm text-slate">Loading diamonds...</p>
+        </div>
+      }
+    >
+      <DiamondsCatalogPage {...props} />
+    </Suspense>
+  );
+}
+
+async function DiamondsCatalogPage({ params, searchParams }: DiamondsPageProps) {
   const { type } = await params;
   const rawSearch = await searchParams;
 
@@ -104,7 +120,7 @@ export default async function DiamondsPage({ params, searchParams }: DiamondsPag
       )}
 
       {pageData && pageData.totalPages > 1 && (
-        <Pagination totalPages={pageData.totalPages} basePath={basePath} query={filters as any} view={view} />
+        <Pagination totalPages={pageData.totalPages} basePath={basePath} query={filters} view={view} />
       )}
     </div>
   );
