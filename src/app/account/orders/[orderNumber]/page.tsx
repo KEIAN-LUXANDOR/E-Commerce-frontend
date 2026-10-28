@@ -14,5 +14,5 @@ export default function OrderPage(props: PageProps<"/account/orders/[orderNumber
 
 async function OrderContent({ params }: PageProps<"/account/orders/[orderNumber]">) {
   const { orderNumber } = await params;
-  return <OrderDetail orderNumber={decodeURIComponent(orderNumber)} />;
+  return <OrderDetail id={decodeURIComponent(orderNumber)} />;
 }

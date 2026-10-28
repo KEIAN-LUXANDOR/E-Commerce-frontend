@@ -34,3 +34,10 @@ export async function deleteAddress(id: string): Promise<void> {
     method: "DELETE",
   });
 }
+
+export const getDeliveryAddresses = getAddresses;
+export const getIndianStates = getStates;
+export const createDeliveryAddress = createAddress;
+export const updateDeliveryAddress = updateAddress;
+export const setDefaultDeliveryAddress = setDefaultAddress;
+export const deleteDeliveryAddress = deleteAddress;

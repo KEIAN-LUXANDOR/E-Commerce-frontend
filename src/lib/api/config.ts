@@ -10,3 +10,4 @@ export const SERVER_API_BASE = `${API_URL.replace(/\/+$/, "")}/api/v1`;
  * so the session cookie stays first-party.
  */
 export const BROWSER_API_BASE = "/api";
+export const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK_API === "true";

@@ -1,6 +1,6 @@
 import * as React from "react";
 import type { Metadata } from "next";
-import { DiamondInventoryManager } from "@/components/admin/diamond-form";
+import { DiamondList } from "@/components/admin/DiamondList";
 
 export const metadata: Metadata = {
   title: "Inventory Master | Operations | Keian Luxandor",
@@ -8,5 +8,5 @@ export const metadata: Metadata = {
 };
 
 export default function AdminInventoryPage() {
-  return <DiamondInventoryManager />;
+  return <DiamondList />;
 }

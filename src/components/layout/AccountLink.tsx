@@ -4,17 +4,21 @@ import Link from "next/link";
 import { User } from "lucide-react";
 import { sessionStore } from "@/lib/session";
 
-export function AccountLink() {
+export function AccountLink({ mobile = false }: { mobile?: boolean }) {
   const session = sessionStore.useSession();
   const isAuthenticated = session.status === "authenticated";
+  const label = isAuthenticated ? "My account" : "Sign in";
 
   return (
     <Link
       href={isAuthenticated ? "/account" : "/login"}
-      className="p-2 text-slate hover:text-ink transition-colors"
-      aria-label="Account"
+      className={mobile
+        ? "flex items-center gap-2 text-sm font-medium uppercase tracking-widest text-ink"
+        : "flex items-center gap-2 text-sm text-ink transition-colors hover:text-loupe"}
+      aria-label={label}
     >
-      <User className="h-5 w-5" />
+      <User className="h-5 w-5" aria-hidden="true" />
+      <span>{label}</span>
     </Link>
   );
 }

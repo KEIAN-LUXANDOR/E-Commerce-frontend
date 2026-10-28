@@ -3,20 +3,19 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, LogOut } from "lucide-react";
-import { apiFetch, ApiError } from "@/lib/api/client";
+import { ApiError } from "@/lib/api/client";
+import { updateProfile } from "@/lib/api/profile";
 import { sessionStore } from "@/lib/session";
 import { showToast } from "@/lib/stores";
-import type { User } from "@/lib/types/auth";
 
 export function ProfileEditor() {
   const router = useRouter();
   const session = sessionStore.useSession();
   const user = session?.user;
 
-  // Safely extract the name field, bypassing the strict AuthUser slim type
-  const currentName = user ? ((user as any).name || (user as any).firstName || "") : "";
-
-  const [name, setName] = useState(currentName);
+  const currentName = user?.fullName ?? "";
+  const [editedName, setEditedName] = useState<string | null>(null);
+  const name = editedName ?? currentName;
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -26,25 +25,21 @@ export function ProfileEditor() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!user) return;
     setError("");
     setLoading(true);
 
     try {
-      // Update profile via backend
-      const updatedUser = await apiFetch<User>("/account/profile", {
-        method: "PUT",
-        body: JSON.stringify({ name }),
-      });
-      
-      // Update local session state (cast to any to satisfy strict AuthUser type)
-      sessionStore.setAuthenticated(updatedUser as any);
+      const updatedUser = await updateProfile({ fullName: name.trim(), phone: user.phone });
+      sessionStore.setAuthenticated(updatedUser);
+      setEditedName(updatedUser.fullName);
       showToast("Profile updated successfully", { tone: "success" });
       router.refresh();
-    } catch (err: any) {
+    } catch (err: unknown) {
       if (err instanceof ApiError) {
         setError(err.detail || "Failed to update profile.");
       } else {
-        setError(err.message || "An unexpected error occurred.");
+        setError(err instanceof Error ? err.message : "An unexpected error occurred.");
       }
     } finally {
       setLoading(false);
@@ -89,7 +84,7 @@ export function ProfileEditor() {
             id="name"
             type="text"
             value={name}
-            onChange={(e) => setName(e.target.value)}
+            onChange={(e) => setEditedName(e.target.value)}
             className="w-full h-11 border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none focus:ring-1 focus:ring-ink transition-colors"
             required
           />
@@ -98,7 +93,7 @@ export function ProfileEditor() {
         <div className="pt-4 flex flex-col sm:flex-row gap-4">
           <button
             type="submit"
-            disabled={loading || name === currentName}
+            disabled={loading || name.trim() === currentName}
             className="h-11 flex-1 flex items-center justify-center bg-ink text-white text-xs font-medium uppercase tracking-widest hover:bg-loupe-deep transition-colors disabled:opacity-50"
           >
             {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save Changes"}

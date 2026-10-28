@@ -1,33 +1,14 @@
-"use client";
-
-import { useState } from "react";
-import { FolderTree, Plus } from "lucide-react";
-import { showToast } from "@/lib/stores";
+import { AdminHeader } from "@/components/admin/AdminBits";
 
 export default function CategoriesPage() {
-  const handleAdd = () => {
-    // Corrected to object format
-    showToast("Category creation coming soon.", { tone: "default" });
-  };
-
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-medium text-ink flex items-center gap-2">
-          <FolderTree className="h-6 w-6" />
-          Categories
-        </h1>
-        <button
-          onClick={handleAdd}
-          className="inline-flex items-center justify-center bg-ink px-4 py-2 text-xs font-medium uppercase tracking-widest text-white hover:bg-loupe-deep transition-colors"
-        >
-          <Plus className="mr-2 h-4 w-4" /> Add Category
-        </button>
-      </div>
-
-      <div className="bg-surface border border-line p-12 text-center text-slate">
-        <p>No categories configured yet.</p>
-      </div>
+    <div className="space-y-5">
+      <AdminHeader title="Categories" description="Product categories are currently read-only." />
+      <section className="border border-line bg-white p-6">
+        <p className="font-medium">Category management is not connected.</p>
+        <p className="mt-2 text-sm text-slate">The backend exposes storefront category reads but no admin create/update API. Add-category is disabled until an admin contract is available.</p>
+        <button type="button" disabled className="btn btn-secondary mt-4 cursor-not-allowed opacity-50">Add category unavailable</button>
+      </section>
     </div>
   );
 }

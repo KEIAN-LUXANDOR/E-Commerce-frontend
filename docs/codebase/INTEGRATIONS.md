@@ -31,6 +31,13 @@ Evidence: `src/lib/api/client.ts`, `src/lib/api/auth.ts`,
   CSRF token and retries once after a CSRF failure.
 - Public configuration includes `NEXT_PUBLIC_SITE_URL`,
   `NEXT_PUBLIC_WHATSAPP_NUMBER`, and `NEXT_PUBLIC_FEATURES`.
+- Core order create/list/detail/cancel routes exist and the storefront now uses
+  them. Payment, tracking, invoices, returns, coupons, and admin features stay
+  gated because the matching backend routes are absent. See
+  `docs/API-ENDPOINTS.md`.
+- On the latest local check, PostgreSQL was reachable on port 5433 but the
+  backend did not accept connections on port 8080. The frontend `.env.local`
+  points to that expected address.
 - No environment template file is present; `SETUP.md` documents local values.
 - No credential values from `.env.local` are included here.
 

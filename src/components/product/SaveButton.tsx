@@ -8,7 +8,6 @@ export interface SaveButtonProps {
   productId: string;
   variant?: "icon" | "button";
   className?: string;
-  product?: any; // To safely accept extra props passed implicitly
 }
 
 export function SaveButton({ productId, variant = "icon", className }: SaveButtonProps) {

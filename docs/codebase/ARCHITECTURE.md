@@ -33,8 +33,9 @@ URL / App Router
 1. A route such as `src/app/diamonds/[[...type]]/page.tsx` parses path and query
    filters with `src/lib/catalog/query.ts`.
 2. The route calls `getProducts` in `src/lib/api/products.ts`.
-3. `getProducts` calls `apiFetch` from `src/lib/api/client.ts`; server requests
-   use `SERVER_API_BASE`, derived from `API_URL`.
+3. `getProducts` calls `apiFetch` from `src/lib/api/client.ts`; browser
+   requests use `/api`, while server requests use `SERVER_API_BASE` derived
+   from `API_URL`. The product helper itself is not cached.
 4. Responses are rendered through catalog components. Catalog errors are
    represented as an unavailable or invalid-filter state rather than a blank
    successful result.
@@ -60,18 +61,20 @@ Repeated patterns:
   React subscriptions for local preferences and transient UI state.
 - **Feature switches:** `src/config/features.ts` prevents calls to planned
   endpoints until explicitly enabled.
-- **Cached reads:** Next.js Cache Components (`"use cache"`, `cacheLife`,
-  `cacheTag`) are used by catalog helpers.
+- **Dynamic route streaming:** catalog and search pages place URL-dependent
+  server work inside Suspense boundaries, preserving a prerendered shell.
 
 ## Known Architectural Risks
 
 - Two generations of storefront code remain. The current route graph uses
-  `catalog/`, `diamond/`, and `checkout/`; older `store/` and `shop/` modules
-  still exist and are excluded from the TypeScript program unless imported.
+  `catalog/`, `diamond/`, and `checkout/`; `tsconfig.json` excludes selected
+  legacy `store/` and `shop/` modules.
 - Endpoint response types are handwritten. The API layer casts parsed JSON to
   caller-provided types; it does not validate every response at runtime.
 - A number of backend-dependent features default off in
   `src/config/features.ts`.
+- Home-page new-arrivals data still requires the backend; its helper logs a
+  fetch failure and returns an empty list when the backend is unavailable.
 
 ## Evidence
 

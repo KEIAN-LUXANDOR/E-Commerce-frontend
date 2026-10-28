@@ -47,7 +47,7 @@ export function AccountView() {
           <p className="text-xs text-slate">View your order history and tracking status.</p>
         </Link>
 
-        <Link href="/account/profile" className="border border-line bg-surface p-6 hover:border-ink transition-colors group">
+        <Link href="/account" className="border border-line bg-surface p-6 hover:border-ink transition-colors group">
           <User className="h-6 w-6 text-ink mb-4 group-hover:scale-110 transition-transform" />
           <h2 className="text-sm font-medium uppercase tracking-widest text-ink mb-1">Profile</h2>
           <p className="text-xs text-slate">Update your personal information and password.</p>

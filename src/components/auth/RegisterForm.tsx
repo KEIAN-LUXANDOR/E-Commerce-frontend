@@ -1,22 +1,21 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Loader2 } from "lucide-react";
-import { register } from "@/lib/api/auth";
+import { register, resendVerification } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
-import { sessionStore } from "@/lib/session";
 import { normaliseEmail, validateRegister, type FieldErrors } from "@/lib/validators";
 
 export function RegisterForm() {
-  const router = useRouter();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [loading, setLoading] = useState(false);
+  const [registered, setRegistered] = useState(false);
+  const [resending, setResending] = useState(false);
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -24,7 +23,6 @@ export function RegisterForm() {
     setFieldErrors({});
 
     const normalizedEmail = normaliseEmail(email);
-    // Explicitly provided the required 'phone' property as an empty string to satisfy the validator type
     const validation = validateRegister({ email: normalizedEmail, password, fullName, phone: "" });
 
     if (!validation.valid) {
@@ -39,24 +37,49 @@ export function RegisterForm() {
     setLoading(true);
 
     try {
-      const user = await register({ fullName, email: normalizedEmail, password, phone: "" } as any);
-      sessionStore.setAuthenticated(user);
-      router.push("/account");
-      router.refresh();
-    } catch (err: any) {
+      await register({ fullName, email: normalizedEmail, password });
+      setRegistered(true);
+    } catch (err: unknown) {
       if (err instanceof ApiError) {
         if (err.errors) {
           const apiErrors: FieldErrors = {};
-          err.errors.forEach((e: any) => { apiErrors[e.field] = e.message; });
+          err.errors.forEach(({ field, message }) => { apiErrors[field] = message; });
           setFieldErrors(apiErrors);
         } else {
           setError(err.detail || "Registration failed.");
         }
       } else {
-        setError(err.message || "An unexpected error occurred.");
+        setError(err instanceof Error ? err.message : "An unexpected error occurred.");
       }
       setLoading(false);
     }
+  }
+
+  async function handleResendVerification() {
+    setResending(true);
+    setError("");
+    try {
+      await resendVerification(normaliseEmail(email));
+      setError("If verification is needed, a new email has been sent.");
+    } catch (cause: unknown) {
+      setError(cause instanceof Error ? cause.message : "Could not resend verification email.");
+    } finally {
+      setResending(false);
+    }
+  }
+
+  if (registered) {
+    return (
+      <section className="space-y-4 text-center" aria-live="polite">
+        <h2 className="font-serif text-2xl">Check your email</h2>
+        <p className="text-sm text-slate">We sent a verification link to {email}. Verify your address before signing in.</p>
+        {error && <p role="status" className="text-sm text-slate">{error}</p>}
+        <button type="button" onClick={() => void handleResendVerification()} disabled={resending} className="btn btn-primary min-h-11 w-full justify-center">
+          {resending ? "Sending…" : "Resend verification email"}
+        </button>
+        <Link href="/login" className="btn btn-secondary min-h-11 w-full justify-center">Back to sign in</Link>
+      </section>
+    );
   }
 
   return (

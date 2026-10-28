@@ -1,12 +1,13 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { Suspense } from "react";
-import { getProduct, getSimilar } from "@/lib/api/products";
+import { getProduct, getProducts } from "@/lib/api/products";
 import { BuyBox } from "@/components/diamond/BuyBox";
 import { DiamondGallery } from "@/components/diamond/DiamondGallery";
 import { SpecTable } from "@/components/diamond/SpecTable";
 import { GradeScales } from "@/components/diamond/GradeScale";
 import { ProductCard } from "@/components/catalog/ProductCard";
+import type { Product } from "@/lib/types/product";
 
 interface DiamondDetailPageProps {
   params: Promise<{ slug: string }>;
@@ -23,15 +24,41 @@ export default function DiamondDetailPage(props: DiamondDetailPageProps) {
 async function DiamondDetailContent({ params }: DiamondDetailPageProps) {
   const { slug } = await params;
 
-  const result = await getProduct(slug);
-  const product = result.product;
+  let product: Product | null;
+  try {
+    product = await getProduct(slug);
+  } catch (error) {
+    return (
+      <div className="page py-12">
+        <h1 className="text-2xl">Diamond details are temporarily unavailable</h1>
+        <p role="alert" className="mt-3 text-sm text-out">
+          {error instanceof Error ? error.message : "Could not connect to the catalogue."}
+        </p>
+        <Link href="/diamonds" className="btn-link mt-5 inline-block">Back to diamonds</Link>
+      </div>
+    );
+  }
   if (!product) {
     notFound();
   }
 
-  const similar = await getSimilar(product);
-
   const d = product.diamond;
+  let similar: Product[] = [];
+  let similarError: string | undefined;
+  if (d) {
+    const query = new URLSearchParams({
+      origin: d.origin,
+      shape: d.shape,
+      page: "0",
+      size: "8",
+    });
+    try {
+      const result = await getProducts(`?${query}`);
+      similar = result.items.filter((item) => item.slug !== product.slug).slice(0, 4);
+    } catch (error) {
+      similarError = error instanceof Error ? error.message : "Recommendations are unavailable.";
+    }
+  }
 
   return (
     <div className="page py-8 sm:py-12 space-y-12">
@@ -98,6 +125,7 @@ async function DiamondDetailContent({ params }: DiamondDetailPageProps) {
           </div>
         </div>
       )}
+      {similarError && <p role="status" className="text-sm text-slate">Similar diamonds could not be loaded: {similarError}</p>}
     </div>
   );
 }

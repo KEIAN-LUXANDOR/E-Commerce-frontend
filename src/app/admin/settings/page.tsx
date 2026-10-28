@@ -1,31 +1,32 @@
-"use client";
+import { AdminHeader, AdminTable } from "@/components/admin/AdminBits";
+import { features } from "@/config/features";
+import { site } from "@/lib/site";
 
-import { Settings, Save } from "lucide-react";
-import { showToast } from "@/lib/stores";
+function display(value: unknown): string {
+  if (typeof value === "string" && !value.trim()) return "Not configured";
+  if (value === undefined || value === null) return "Not configured";
+  if (typeof value === "object") return Object.entries(value).map(([key, item]) => `${key}: ${display(item)}`).join(" · ");
+  return String(value);
+}
 
 export default function SettingsPage() {
-  const handleSave = () => {
-    showToast("Settings saved.", { tone: "success" });
-  };
-
   return (
     <div className="space-y-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-2xl font-medium text-ink flex items-center gap-2">
-          <Settings className="h-6 w-6" />
-          Settings
-        </h1>
-        <button
-          onClick={handleSave}
-          className="inline-flex items-center justify-center bg-ink px-4 py-2 text-xs font-medium uppercase tracking-widest text-white hover:bg-loupe-deep transition-colors"
-        >
-          <Save className="mr-2 h-4 w-4" /> Save Changes
-        </button>
-      </div>
-
-      <div className="bg-surface border border-line p-12 text-center text-slate">
-        <p>Platform settings will appear here.</p>
-      </div>
+      <AdminHeader title="Settings" description="Read-only configuration. Update values in the source files shown below." />
+      <section className="space-y-3">
+        <h2 className="text-xl">Store details <code className="text-sm text-slate">src/lib/site.ts</code></h2>
+        <AdminTable>
+          <thead><tr><th>Setting</th><th>Configured value</th></tr></thead>
+          <tbody>{Object.entries(site).map(([key, value]) => <tr key={key}><td>{key}</td><td>{display(value)}</td></tr>)}</tbody>
+        </AdminTable>
+      </section>
+      <section className="space-y-3">
+        <h2 className="text-xl">Feature switches <code className="text-sm text-slate">src/config/features.ts</code></h2>
+        <AdminTable minWidth="32rem">
+          <thead><tr><th>Feature</th><th>State</th></tr></thead>
+          <tbody>{Object.entries(features).map(([key, enabled]) => <tr key={key}><td>{key}</td><td>{enabled ? "Enabled" : "Off"}</td></tr>)}</tbody>
+        </AdminTable>
+      </section>
     </div>
   );
 }

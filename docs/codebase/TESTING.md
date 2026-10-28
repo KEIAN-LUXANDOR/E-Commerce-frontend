@@ -12,7 +12,7 @@
 
 ## Test Layout
 
-`vitest.config.ts` includes `src/**/*.{test,spec}.{ts,tsx}` and uses the `node`
+`vitest.config.mts` includes `src/**/*.{test,spec}.{ts,tsx}` and uses the `node`
 environment. Tests are colocated with library modules or placed in `__tests__`
 folders, including:
 
@@ -33,7 +33,7 @@ folders, including:
 | Integration with a live backend | `[TODO]` | No live-service test configuration was found |
 | End-to-end browser tests | No configured runner found | `[TODO]` Decide whether E2E coverage is required |
 
-`vitest.config.ts` defines a `@` alias to `src/`. Test files are excluded from
+`vitest.config.mts` defines a `@` alias to `src/`. Test files are excluded from
 the TypeScript typecheck; Vitest executes them separately.
 
 ## Current Validation Snapshot
@@ -41,18 +41,20 @@ the TypeScript typecheck; Vitest executes them separately.
 Observed during this repair:
 
 - `npm run typecheck`: passed.
-- `npm run build`: passed and generated all routes.
-- `npm run lint` on the changed active files: passed.
-- `npm test`: 129 passed, 3 failed (132 total). Failures were one WhatsApp link
-  assertion with no configured WhatsApp number and two tests rendering legacy
-  wishlist components that still expect removed `useWishlist` behavior.
+- `npm test`: 14 test files and 40 tests passed.
+- `npm run build`: passed and generated the current route graph. The home
+  page's new-arrivals fetch logs a prerender-cancellation warning; this does not
+  establish whether the backend is unavailable.
+- Focused ESLint on repaired route/search/API and admin action files: passed.
+- `npm run lint`: still fails repository-wide (109 errors, 108 warnings in
+  the observed run); these include existing issues outside the repaired scope.
 
 The test snapshot is time-specific; rerun the commands before relying on it.
 
 ## Evidence
 
 - `package.json`
-- `vitest.config.ts`
+- `vitest.config.mts`
 - `tsconfig.json`
 - `src/lib/api/account-endpoints.test.ts`
 - `src/components/layout/__tests__/layout.test.tsx`

@@ -14,8 +14,8 @@
  *   NEXT_PUBLIC_FEATURES=orders,payments          (only these)
  */
 const defaults = {
-  /** Place order, My orders, cancel unpaid order. POST/GET /account/orders */
-  orders: false,
+  /** Place order, My orders, cancel unpaid order. Implemented by the backend. */
+  orders: true,
   /** Razorpay: create payment + verify signature. POST /account/orders/{no}/payment */
   payments: false,
   /** Public "Track your order". POST /orders/track */

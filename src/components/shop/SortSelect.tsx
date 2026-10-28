@@ -1,31 +1,32 @@
 "use client";
 
-import { useId } from "react";
-import { useListing } from "@/components/shop/ListingProvider";
-import { SORTS } from "@/lib/catalog-labels";
-import { withFilters } from "@/lib/filters";
-import type { SortOption } from "@/lib/types/catalog";
+import { useListingContext } from "./ListingProvider";
 
 export function SortSelect() {
-  const { filters, navigate } = useListing();
-  const id = useId();
+  const { params, updateParams } = useListingContext();
+
+  const sortOptions = [
+    { value: "price_asc", label: "Price: Low to High" },
+    { value: "price_desc", label: "Price: High to Low" },
+    { value: "carat_desc", label: "Carat: High to Low" },
+    { value: "carat_asc", label: "Carat: Low to High" }
+  ];
+
   return (
-    <div className="flex min-w-0 flex-1 items-center gap-2 sm:flex-none">
-      <label htmlFor={id} className="hidden text-sm text-slate sm:block">
-        Sort by
-      </label>
+    <div className="flex items-center gap-3">
+      <label htmlFor="sort" className="text-xs uppercase tracking-widest text-slate">Sort By</label>
       <select
-        id={id}
-        value={filters.sort ?? "featured"}
-        onChange={(e) => navigate(withFilters(filters, { sort: e.target.value as SortOption }))}
-        className="field min-h-11 w-full cursor-pointer pr-8 text-sm sm:w-auto"
+        id="sort"
+        value={params.sort || "price_asc"}
+        onChange={(e) => updateParams({ sort: e.target.value })}
+        className="h-10 border border-line bg-surface px-3 text-sm text-ink focus:border-ink focus:outline-none focus:ring-1 transition-colors"
       >
-        {SORTS.map((s) => (
-          <option key={s.value} value={s.value}>
-            {s.label}
-          </option>
+        {sortOptions.map((s: { value: string; label: string }) => (
+          <option key={s.value} value={s.value}>{s.label}</option>
         ))}
       </select>
     </div>
   );
 }
+
+export default SortSelect;

@@ -17,8 +17,8 @@ export async function getProducts(apiQueryString: string = ""): Promise<ProductP
 // Alias for older components
 export const fetchProducts = getProducts;
 
-export async function getProduct(slug: string): Promise<Product> {
-  return apiFetch<Product>(`/products/${slug}`);
+export async function getProduct(slug: string): Promise<Product | null> {
+  return apiFetch<Product | null>(`/products/${encodeURIComponent(slug)}`, { allow404: true });
 }
 
 // Legacy helper for the home page (app/page.tsx)

@@ -17,12 +17,16 @@ function notify() {
 }
 
 async function initSession() {
+  let user: User | null = null;
   try {
-    const user = await getMe();
-    state = { user, status: "authenticated" };
+    user = await getMe();
   } catch {
-    state = { user: null, status: "unauthenticated" };
+    // A login or logout may have updated the session while this request was pending.
   }
+  if (state.status !== "loading") return;
+  state = user
+    ? { user, status: "authenticated" }
+    : { user: null, status: "unauthenticated" };
   notify();
 }
 
@@ -41,7 +45,7 @@ export const sessionStore = {
     try {
       const { logout: apiLogout } = await import("@/lib/api/auth");
       await apiLogout();
-    } catch (e) {}
+    } catch {}
     state = { user: null, status: "unauthenticated" };
     notify();
   },
