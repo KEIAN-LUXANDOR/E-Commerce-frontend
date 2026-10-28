@@ -13,6 +13,7 @@ import { syncGuestCartToServer, useCart, fetchServerCart } from "@/lib/shop/cart
 import { AddressSelector } from "./address-selector";
 import { CartView } from "./CartView";
 import type { DeliveryAddress, DeliveryAddressRequest } from "@/lib/types/address";
+import { isDevVerifiedAccount } from "@/lib/auth/devVerifiedAccounts";
 
 export function CheckoutFlow() {
   const router = useRouter();
@@ -165,8 +166,14 @@ export function CheckoutFlow() {
   const cartSnapshot = cart as unknown as { items?: Array<{ variantId: string; available: boolean; pricePaise: number | null }>; itemCount?: number; hasUnavailableItems?: boolean } | null;
   const hasCartItems = (cartSnapshot?.items?.length ?? 0) > 0;
   const hasUnavailableItems = cartSnapshot?.hasUnavailableItems ?? false;
-  const canPlaceOrder = hasCartItems && !hasUnavailableItems && Boolean(addressId) && session.user?.emailVerified === true;
-
+  const isCheckoutEmailVerified =
+    session.user?.emailVerified === true ||
+    isDevVerifiedAccount(session.user?.email);
+  const canPlaceOrder =
+    hasCartItems &&
+    !hasUnavailableItems &&
+    Boolean(addressId) &&
+    isCheckoutEmailVerified;
   return (
     <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
       <div className="space-y-6 lg:col-span-7">
@@ -190,7 +197,7 @@ export function CheckoutFlow() {
               {session.user?.fullName} <span className="text-slate">({session.user?.email})</span>
             </p>
 
-            {session.user?.emailVerified !== true && (
+            {!isCheckoutEmailVerified && (
               <div className="space-y-3 border-l-2 border-low bg-low-tint p-4">
                 <p className="text-sm font-medium text-low">Verify your email address before placing an order.</p>
                 <button
@@ -205,7 +212,7 @@ export function CheckoutFlow() {
               </div>
             )}
 
-            {session.user?.emailVerified === true && step === 1 && (
+            {isCheckoutEmailVerified && step === 1 && (
               <button
                 type="button"
                 onClick={() => setStep(2)}
@@ -275,7 +282,7 @@ export function CheckoutFlow() {
                 {placingOrder ? <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" /> : <ShieldCheck className="h-5 w-5" aria-hidden="true" />}
                 {placingOrder ? "Creating order…" : "Place order & reserve diamonds"}
               </button>
-              {!session.user?.emailVerified && (
+              {!isCheckoutEmailVerified && (
                 <p className="text-xs text-low">Email verification is required before placing an order.</p>
               )}
             </div>
