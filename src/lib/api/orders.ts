@@ -62,9 +62,9 @@ export function startPayment(orderNumber: string): Promise<PaymentSession> {
 export function confirmPayment(
   orderNumber: string,
   payment: PaymentConfirmation,
-): Promise<Order> {
+): Promise<unknown> {
   requireFeature("payments");
-  return apiFetch<Order>(`/account/orders/${encodeURIComponent(orderNumber)}/payment/verify`, {
+  return apiFetch<unknown>(`/account/orders/${encodeURIComponent(orderNumber)}/payment/verify`, {
     method: "POST",
     body: payment,
   });

@@ -2,16 +2,18 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { OrderDetail } from "@/components/orders/OrderDetail";
+import { CheckCircle2, ShieldCheck, Truck, ArrowRight, Package } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Order status | Keian Luxandor",
+  title: "Order Confirmed | Keian Luxandor",
+  description: "Your loose diamond acquisition has been placed and reserved.",
 };
 
 export default async function CheckoutSuccessPage({
   searchParams,
 }: Pick<PageProps<"/checkout/success">, "searchParams">) {
   return (
-    <Suspense fallback={<main className="page py-12"><p role="status">Loading order status…</p></main>}>
+    <Suspense fallback={<main className="page py-12"><p role="status" className="text-sm text-slate">Loading order confirmation...</p></main>}>
       <CheckoutStatus searchParams={searchParams} />
     </Suspense>
   );
@@ -25,20 +27,53 @@ async function CheckoutStatus({
 
   if (!orderNumber) {
     return (
-      <main className="page py-12">
-        <h1 className="text-3xl">No order to show</h1>
-        <p className="mt-3 text-sm text-slate">Place an order to see its current status.</p>
-        <Link href="/diamonds" className="btn btn-primary mt-5">Browse diamonds</Link>
+      <main className="page py-12 text-center max-w-xl mx-auto space-y-4">
+        <h1 className="font-serif text-3xl font-medium text-ink">No Order Found</h1>
+        <p className="text-sm text-slate">Please complete checkout or log in to view active order dossiers.</p>
+        <Link href="/diamonds" className="btn btn-primary inline-flex mt-4 text-xs uppercase tracking-widest px-6 py-3">
+          Browse Diamonds
+        </Link>
       </main>
     );
   }
 
   return (
-    <main className="page space-y-5 py-12">
-      <h1 className="text-3xl">Order reserved</h1>
-      <p className="text-sm text-slate">
-        Your order is awaiting payment. Payment is not confirmed until the backend payment service is available.
-      </p>
+    <main className="page space-y-8 py-12 sm:py-16">
+      {/* Confirmation Header */}
+      <div className="border border-line bg-surface p-6 sm:p-8 space-y-4">
+        <div className="flex items-center gap-3">
+          <CheckCircle2 className="size-8 text-ok shrink-0" />
+          <div>
+            <p className="eyebrow">Insured Acquisition Reserved</p>
+            <h1 className="font-serif text-2xl sm:text-3xl font-medium text-ink">
+              Order #{orderNumber} Confirmed
+            </h1>
+          </div>
+        </div>
+        <p className="text-xs text-slate leading-relaxed max-w-2xl">
+          Your certified loose diamond has been removed from public sale and placed in immediate vault custody. Our gemologists are preparing your certificate dossier and tamper-evident packaging.
+        </p>
+
+        {/* Quick Action Buttons */}
+        <div className="pt-2 flex flex-wrap items-center gap-4">
+          <Link
+            href={`/order-tracking?order=${encodeURIComponent(orderNumber)}`}
+            className="btn btn-primary text-xs uppercase tracking-wider flex items-center gap-2"
+          >
+            <Truck className="size-4" />
+            Track Consignment
+          </Link>
+          <Link
+            href={`/account/orders/${encodeURIComponent(orderNumber)}`}
+            className="btn btn-secondary text-xs uppercase tracking-wider flex items-center gap-2"
+          >
+            <Package className="size-4" />
+            View Account Dossier
+          </Link>
+        </div>
+      </div>
+
+      {/* Live Order Detail View */}
       <OrderDetail id={orderNumber} />
     </main>
   );

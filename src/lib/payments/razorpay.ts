@@ -65,17 +65,20 @@ export async function openRazorpay(session: PaymentSession, storeName: string): 
       name: storeName,
       description: `Order ${session.orderNumber}`,
       prefill: {
-        name: session.prefill.name,
-        email: session.prefill.email,
-        contact: session.prefill.contact ?? undefined,
+        name: session.customerName,
+        email: session.customerEmail,
+        contact: session.customerPhone,
       },
       notes: { orderNumber: session.orderNumber },
       theme: { color: "#0A192F" },
       handler: (r: RazorpayResponse) =>
-        resolve({ razorpayOrderId: r.razorpay_order_id, razorpayPaymentId: r.razorpay_payment_id, razorpaySignature: r.razorpay_signature }),
+        resolve({
+          razorpayOrderId: r.razorpay_order_id,
+          razorpayPaymentId: r.razorpay_payment_id,
+          razorpaySignature: r.razorpay_signature,
+        }),
       modal: { ondismiss: () => resolve(null), confirm_close: true },
     });
-    // A failed attempt keeps the window open so the shopper can try another method
     rzp.on("payment.failed", () => undefined);
     rzp.open();
   });

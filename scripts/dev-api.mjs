@@ -388,7 +388,35 @@ http.createServer(async (req, res) => {
     }
 
     // ---------------- catalogue (public)
-    if (p === "/categories" && method === "GET") return send(res, 200, []);
+    if (p === "/categories" && method === "GET") {
+      return send(res, 200, [
+        { id: stableId("cat:natural"), slug: "natural", name: "Natural Diamonds" },
+        { id: stableId("cat:lab-grown"), slug: "lab-grown", name: "Lab-Grown Diamonds" }
+      ]);
+    }
+    if (p === "/banners/active" && method === "GET") {
+      return send(res, 200, [
+        {
+          id: "ban-001",
+          title: "Certified Loose Diamonds",
+          text: "Direct atelier sourcing from Surat and Mumbai cutting vaults. Inspected in Pune.",
+          ctaLabel: "Browse Solitaires",
+          ctaHref: "/diamonds",
+          shape: "ROUND",
+          startsAt: "2026-01-01T00:00:00Z",
+          endsAt: "2026-12-31T23:59:59Z",
+        }
+      ]);
+    }
+    if (seg[0] === "products" && seg[2] === "similar" && method === "GET") {
+      const slug = decodeURIComponent(seg[1]);
+      const cur = products.find((x) => x.slug === slug);
+      const sim = products.filter((x) => x.status === "ACTIVE" && x.slug !== slug && (!cur || x.diamond.origin === cur.diamond.origin));
+      return send(res, 200, sim.slice(0, 4).map(productView));
+    }
+    if (p.startsWith("/products/featured") && method === "GET") {
+      return send(res, 200, products.filter((x) => x.status === "ACTIVE").slice(0, 4).map(productView));
+    }
     if (p === "/products" && method === "GET") {
       const r = filterProducts(url.searchParams);
       if (r.error) return bad(res, `Invalid value for '${r.error}'.`);
@@ -414,7 +442,7 @@ http.createServer(async (req, res) => {
       const errors = [];
       if (!body.fullName?.trim()) errors.push({ field: "fullName", message: "Enter your name" });
       if (!EMAIL.test(body.email ?? "")) errors.push({ field: "email", message: "Enter a valid email address" });
-      if (!PHONE.test(body.phone ?? "")) errors.push({ field: "phone", message: "Enter a 10-digit mobile number" });
+      if (body.phone && !PHONE.test(body.phone)) errors.push({ field: "phone", message: "Enter a 10-digit mobile number" });
       if (!body.message?.trim()) errors.push({ field: "message", message: "Write a short message" });
       if (errors.length) return bad(res, "One or more fields are invalid.", errors);
       enquiries.unshift({ id: uuid(), status: "NEW", createdAt: now(), productSlug: null, preferredDate: null, preferredTime: null, ...body });
@@ -424,8 +452,9 @@ http.createServer(async (req, res) => {
       if (!EMAIL.test(body.email ?? "")) return bad(res, "One or more fields are invalid.", [{ field: "email", message: "Enter a valid email address" }]);
       return send(res, 202, { message: "Thank you. Please check your inbox to confirm." });
     }
-    if (seg[0] === "delivery" && seg[1] === "pincode" && method === "GET") {
-      const pin = seg[2] ?? "";
+    const isPincode = (seg[0] === "delivery" && seg[1] === "pincode" && seg[2]) || (seg[0] === "pincodes" && seg[1]);
+    if (isPincode && method === "GET") {
+      const pin = seg[0] === "pincodes" ? (seg[1] ?? "") : (seg[2] ?? "");
       if (!/^[1-9]\d{5}$/.test(pin)) return bad(res, "Enter a 6-digit PIN code.");
       const serviceable = !pin.startsWith("19");
       const metro = ["11", "40", "41", "56", "60", "70", "50"].includes(pin.slice(0, 2));
@@ -589,16 +618,36 @@ http.createServer(async (req, res) => {
       if (seg[3] === "payment" && !seg[4] && method === "POST") {
         if (o.status !== "PENDING_PAYMENT") return problem(res, 409, "Conflict", "This order can't be paid any more.");
         o.payment ??= { razorpayOrderId: `order_mock_${crypto.randomBytes(6).toString("hex")}`, razorpayPaymentId: null, method: null, paidAt: null };
-        return send(res, 200, { orderNumber: o.orderNumber, razorpayOrderId: o.payment.razorpayOrderId, keyId: "rzp_mock_dev", amountPaise: o.totalPaise, currency: "INR", prefill: { name: user.fullName, email: user.email, contact: user.phone } });
+        const keyId = process.env.RAZORPAY_KEY_ID || "rzp_test_Tk8mk9UEbyKP18";
+        return send(res, 200, {
+          keyId,
+          razorpayOrderId: o.payment.razorpayOrderId,
+          amountPaise: o.totalPaise,
+          currency: "INR",
+          orderNumber: o.orderNumber,
+          expiresAt: o.expiresAt,
+          customerName: user.fullName,
+          customerEmail: user.email,
+          customerPhone: user.phone || "+919876543210",
+          prefill: { name: user.fullName, email: user.email, contact: user.phone }
+        });
       }
       if (seg[3] === "payment" && seg[4] === "verify" && method === "POST") {
         if (o.status === "PAID") return send(res, 200, orderView(o));
         if (o.status !== "PENDING_PAYMENT") return problem(res, 409, "Conflict", "This order can't be paid any more.");
-        if (body.razorpaySignature !== "mock_signature_ok") return problem(res, 400, "Invalid Input", "We couldn't confirm this payment. If money was taken, it will be refunded automatically.", { code: "PAYMENT_SIGNATURE_INVALID" });
+        if (!body.razorpayPaymentId || !body.razorpayOrderId || body.razorpaySignature === "tampered") {
+          return problem(res, 400, "Invalid Input", "We couldn't confirm this payment. If money was taken, it will be refunded automatically.", { code: "PAYMENT_SIGNATURE_INVALID" });
+        }
         o.status = "PAID";
         o.paidAt = now();
-        o.payment = { ...o.payment, razorpayPaymentId: body.razorpayPaymentId, method: "upi", paidAt: o.paidAt };
-        o.history.push({ status: "PAID", at: o.paidAt, by: null, note: null });
+        o.payment = {
+          ...o.payment,
+          razorpayOrderId: body.razorpayOrderId,
+          razorpayPaymentId: body.razorpayPaymentId,
+          method: "razorpay",
+          paidAt: o.paidAt
+        };
+        o.history.push({ status: "PAID", at: o.paidAt, by: user.fullName, note: "Verified via Razorpay" });
         return send(res, 200, orderView(o));
       }
       if (seg[3] === "invoice" && method === "GET") {

@@ -203,7 +203,7 @@ export default function ShapesGuidePage() {
                     </div>
 
                     <Link
-                      href={`/shop?shape=${encodeURIComponent(item.shape)}`}
+                      href={`/diamonds?shape=${encodeURIComponent(item.shape)}`}
                       className="inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.1em] text-[var(--color-loupe)] hover:underline"
                     >
                       Browse

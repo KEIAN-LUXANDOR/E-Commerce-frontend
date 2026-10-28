@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { SaveButton } from "@/components/product/SaveButton";
 import { AddToCartButton } from "@/components/product/AddToCartButton";
-import { CertificateModal } from "@/components/store/certificate-modal";
+import { CertificateModal } from "@/components/diamond/CertificateModal";
 import { compareAtPaise, mainVariant, originLine, shortTitle } from "@/lib/catalog/product";
 import { formatINR } from "@/lib/format";
 import type { Product } from "@/lib/types/product";

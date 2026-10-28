@@ -64,4 +64,61 @@ describe("order API", () => {
       }],
     });
   });
+
+  it("uses the supplied Razorpay create and verify contracts", async () => {
+      vi.stubGlobal("window", {});
+      const fetchMock = vi.fn()
+        .mockResolvedValueOnce(Response.json({ token: "csrf-test" }))
+        .mockResolvedValueOnce(Response.json({
+          keyId: "rzp_test_public",
+          razorpayOrderId: "order_test",
+          amountPaise: 18500000,
+          currency: "INR",
+          orderNumber: "KL100003",
+          expiresAt: "2026-10-28T06:31:43Z",
+          customerName: "Riya Shah",
+          customerEmail: "riya@example.com",
+          customerPhone: "+919876543210",
+        }))
+        .mockResolvedValueOnce(Response.json({ message: "verified" }));
+      vi.stubGlobal("fetch", fetchMock);
+
+      const { startPayment, confirmPayment } = await import("@/lib/api/orders");
+      const session = await startPayment("KL100003");
+      await confirmPayment("KL100003", {
+        razorpayOrderId: "order_test",
+        razorpayPaymentId: "pay_test",
+        razorpaySignature: "signature_from_checkout",
+      });
+
+      expect(session).toMatchObject({
+        keyId: "rzp_test_public",
+        razorpayOrderId: "order_test",
+        amountPaise: 18500000,
+        currency: "INR",
+        orderNumber: "KL100003",
+      });
+      expect(fetchMock.mock.calls[1][0]).toBe(
+        "/api/account/orders/KL100003/payment",
+      );
+      expect(fetchMock.mock.calls[1][1]).toMatchObject({
+        method: "POST",
+        body: undefined,
+        credentials: "include",
+      });
+      expect(new Headers(fetchMock.mock.calls[1][1]?.headers).get("X-CSRF-TOKEN")).toBe("csrf-test");
+      expect(fetchMock.mock.calls[2][0]).toBe(
+        "/api/account/orders/KL100003/payment/verify",
+      );
+      expect(fetchMock.mock.calls[2][1]).toMatchObject({
+        method: "POST",
+        body: JSON.stringify({
+          razorpayOrderId: "order_test",
+          razorpayPaymentId: "pay_test",
+          razorpaySignature: "signature_from_checkout",
+        }),
+        credentials: "include",
+    });
+    expect(new Headers(fetchMock.mock.calls[2][1]?.headers).get("X-CSRF-TOKEN")).toBe("csrf-test");
+  });
 });

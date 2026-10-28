@@ -169,6 +169,19 @@ export function CheckoutFlow() {
   const isCheckoutEmailVerified =
     session.user?.emailVerified === true ||
     isDevVerifiedAccount(session.user?.email);
+  {/*
+  Temporary debugging:
+  Remove after confirming the verification state.
+*/}
+
+  console.log("[Checkout debug]", {
+    email: session.user?.email,
+    emailVerified: session.user?.emailVerified,
+    devApproved: isDevVerifiedAccount(session.user?.email),
+    isCheckoutEmailVerified,
+    step,
+  });
+
   const canPlaceOrder =
     hasCartItems &&
     !hasUnavailableItems &&
@@ -212,15 +225,22 @@ export function CheckoutFlow() {
               </div>
             )}
 
+
             {isCheckoutEmailVerified && step === 1 && (
-              <button
-                type="button"
-                onClick={() => setStep(2)}
-                className="inline-flex h-11 items-center bg-ink px-6 text-xs font-medium uppercase tracking-widest text-white hover:bg-loupe-deep"
-              >
-                Continue to address
-              </button>
+              <div className="mt-6 flex justify-start">
+                <button
+                  type="button"
+                  onClick={() => {
+                    console.log("[Checkout] Moving to delivery address");
+                    setStep(2);
+                  }}
+                  className="inline-flex min-h-12 items-center justify-center rounded bg-slate-900 px-8 py-3 text-sm font-semibold text-white hover:bg-slate-700"
+                >
+                  Continue to address →
+                </button>
+              </div>
             )}
+
           </div>
         </section>
 

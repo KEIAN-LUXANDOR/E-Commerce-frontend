@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ContentPage } from "@/components/common/ContentPage";
 import { CLARITIES, COLORS } from "@/lib/catalog/labels";
+import { ArrowRight, Sparkles } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "The 4 Cs of diamonds, simply explained",
@@ -67,9 +68,40 @@ export default function FourCsPage() {
         <li>Then colour: G–H looks white for most people.</li>
         <li>Clarity last: “eye clean” (often VS2 or SI1) is all you need.</li>
       </ol>
-      <p>
-        Ready to look? <Link href="/diamonds">Browse diamonds</Link> and use the filters, or <Link href="/contact">ask us</Link> for a shortlist.
-      </p>
+
+      <div className="mt-10 border border-line bg-surface p-6 sm:p-8 space-y-4">
+        <h3 className="font-serif text-xl font-medium text-ink flex items-center gap-2">
+          <Sparkles className="size-4 text-loupe" />
+          Explore the Catalogue by 4Cs Criteria
+        </h3>
+        <p className="text-xs text-slate">
+          Jump directly into pre-filtered certified diamond collections matching optimal gemological value:
+        </p>
+
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 pt-2">
+          <Link
+            href="/diamonds?color=D,E,F"
+            className="border border-line bg-stone p-4 hover:border-ink transition-colors block text-xs"
+          >
+            <span className="font-semibold text-ink block">Colourless Collection</span>
+            <span className="text-slate text-[11px] mt-0.5 block">D, E, F Master Colour Grades</span>
+          </Link>
+          <Link
+            href="/diamonds?clarity=VS1,VS2"
+            className="border border-line bg-stone p-4 hover:border-ink transition-colors block text-xs"
+          >
+            <span className="font-semibold text-ink block">Eye-Clean Value</span>
+            <span className="text-slate text-[11px] mt-0.5 block">VS1 &amp; VS2 Verified Clean</span>
+          </Link>
+          <Link
+            href="/diamonds?minCarat=1"
+            className="border border-line bg-stone p-4 hover:border-ink transition-colors block text-xs"
+          >
+            <span className="font-semibold text-ink block">1.00+ Carat Solitaires</span>
+            <span className="text-slate text-[11px] mt-0.5 block">Full Carat Investment Stones</span>
+          </Link>
+        </div>
+      </div>
     </ContentPage>
   );
 }

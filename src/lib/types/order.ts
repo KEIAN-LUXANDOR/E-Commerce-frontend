@@ -75,15 +75,17 @@ export interface OrderListPage {
   totalPages: number;
 }
 
-/** What the browser needs to open Razorpay Checkout for an order. */
+/** What the browser needs to open Razorpay Checkout for an order (from POST /account/orders/{orderNumber}/payment). */
 export interface PaymentSession {
-  orderNumber: string;
-  razorpayOrderId: string;
-  /** Public key id (rzp_test_… / rzp_live_…). Never the secret. */
   keyId: string;
+  razorpayOrderId: string;
   amountPaise: number;
-  currency: "INR";
-  prefill: { name: string; email: string; contact: string | null };
+  currency: string;
+  orderNumber: string;
+  expiresAt: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
 }
 
 export interface PaymentConfirmation {

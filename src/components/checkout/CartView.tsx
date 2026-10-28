@@ -10,6 +10,8 @@ import type { Product } from "@/lib/types/product";
 import { fetchServerCart, removeFromCart, useCart } from "@/lib/shop/cart";
 import { sessionStore } from "@/lib/session";
 import { productHref, shortTitle, gradeLine } from "@/lib/catalog/product";
+import { gstIncludedPaise } from "@/lib/site";
+import { formatINR } from "@/lib/format";
 
 type DisplayLine = {
   variantId: string;
@@ -18,15 +20,8 @@ type DisplayLine = {
   available: boolean;
 };
 
-function formatINR(paise: number) {
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 2,
-  }).format(paise / 100);
-}
-
 export function CartView({ compact = false }: { compact?: boolean }) {
+  const [mounted, setMounted] = useState(false);
   const session = sessionStore.useSession();
   const cartSnapshot = useCart();
   const [guestLines, setGuestLines] = useState<DisplayLine[]>([]);
@@ -34,6 +29,10 @@ export function CartView({ compact = false }: { compact?: boolean }) {
   const [loadingServerCart, setLoadingServerCart] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
   const [removingId, setRemovingId] = useState<string | null>(null);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const serverCart = cartSnapshot as unknown as Cart | null;
   const variantIds = (cartSnapshot?.items ?? []).map((item) => item.variantId);
@@ -74,9 +73,9 @@ export function CartView({ compact = false }: { compact?: boolean }) {
         const productsByVariant = new Map<string, Product>();
         let page = 0;
         let totalPages = 1;
+        const maxPages = 2; // Cap guest cart sweep to 2 pages (100 products) to prevent deep traversals
 
-        // Guest carts store variant IDs only. Resolve those IDs against the public catalog API.
-        while (page < totalPages && productsByVariant.size < wanted.size) {
+        while (page < Math.min(totalPages, maxPages) && productsByVariant.size < wanted.size) {
           const result = await getProducts(`?size=50&page=${page}`);
           for (const product of result.items ?? []) {
             for (const variant of product.variants ?? []) {
@@ -101,9 +100,12 @@ export function CartView({ compact = false }: { compact?: boolean }) {
           }),
         );
       } catch (error) {
-        if (!cancelled) {
-          setLoadError(error instanceof Error ? error.message : "We couldn't load your cart items.");
-        }
+        if (cancelled) return;
+        setLoadError(
+          error instanceof Error
+            ? error.message
+            : "Could not load prices for items in your cart.",
+        );
       } finally {
         if (!cancelled) setGuestLoading(false);
       }
@@ -115,58 +117,66 @@ export function CartView({ compact = false }: { compact?: boolean }) {
   }, [session.status, variantIdsKey]);
 
   const lines = useMemo<DisplayLine[]>(() => {
-    if (session.status !== "authenticated") return guestLines;
-    return (serverCart?.items ?? []).map((item) => ({
-      variantId: item.variantId,
-      product: item.product,
-      pricePaise: item.pricePaise,
-      available: item.available && item.pricePaise !== null,
-    }));
-  }, [session.status, serverCart, guestLines]);
+    if (session.status === "authenticated" && serverCart?.items) {
+      return serverCart.items.map((item) => ({
+        variantId: item.variantId,
+        product: item.product,
+        pricePaise: item.pricePaise,
+        available: item.available,
+      }));
+    }
+    return guestLines;
+  }, [guestLines, serverCart, session.status]);
 
-  const isLoading =
-    session.status === "loading" ||
-    (session.status === "authenticated" && (loadingServerCart || (!serverCart && !loadError))) ||
-    (session.status === "unauthenticated" && guestLoading);
+  const subtotalPaise = useMemo(() => {
+    if (session.status === "authenticated" && typeof serverCart?.subtotalPaise === "number") {
+      return serverCart.subtotalPaise;
+    }
+    return lines
+      .filter((line) => line.available && line.pricePaise !== null)
+      .reduce((sum, line) => sum + (line.pricePaise ?? 0), 0);
+  }, [lines, serverCart, session.status]);
 
-  const itemCount = lines.length;
-  const subtotalPaise =
-    session.status === "authenticated"
-      ? serverCart?.subtotalPaise ?? 0
-      : lines.reduce((sum, line) => sum + (line.available ? line.pricePaise ?? 0 : 0), 0);
-  const hasUnavailableItems =
-    session.status === "authenticated"
-      ? serverCart?.hasUnavailableItems ?? false
-      : lines.some((line) => !line.available);
+  const gstPaise = gstIncludedPaise(subtotalPaise);
+  const itemCount = lines.filter((line) => line.available).length;
+  const hasUnavailableItems = lines.some((line) => !line.available);
+  const isLoading = session.status === "loading" || guestLoading || loadingServerCart;
 
   async function handleRemove(variantId: string) {
     setRemovingId(variantId);
-    setLoadError(null);
     try {
       await removeFromCart(variantId);
+      if (session.status === "unauthenticated") {
+        setGuestLines((current) => current.filter((item) => item.variantId !== variantId));
+      }
     } finally {
       setRemovingId(null);
     }
   }
 
-  if (isLoading) {
+  // Prevent hydration mismatch by ensuring server and first client render match exactly
+  if (!mounted || (isLoading && lines.length === 0)) {
     return (
-      <div className="flex items-center justify-center gap-3 border border-line bg-surface p-10 text-sm text-slate">
-        <Loader2 className="h-5 w-5 animate-spin" aria-hidden="true" />
-        Loading your cart…
+      <div className="flex flex-col items-center justify-center py-16 text-center">
+        <Loader2 className="h-8 w-8 animate-spin text-ink" aria-hidden="true" />
+        <p className="mt-4 text-xs uppercase tracking-widest text-slate">Loading your diamond selection...</p>
       </div>
     );
   }
 
-  if (loadError && lines.length === 0) {
+  if (loadError) {
     return (
-      <div className="border border-line bg-surface p-8 text-center">
-        <AlertCircle className="mx-auto mb-3 h-6 w-6 text-out" aria-hidden="true" />
-        <p role="alert" className="mb-4 text-sm text-out">{loadError}</p>
+      <div className="border border-out/20 bg-out-bg p-6 text-center">
+        <AlertCircle className="mx-auto h-8 w-8 text-out" aria-hidden="true" />
+        <h2 className="mt-2 text-sm font-medium text-ink">We couldn&apos;t load your cart</h2>
+        <p className="mt-1 text-xs text-slate">{loadError}</p>
         <button
           type="button"
-          onClick={() => window.location.reload()}
-          className="border border-line px-4 py-2 text-xs uppercase tracking-widest hover:border-ink"
+          onClick={() => {
+            setLoadError(null);
+            if (session.status === "authenticated") void fetchServerCart();
+          }}
+          className="mt-4 inline-flex h-9 items-center border border-line bg-surface px-4 text-xs uppercase tracking-wider text-ink hover:border-ink"
         >
           Try again
         </button>
@@ -174,41 +184,40 @@ export function CartView({ compact = false }: { compact?: boolean }) {
     );
   }
 
-  if (itemCount === 0) {
+  if (lines.length === 0) {
     return (
-      <div className="border border-line bg-surface p-10 text-center">
-        <ShoppingBag className="mx-auto mb-4 h-8 w-8 text-slate" aria-hidden="true" />
-        <h2 className="font-serif text-xl text-ink">Your cart is empty</h2>
-        <p className="mx-auto mb-5 mt-2 max-w-sm text-sm text-slate">
-          Your selected diamonds will appear here. Each diamond is unique and can only be purchased once.
-        </p>
+      <div className="border border-line bg-surface p-12 text-center">
+        <ShoppingBag className="mx-auto h-12 w-12 text-slate stroke-1" aria-hidden="true" />
+        <h2 className="mt-4 text-lg font-medium text-ink">Your selection is empty</h2>
+        <p className="mt-1 text-xs text-slate">You haven&apos;t reserved any loose certified diamonds yet.</p>
         <Link
           href="/diamonds"
-          className="inline-flex h-11 items-center justify-center gap-2 bg-ink px-6 text-xs font-medium uppercase tracking-widest text-white hover:bg-loupe-deep"
+          className="mt-6 inline-flex h-11 items-center bg-ink px-6 text-xs font-medium uppercase tracking-widest text-white hover:bg-loupe-deep transition-colors"
         >
-          Browse diamonds <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          Explore Diamonds
         </Link>
       </div>
     );
   }
 
   return (
-    <div className={compact ? "space-y-3" : "space-y-5"}>
-      {loadError && (
-        <p role="alert" className="border-l-2 border-out bg-out-tint p-3 text-sm text-out">{loadError}</p>
-      )}
-
+    <div className="space-y-6">
       {lines.map((line) => {
         const product = line.product;
         const diamond = product?.diamond;
+
         return (
-          <article key={line.variantId} className="flex gap-4 border border-line bg-surface p-4 sm:p-5">
+          <article
+            key={line.variantId}
+            className={`flex gap-4 border border-line bg-surface p-4 transition-opacity sm:gap-6 ${
+              !line.available ? "opacity-60" : ""
+            }`}
+          >
             <Link
               href={product ? productHref(product.slug) : "/diamonds"}
-              className="relative h-24 w-24 shrink-0 bg-platinum sm:h-28 sm:w-28"
-              aria-label={product ? `View ${product.name}` : "Browse diamonds"}
+              className="relative h-24 w-24 shrink-0 overflow-hidden bg-platinum sm:h-28 sm:w-28"
             >
-              <ProductImage product={product ?? undefined} sizes="112px" className="object-contain" />
+              <ProductImage product={product ?? undefined} sizes="112px" priority className="object-contain" />
             </Link>
 
             <div className="flex min-w-0 flex-1 flex-col justify-between gap-3">
@@ -234,19 +243,21 @@ export function CartView({ compact = false }: { compact?: boolean }) {
               </div>
 
               <div className="flex flex-wrap items-center justify-between gap-3">
-                <span className="text-sm font-medium text-ink">
+                <span className="text-sm font-medium text-ink font-mono">
                   {line.available && line.pricePaise !== null ? formatINR(line.pricePaise) : "Unavailable"}
                 </span>
                 <button
                   type="button"
                   onClick={() => void handleRemove(line.variantId)}
                   disabled={removingId === line.variantId}
-                  className="inline-flex items-center gap-2 p-1 text-xs uppercase tracking-wider text-slate hover:text-out disabled:opacity-50"
+                  className="inline-flex items-center gap-1.5 p-1 text-xs uppercase tracking-wider text-slate hover:text-out disabled:opacity-50"
                   aria-label={`Remove ${product?.name ?? "diamond"} from cart`}
                 >
-                  {removingId === line.variantId
-                    ? <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
-                    : <Trash2 className="h-4 w-4" aria-hidden="true" />}
+                  {removingId === line.variantId ? (
+                    <Loader2 className="h-4 w-4 animate-spin" aria-hidden="true" />
+                  ) : (
+                    <Trash2 className="h-4 w-4" aria-hidden="true" />
+                  )}
                   Remove
                 </button>
               </div>
@@ -256,36 +267,33 @@ export function CartView({ compact = false }: { compact?: boolean }) {
       })}
 
       {!compact && (
-        <div className="border border-line bg-surface p-5 sm:p-6">
+        <div className="border border-line bg-surface p-5 sm:p-6 space-y-4">
           {hasUnavailableItems && (
-            <p className="mb-4 border-l-2 border-out bg-out-tint p-3 text-sm text-out">
-              Remove unavailable diamonds before continuing to checkout.
+            <p className="border-l-2 border-out bg-out-tint p-3 text-sm text-out">
+              Please remove unavailable diamonds before continuing to checkout.
             </p>
           )}
-          <div className="flex items-center justify-between gap-4">
-            <span className="text-sm text-slate">Subtotal ({itemCount} {itemCount === 1 ? "diamond" : "diamonds"})</span>
-            <span className="text-lg font-medium text-ink">{formatINR(subtotalPaise)}</span>
+
+          <div className="flex items-center justify-between gap-4 border-b border-line pb-4">
+            <div>
+              <p className="text-sm text-slate">Subtotal ({itemCount} {itemCount === 1 ? "diamond" : "diamonds"})</p>
+              <p className="text-xs text-muted font-mono mt-0.5">Includes {formatINR(gstPaise)} GST (3%) · Insured Transit Free</p>
+            </div>
+            <span className="text-xl font-medium font-mono text-ink">{formatINR(subtotalPaise)}</span>
           </div>
-          <p className="mt-2 text-xs text-slate">Shipping and any applicable charges are confirmed when your order is created.</p>
-          <div className="mt-5 flex flex-col gap-3 sm:flex-row">
+
+          <div className="flex flex-col gap-3 sm:flex-row">
             <Link
               href="/diamonds"
-              className="inline-flex h-12 flex-1 items-center justify-center border border-line px-5 text-xs font-medium uppercase tracking-widest text-ink hover:border-ink"
+              className="inline-flex h-12 flex-1 items-center justify-center border border-line px-5 text-xs font-medium uppercase tracking-widest text-ink hover:border-ink transition-colors"
             >
               Continue shopping
             </Link>
-            
-             <Link
-    href="/checkout"
-    className="flex min-h-14 items-center justify-center bg-slate-900 px-6 py-4 text-center text-sm font-semibold tracking-widest text-white transition hover:bg-slate-700"
-  >
-    PROCEED TO CHECKOUT →
-  </Link>
 
             <Link
               href={session.status === "authenticated" ? "/checkout" : "/login?next=%2Fcheckout"}
               aria-disabled={hasUnavailableItems}
-              className={`inline-flex h-12 flex-1 items-center justify-center gap-2 px-5 text-xs font-medium uppercase tracking-widest text-white ${
+              className={`inline-flex h-12 flex-1 items-center justify-center gap-2 px-6 text-xs font-medium uppercase tracking-widest text-white transition-colors ${
                 hasUnavailableItems ? "pointer-events-none bg-slate opacity-50" : "bg-ink hover:bg-loupe-deep"
               }`}
             >
@@ -300,14 +308,15 @@ export function CartView({ compact = false }: { compact?: boolean }) {
         <div className="border border-line bg-surface p-4">
           <div className="flex justify-between text-sm">
             <span className="text-slate">Subtotal</span>
-            <span className="font-medium text-ink">{formatINR(subtotalPaise)}</span>
+            <span className="font-medium font-mono text-ink">{formatINR(subtotalPaise)}</span>
           </div>
+          <p className="text-[11px] text-muted font-mono mt-0.5">Includes {formatINR(gstPaise)} GST (3%)</p>
           {hasUnavailableItems && (
             <p className="mt-3 text-xs text-out">Remove unavailable diamonds before placing your order.</p>
           )}
           <Link
             href="/cart"
-            className="mt-4 inline-flex h-10 w-full items-center justify-center border border-line text-xs font-medium uppercase tracking-widest text-ink hover:border-ink"
+            className="mt-4 inline-flex h-10 w-full items-center justify-center border border-line text-xs font-medium uppercase tracking-widest text-ink hover:border-ink transition-colors"
           >
             View full cart
           </Link>
