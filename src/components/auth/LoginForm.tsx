@@ -24,14 +24,10 @@ export function LoginForm() {
     setFieldErrors({});
 
     const normalizedEmail = normaliseEmail(email);
-    const validation = validateLogin({ email: normalizedEmail, password });
+    const errors = validateLogin({ email: normalizedEmail, password });
     
-    if (!validation.valid) {
-      if (typeof validation.errors === "string") {
-        setError(validation.errors);
-      } else if (validation.errors) {
-        setFieldErrors(validation.errors as FieldErrors);
-      }
+    if (Object.keys(errors).length) {
+      setFieldErrors(errors);
       return;
     }
 
@@ -44,7 +40,7 @@ export function LoginForm() {
       sessionStore.setAuthenticated(user);
 
       const next = new URLSearchParams(window.location.search).get("next");
-      router.push(safeNextPath(next));
+      router.replace(safeNextPath(next));
       router.refresh();
     } catch (err: unknown) {
       if (err instanceof ApiError) {

@@ -108,12 +108,16 @@ Validation after this follow-up:
 - Product cards show a labeled Add to Cart button or a disabled Sold Out
   button; the home hero now labels its catalog action "Shop now".
 - Kept cart state and mini-cart actions typed while wiring the visible CTA.
+- Successful login now replaces the login route with the safe account
+  destination, and an in-flight initial session check cannot erase that login.
+- Fixed profile editing to load and save the backend's `fullName` field; the
+  account navigation exposes profile, orders, addresses, and certificates.
 
 Validation:
 
 - `npm test`: 15 files and 41 tests passed.
 - `npm run typecheck`: passed.
-- Focused ESLint on changed UI/cart files: passed.
+- Focused ESLint on changed UI/cart and auth/profile files: passed.
 - `npm run build`: passed; homepage new-arrivals prerender logged a fetch
   cancellation warning.
 - Repository-wide `npm run lint` remains blocked by pre-existing warnings in
