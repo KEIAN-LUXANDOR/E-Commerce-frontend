@@ -8,9 +8,12 @@ export const metadata: Metadata = {
 
 export default function CheckoutPage() {
   return (
-    <div className="page pb-16 pt-8">
-      <h1 className="text-4xl sm:text-5xl">Secure checkout</h1>
+     <main className="mx-auto w-full max-w-7xl px-4 py-10 sm:px-6 lg:px-8">
+      <h1 className="mb-8 text-3xl font-semibold text-slate-900">
+        Checkout
+      </h1>
+
       <CheckoutFlow />
-    </div>
+    </main>
   );
 }

@@ -4,8 +4,9 @@ import { useSyncExternalStore } from "react";
 import { createLocalStore } from "@/lib/local-store";
 import { sessionStore } from "@/lib/session";
 import { ApiError, apiFetch } from "@/lib/api/client";
-import type { Cart } from "@/lib/api/cart";
+import { addCartItem, type Cart } from "@/lib/api/cart";
 import type { Product } from "@/lib/types/product";
+import { mainVariant } from "@/lib/catalog/product";
 import { showToast } from "@/lib/stores";
 
 const localCartStore = createLocalStore<string[]>("kl_guest_cart_v1", []);
@@ -35,7 +36,7 @@ export async function fetchServerCart() {
 }
 
 export async function addToCart(product: Product) {
-  const variant = product.variants?.[0];
+  const variant = mainVariant(product);
   if (!variant) {
     showToast("Product is unavailable", { tone: "error" });
     return;
@@ -78,6 +79,40 @@ export async function removeFromCart(variantId: string) {
     const current = localCartStore.read();
     localCartStore.set(current.filter((id: string) => id !== variantId));
   }
+}
+
+
+/**
+ * Move browser-only guest selections into the signed-in server cart.
+ * The API accepts one unique diamond per variant; duplicate adds are idempotent.
+ * Items rejected by the server (for example sold-out diamonds) are dropped from
+ * the guest list and reported to the caller.
+ */
+export async function syncGuestCartToServer(): Promise<{ migrated: number; failed: number }> {
+  if (sessionStore.get().status !== "authenticated") {
+    return { migrated: 0, failed: 0 };
+  }
+
+  const guestIds = localCartStore.read();
+  let migrated = 0;
+  let failed = 0;
+
+  for (const variantId of guestIds) {
+    try {
+      await addCartItem(variantId);
+      migrated += 1;
+    } catch {
+      failed += 1;
+    }
+  }
+
+  // The account cart becomes the source of truth after login.
+  if (guestIds.length > 0) {
+    localCartStore.set([]);
+  }
+
+  await fetchServerCart();
+  return { migrated, failed };
 }
 
 // Cache for the local cart snapshot to prevent infinite loops in useSyncExternalStore

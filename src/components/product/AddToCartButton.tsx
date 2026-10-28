@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Check, ShoppingBag, Loader2 } from "lucide-react";
-import { primaryVariant } from "@/lib/catalog/product";
+import { mainVariant } from "@/lib/catalog/product";
 import { addToCart, useCart } from "@/lib/shop/cart";
 import { miniCartOpenStore } from "@/lib/stores";
 import type { Product } from "@/lib/types/product";
@@ -16,7 +16,7 @@ interface AddToCartButtonProps {
 export function AddToCartButton({ product, compact = false }: AddToCartButtonProps) {
   const [pending, setPending] = useState(false);
   const cart = useCart();
-  const variant = primaryVariant(product);
+  const variant = mainVariant(product);
   
   // Check if the current variant is in the cart
   const inCart = variant
@@ -42,10 +42,16 @@ export function AddToCartButton({ product, compact = false }: AddToCartButtonPro
 
   if (!variant || !variant.inStock) {
     return (
-      <button type="button" disabled className={cn(
-        "flex min-h-11 items-center justify-center rounded-[3px] border border-line px-4 text-xs font-medium uppercase tracking-widest text-slate",
-        compact ? "h-9 min-h-9 w-auto px-2 text-[10px]" : "w-full",
-      )}>
+      <button
+        type="button"
+        disabled
+        aria-label="Product currently unavailable"
+        className={cn(
+          "btn w-full min-h-12 justify-center text-xs uppercase tracking-widest",
+          compact ? "h-9 min-h-9 w-9 px-2 text-[10px]" : "w-full",
+          "border border-line bg-surface text-slate opacity-70",
+        )}
+      >
         Sold out
       </button>
     );
@@ -78,14 +84,14 @@ export function AddToCartButton({ product, compact = false }: AddToCartButtonPro
 
   return (
     <button
+      type="button"
       onClick={handleClick}
       disabled={pending}
+      aria-label={inCart ? "Open cart" : "Add to cart"}
       className={cn(
-        "flex h-11 w-full items-center justify-center gap-2 rounded-[3px] border px-6 text-xs font-medium uppercase tracking-widest transition-colors",
-        inCart
-          ? "border-line bg-surface text-ink hover:bg-platinum"
-          : "border-transparent bg-ink text-white hover:bg-loupe-deep",
-        pending && "opacity-50 cursor-not-allowed"
+        "btn btn-primary min-h-12 w-full justify-center gap-2 px-6 text-xs uppercase tracking-widest shadow-sm",
+        inCart && "border-line bg-surface text-ink hover:bg-platinum",
+        pending && "cursor-not-allowed opacity-60"
       )}
     >
       {pending ? (
