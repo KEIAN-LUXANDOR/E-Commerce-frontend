@@ -133,13 +133,22 @@ export function LoginForm() {
         </div>
       </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full h-11 flex items-center justify-center bg-ink text-white text-xs font-medium uppercase tracking-widest hover:bg-loupe-deep transition-colors disabled:opacity-50"
-      >
-        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sign In"}
-      </button>
+      
+<button
+  type="submit"
+  disabled={loading}
+  className="w-full h-11 flex items-center justify-center
+    bg-blue-800 text-white text-xs font-medium uppercase
+    tracking-widest hover:bg-blue-900 transition-colors
+    disabled:opacity-50 disabled:cursor-not-allowed"
+>
+  {loading ? (
+    <Loader2 className="h-4 w-4 animate-spin" />
+  ) : (
+    "Login"
+  )}
+</button>
+
 
       <div className="text-center text-sm text-slate pt-2">
         Don&apos;t have an account?{" "}

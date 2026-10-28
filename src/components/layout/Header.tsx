@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { Search, User, Heart, ShoppingBag, Menu, X } from "lucide-react";
 import { useCartCount } from "@/lib/shop/cart";
 import { setMiniCartOpen } from "@/lib/stores";
+import Image from "next/image";
 
 export function Header() {
   const pathname = usePathname();
@@ -59,9 +60,20 @@ export function Header() {
 
         {/* Center: Brand Logo */}
         <div className="flex justify-center flex-shrink-0">
-          <Link href="/" className="text-2xl font-serif tracking-widest text-ink">
-            LUXANDOR
-          </Link>
+         <Link
+  href="/"
+  aria-label="KEIAN Luxandor - Home"
+  className="flex shrink-0 flex-col items-center justify-center"
+>
+  <Image
+    src="/Keian.png"
+    alt="KEIAN Luxandor"
+    width={220}
+    height={90}
+    priority
+    className="h-auto p-3 w-[150px] object-contain sm:w-100px] lg:w-[100px]"
+  />
+</Link>
         </div>
 
         {/* Right: Utility Icons */}
