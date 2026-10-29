@@ -20,7 +20,7 @@ export function HeroCarousel({ banners }: { banners: Banner[] }) {
       aria-label="Featured Collection"
       className="relative overflow-hidden border-b border-line bg-[var(--surface-warm)]"
     >
-      <div className="page relative z-10 grid items-center gap-10 py-12 md:grid-cols-[1.1fr_1fr] md:py-20 lg:gap-16">
+      <div className=" bg-[#F5F0E8] page relative z-10 grid items-center gap-10 py-12 md:grid-cols-[1.1fr_1fr] md:py-20 lg:gap-16">
         <div key={b.id} aria-live="polite" aria-atomic="true" className="order-2 animate-fade-up md:order-1">
           <div role="group" aria-roledescription="slide" aria-label={`${index + 1} of ${banners.length}`}>
             <div className="flex items-center gap-2 mb-4">

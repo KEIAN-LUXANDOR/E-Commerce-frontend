@@ -28,10 +28,10 @@ export function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-40 w-full bg-surface transition-all duration-300 ${
-        isScrolled ? "border-b border-line shadow-sm" : ""
-      }`}
-    >
+  className={`sticky top-0 z-40 w-full bg-[#F5F0E8] transition-all duration-300 ${
+    isScrolled ? "border-b border-line shadow-sm" : ""
+  }`}
+>
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         
         {/* Left: Primary Navigation (Desktop) */}

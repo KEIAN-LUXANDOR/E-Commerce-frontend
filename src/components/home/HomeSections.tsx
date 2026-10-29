@@ -212,7 +212,7 @@ export function ShopByShape() {
   return (
     <section
       aria-labelledby="shapes-heading"
-      className="w-full bg-[#F1F5F9] border-b border-line py-16 lg:py-20"
+      className="w-full bg-[#F5F0E8] border-b border-line py-16 lg:py-20"
       id="shapes"
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -269,7 +269,7 @@ export function OriginCompare({
   labHref?: string;
 }) {
   return (
-    <section className="w-full bg-white border-b border-line py-16 lg:py-20" id="origin">
+    <section className="w-full bg-[#F5F0E8] border-b border-line py-16 lg:py-20" id="origin">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           {/* Natural diamonds — clean white */}
@@ -386,10 +386,10 @@ export function ChooseBySize() {
 
   return (
     <section
-      className="w-full bg-[#F1F5F9] border-b border-line py-16 lg:py-20"
+      className="w-full bg-[#F5F0E8]border-b border-line py-16 lg:py-20"
       id="proportions"
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-12">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 bg-[#F5F0E8]">
         <div className="text-center max-w-xl mx-auto mb-12 animate-fade-up">
           <span className="section-eyebrow mb-3">Proportions</span>
           <h2 className="font-serif text-[32px] sm:text-[38px] text-ink font-normal">
@@ -460,11 +460,18 @@ export function HowItWorks() {
   ];
 
   return (
-    <section className="w-full bg-white border-b border-line py-16 lg:py-20" id="process">
+
+    <section
+      className="w-full bg-black border-b border-white/20 py-16 lg:py-20"
+      id="process"
+    >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="text-center max-w-xl mx-auto mb-14 animate-fade-up">
-          <span className="section-eyebrow mb-3">Purchase process</span>
-          <h2 className="font-serif text-[32px] sm:text-[38px] text-ink font-normal">
+          <span className="section-eyebrow mb-3 text-white">
+            Purchase process
+          </span>
+
+          <h2 className="font-serif text-[32px] sm:text-[38px] text-white font-normal">
             How it <span className="italic font-normal">works</span>
           </h2>
         </div>
@@ -473,19 +480,26 @@ export function HowItWorks() {
           {steps.map((s, i) => (
             <div
               key={s.number}
-              className="border-t-2 border-[var(--brand-accent)] pt-6 animate-fade-up"
+              className="border-t-2 border-white/60 pt-6 animate-fade-up"
               style={{ animationDelay: `${i * 100}ms` }}
             >
-              <span className="font-serif text-[40px] text-[var(--brand-accent)] opacity-60 block mb-3 leading-none">
+              <span className="font-serif text-[40px] text-white/70 block mb-3 leading-none">
                 {s.number}
               </span>
-              <h3 className="font-serif text-[20px] text-ink font-normal mb-2">{s.title}</h3>
-              <p className="text-[15px] text-slate leading-[1.65] font-sans">{s.text}</p>
+
+              <h3 className="font-serif text-[20px] text-white font-normal mb-2">
+                {s.title}
+              </h3>
+
+              <p className="text-[15px] text-white/80 leading-[1.65] font-sans">
+                {s.text}
+              </p>
             </div>
           ))}
         </div>
       </div>
     </section>
+
   );
 }
 
@@ -495,7 +509,7 @@ export function HowItWorks() {
 export function GradesMadeSimple() {
   return (
     <section
-      className="w-full bg-[#F1F5F9] border-b border-line py-16 lg:py-20"
+      className="w-full bg-[#F5F0E8] border-b border-line py-16 lg:py-20"
       id="grades"
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -636,7 +650,7 @@ export function HomeFAQ() {
   ];
 
   return (
-    <section className="w-full bg-[var(--surface-warm)] border-b border-line py-16 lg:py-20" id="faq">
+    <section className="w-full bg-[#F5F0E8] border-b border-line py-16 lg:py-20" id="faq">
       <div className="max-w-4xl mx-auto px-6 lg:px-12">
         <div className="text-center mb-12 animate-fade-up">
           <span className="section-eyebrow mb-3">Questions &amp; answers</span>

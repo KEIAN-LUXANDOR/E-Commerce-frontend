@@ -87,7 +87,7 @@ export default function HomePage() {
       <OriginCompare naturalHref={naturalHref} labHref={labHref} />
 
       {/* 5. New This Month */}
-      <section className="w-full bg-white border-b border-line py-16 lg:py-20" id="new-month">
+      <section className="w-full bg-[#F5F0E8] border-b border-line py-16 lg:py-20" id="new-month">
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <div className="flex items-end justify-between gap-4">
             <h2 id="new" className="text-3xl">
