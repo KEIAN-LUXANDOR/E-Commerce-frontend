@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { ShieldCheck, Truck,   Check, ArrowUpRight } from "lucide-react";
+import { ShieldCheck, Truck, Check, ArrowUpRight } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { SpotlightCard } from "@/components/ui/spotlight";
 
@@ -51,7 +51,7 @@ export function EditorialBentoGrid() {
 
           {/* Photo container */}
           <div className="relative aspect-[16/9] w-full overflow-hidden rounded-2xl border border-line shadow-inner bg-ink/5 mt-4 group">
-            <Image unoptimized 
+            <Image unoptimized
               src="/editorial/diamond-macro.jpg"
               alt="High-magnification jeweler tweezers holding a certified round brilliant diamond"
               fill

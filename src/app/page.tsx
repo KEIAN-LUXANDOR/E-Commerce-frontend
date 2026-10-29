@@ -15,7 +15,7 @@ import {
 import Link from "next/link";
 import { Suspense } from "react";
 import type { Banner } from "@/lib/types/catalog";
-import { ProductCard } from "@/components/catalog/ProductCard";
+import { HomeProductCard as ProductCard } from "@/components/home/HomeProductCard";
 import { getNewArrivals } from "@/lib/api/products";
 
 /**
@@ -87,7 +87,7 @@ export default function HomePage() {
       <OriginCompare naturalHref={naturalHref} labHref={labHref} />
 
       {/* 5. New This Month */}
-      <section className="w-full bg-white border-b border-line py-16 lg:py-20" id="new-month">
+      <section className="w-full bg-[#F5F0E8] border-b border-line py-16 lg:py-20" id="new-month">
         <div className="max-w-7xl mx-auto px-6 lg:px-12">
           <div className="flex items-end justify-between gap-4">
             <h2 id="new" className="text-3xl">

@@ -5,7 +5,7 @@ export function EditorialPhotoshootStrip() {
   return (
     <section aria-label="Inside the diamond atelier" className="relative w-full overflow-hidden border-y border-line">
       <div className="relative aspect-[21/9] min-h-48 sm:aspect-[21/6] sm:min-h-56">
-        <Image
+        <Image unoptimized
           src="/editorial/diamond-macro.jpg"
           alt="A certified diamond being inspected with precision tools at the atelier"
           fill

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { Search, Heart, ShoppingBag, Menu, X } from "lucide-react";
 import { AccountLink } from "@/components/layout/AccountLink";
@@ -27,8 +28,8 @@ export function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-40 w-full bg-surface transition-all duration-300 ${
-        isScrolled ? "border-b border-line shadow-sm" : "border-b border-line/60"
+      className={`sticky top-0 z-40 w-full bg-[#F5F0E8] transition-all duration-300 ${
+        isScrolled ? "border-b border-line shadow-sm" : ""
       }`}
     >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -61,8 +62,16 @@ export function Header() {
 
         {/* Center: Brand Logo */}
         <div className="flex justify-center flex-shrink-0">
-          <Link href="/" className="text-xl sm:text-2xl font-serif tracking-widest text-ink">
-            LUXANDOR
+          <Link href="/" aria-label="KEIAN Luxandor - Home" className="flex shrink-0 flex-col items-center justify-center">
+            <Image
+              src="/Keian.png"
+              alt="KEIAN Luxandor"
+              width={220}
+              height={90}
+              priority
+              unoptimized
+              className="h-auto p-3 w-[150px] object-contain lg:w-[100px]"
+            />
           </Link>
         </div>
 

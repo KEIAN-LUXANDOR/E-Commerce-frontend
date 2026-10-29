@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 
 export function EditorialMonographBanner() {
   return (
-    <section aria-labelledby="monograph-heading" className="border-y border-line bg-[#F8FAFC] py-20 lg:py-28 relative overflow-hidden">
+    <section aria-labelledby="monograph-heading" className="border-y border-line bg-[#F5F0E8] py-20 lg:py-28 relative overflow-hidden">
       <div className="page relative z-10">
         <div className="grid lg:grid-cols-[1.1fr_1fr] items-center gap-12 xl:gap-20">
           {/* Photoshooted Campaign Asset Area */}
@@ -14,7 +14,7 @@ export function EditorialMonographBanner() {
               className="relative aspect-[16/10] sm:aspect-[16/11] w-full overflow-hidden rounded-3xl border border-line-dark/30 shadow-xl bg-stone"
               style={{ position: "relative" }}
             >
-              <Image
+              <Image unoptimized
                 src="/editorial/atelier-dossier.jpg"
                 alt="Keian Luxandor editorial photoshoot showcasing loose certified diamonds, evaluation dossier, and brass loupe on warm travertine"
                 fill
