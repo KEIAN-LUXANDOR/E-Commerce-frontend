@@ -2,7 +2,7 @@ import { apiFetch } from "@/lib/api/client";
 import { toApiSearch } from "@/lib/catalog/query";
 import type { Product, ProductPage, ProductQuery } from "@/lib/types/product";
 
-/** Catalogue reads from the browser (search suggestions, compare, guest wishlist). */
+/** Catalogue reads from the browser (search suggestions, guest wishlist). */
 
 export function fetchProducts(query: ProductQuery, signal?: AbortSignal) {
   return apiFetch<ProductPage>(`/products${toApiSearch(query)}`, { signal });

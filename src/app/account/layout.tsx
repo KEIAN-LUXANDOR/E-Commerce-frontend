@@ -47,7 +47,7 @@ export default function AccountLayout({
             </Link>
           </div>
         </aside>
-        <main className="min-w-0">{children}</main>
+        <div className="min-w-0">{children}</div>
       </div>
     </div>
   );

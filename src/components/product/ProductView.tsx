@@ -2,7 +2,20 @@
 
 import { Heart, ShoppingBag } from "lucide-react";
 
-export function ProductView({ product }: { product: any }) {
+export interface ProductViewData {
+  id?: string;
+  name?: string;
+  carat?: number | string;
+  shape?: string;
+  price?: number;
+  description?: string;
+  color?: string;
+  clarity?: string;
+  cut?: string;
+  polish?: string;
+}
+
+export function ProductView({ product }: { product: ProductViewData }) {
   if (!product) return null;
 
   return (

@@ -35,7 +35,7 @@ export default function AuthLayout({ children }: LayoutProps<"/">) {
         <span>&bull;</span>
         <span className="flex items-center gap-1.5">
           <ShieldCheck className="size-3 text-emerald-700" />
-          Vault Key Escrow
+          Secure Razorpay payments
         </span>
       </div>
     </div>

@@ -32,9 +32,9 @@ export function Footer() {
           <div className="flex items-start gap-3">
             <Truck className="h-5 w-5 shrink-0 text-ink mt-0.5" />
             <div>
-              <p className="text-sm font-medium text-ink">Insured Delivery</p>
+              <p className="text-sm font-medium text-ink">Free Delivery</p>
               <p className="text-xs text-slate mt-0.5">
-                Sealed, tamper-evident transit insured to your doorstep.
+                Sealed and shipped free across India.
               </p>
             </div>
           </div>
@@ -159,7 +159,7 @@ export function Footer() {
             </li>
             <li>
               <Link href="/shipping" className="hover:text-ink transition-colors">
-                Shipping &amp; Insurance
+                Shipping &amp; Delivery
               </Link>
             </li>
             <li>

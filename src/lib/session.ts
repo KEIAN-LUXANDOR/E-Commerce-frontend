@@ -9,6 +9,8 @@ interface SessionState {
   status: "loading" | "authenticated" | "unauthenticated";
 }
 
+const SERVER_SNAPSHOT: SessionState = { user: null, status: "loading" };
+
 let state: SessionState = { user: null, status: "loading" };
 const listeners = new Set<() => void>();
 
@@ -21,13 +23,18 @@ async function initSession() {
   try {
     user = await getMe();
   } catch {
-    // A login or logout may have updated the session while this request was pending.
+    // Network or unauthenticated
   }
   if (state.status !== "loading") return;
   state = user
     ? { user, status: "authenticated" }
     : { user: null, status: "unauthenticated" };
   notify();
+
+  if (user) {
+    import("@/lib/shop/cart").then((m) => m.fetchServerCart()).catch(() => {});
+    import("@/lib/shop/wishlist").then((m) => m.fetchServerWishlistIds()).catch(() => {});
+  }
 }
 
 // Initialize once on the client
@@ -40,6 +47,8 @@ export const sessionStore = {
   setAuthenticated: (user: User) => {
     state = { user, status: "authenticated" };
     notify();
+    import("@/lib/shop/cart").then((m) => m.fetchServerCart()).catch(() => {});
+    import("@/lib/shop/wishlist").then((m) => m.fetchServerWishlistIds()).catch(() => {});
   },
   logout: async () => {
     try {
@@ -56,7 +65,8 @@ export const sessionStore = {
         return () => listeners.delete(listener);
       },
       () => state,
-      () => state
+      // Server render and hydration always start from "loading", so the first browser render matches the HTML
+      () => SERVER_SNAPSHOT
     );
   },
 };

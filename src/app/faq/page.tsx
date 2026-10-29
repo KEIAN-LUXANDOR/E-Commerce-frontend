@@ -3,7 +3,7 @@
 import * as React from "react";
 import { useState, useMemo } from "react";
 import Link from "next/link";
-import { Search, ChevronDown, HelpCircle, ShieldCheck, ArrowRight } from "lucide-react";
+import { Search, ChevronDown, HelpCircle,  ArrowRight } from "lucide-react";
 
 interface FaqItem {
   id: string;
@@ -39,7 +39,7 @@ const FAQ_DATA: FaqItem[] = [
     category: "transit",
     question: "How are high-value diamonds delivered safely across India?",
     answer:
-      "We partner exclusively with specialized high-security armoured logistics providers—Sequel Logistics and Malca-Amit. Every diamond is sealed in a serialized, tamper-evident security pouch and transported via dedicated security escort. Deliveries require two-factor identity verification and OTP sign-off upon handover.",
+      "Delivery is free across India. Every diamond is sealed and shipped with a courier suited to high-value parcels, and we email you the tracking details once it is dispatched. Someone must be at the address to sign for it.",
   },
   {
     id: "transit-2",
@@ -58,9 +58,9 @@ const FAQ_DATA: FaqItem[] = [
   {
     id: "returns-1",
     category: "returns",
-    question: "What is the 14-day forensic return policy?",
+    question: "What is the 30-day return policy?",
     answer:
-      "We provide a 14-day inspection window from the moment you sign for delivery. If the loose diamond does not meet your aesthetic or gemological expectations, you may initiate a return. The stone must be in its original loose, unset condition accompanied by its intact physical GIA or IGI grading dossier.",
+      "You have 30 days from delivery to return a diamond. If the loose diamond does not meet your aesthetic or gemological expectations, you may initiate a return. The stone must be in its original loose, unset condition accompanied by its intact physical GIA or IGI grading dossier.",
   },
   {
     id: "returns-2",
@@ -133,7 +133,7 @@ export default function FaqPage() {
               Frequently asked <span className="italic">questions</span>
             </h1>
             <p className="mt-3 text-base text-[var(--color-slate)] leading-relaxed font-light">
-              Clear answers regarding our GIA/IGI certification protocols, armoured courier security, 14-day returns, and tax transparency.
+              Clear answers regarding our GIA/IGI certification protocols, delivery, 30-day returns, and tax transparency.
             </p>
           </div>
 
@@ -156,8 +156,8 @@ export default function FaqPage() {
             {[
               { id: "all", label: "All Questions" },
               { id: "certification", label: "Certification & Grading" },
-              { id: "transit", label: "Insured Transit Logistics" },
-              { id: "returns", label: "14-Day Returns & Forensics" },
+              { id: "transit", label: "Delivery" },
+              { id: "returns", label: "30-Day Returns & Forensics" },
               { id: "payment", label: "Payment & GST Taxes" },
             ].map((cat) => (
               <button

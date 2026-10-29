@@ -2,8 +2,10 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
-import { apiFetch, ApiError } from "@/lib/api/client";
+import { ArrowRight } from "lucide-react";
+import { forgotPassword } from "@/lib/api/auth";
+import { ApiError } from "@/lib/api/client";
+import { Button } from "@/components/ui/button";
 
 export function ForgotPasswordForm() {
   const [email, setEmail] = useState("");
@@ -17,16 +19,13 @@ export function ForgotPasswordForm() {
     setLoading(true);
 
     try {
-      await apiFetch("/auth/forgot-password", {
-        method: "POST",
-        body: JSON.stringify({ email }),
-      });
+      await forgotPassword(email);
       setSubmitted(true);
-    } catch (err: any) {
+    } catch (err: unknown) {
       if (err instanceof ApiError) {
         setError(err.detail || "Failed to send password reset instructions.");
       } else {
-        setError(err.message || "An unexpected error occurred.");
+        setError(err instanceof Error ? err.message : "An unexpected error occurred.");
       }
     } finally {
       setLoading(false);
@@ -35,31 +34,32 @@ export function ForgotPasswordForm() {
 
   if (submitted) {
     return (
-      <div className="w-full max-w-md mx-auto text-center space-y-4">
-        <h2 className="text-xl font-medium text-ink">Check your email</h2>
+      <div className="w-full max-w-md mx-auto text-center space-y-4 rounded-2xl border border-line bg-surface p-6 sm:p-8 shadow-xs">
+        <h2 className="text-xl font-serif font-medium text-ink">Check your email</h2>
         <p className="text-sm text-slate">
-          If an account exists for {email}, you will receive password reset instructions.
+          If an account exists for <strong className="text-ink font-semibold">{email}</strong>, you will receive password reset instructions.
         </p>
-        <Link
-          href="/login"
-          className="inline-block mt-4 text-xs font-medium uppercase tracking-widest text-ink hover:underline"
-        >
-          Return to Sign In
-        </Link>
+        <div className="pt-2">
+          <Link href="/login">
+            <Button variant="secondary" size="md">
+              Return to Sign In
+            </Button>
+          </Link>
+        </div>
       </div>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-md mx-auto">
+    <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-md mx-auto">
       {error && (
-        <div className="bg-out/5 border border-out p-4 text-sm text-out text-center">
+        <div className="rounded-lg bg-out/10 border border-out/30 p-3.5 text-sm text-out text-center">
           {error}
         </div>
       )}
 
       <div>
-        <label htmlFor="email" className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">
+        <label htmlFor="email" className="block text-xs font-semibold text-ink uppercase tracking-wider mb-1.5">
           Email Address
         </label>
         <input
@@ -67,23 +67,26 @@ export function ForgotPasswordForm() {
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          className="w-full h-11 border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none focus:ring-1 transition-colors"
+          className="w-full h-12 rounded-lg border border-line bg-surface px-4 text-sm text-ink placeholder:text-muted focus:border-ink focus:outline-none transition-colors"
+          placeholder="e.g. riya@example.com"
           required
         />
       </div>
 
-      <button
+      <Button
         type="submit"
-        disabled={loading}
-        className="w-full h-11 flex items-center justify-center bg-ink text-white text-xs font-medium uppercase tracking-widest hover:bg-loupe-deep transition-colors disabled:opacity-50"
+        size="lg"
+        isLoading={loading}
+        className="w-full shadow-md"
+        rightIcon={!loading ? <ArrowRight className="size-4" /> : undefined}
       >
-        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Send Reset Instructions"}
-      </button>
+        Send Reset Instructions
+      </Button>
 
       <div className="text-center text-sm text-slate">
         Remembered your password?{" "}
-        <Link href="/login" className="font-medium text-ink hover:underline">
-          Sign In
+        <Link href="/login" className="font-semibold text-ink hover:underline">
+          Sign In →
         </Link>
       </div>
     </form>

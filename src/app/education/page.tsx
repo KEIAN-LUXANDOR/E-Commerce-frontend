@@ -17,7 +17,7 @@
 
 import * as React from "react";
 import Link from "next/link";
-import { Sparkles, Eye, Scale, Palette, ArrowRight, ShieldCheck } from "lucide-react";
+import { Sparkles, Eye, Scale, Palette, ArrowRight, } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 type FourCTab = "cut" | "color" | "clarity" | "carat";

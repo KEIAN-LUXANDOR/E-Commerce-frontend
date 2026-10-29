@@ -8,7 +8,7 @@ export function CopyText({ text, label = "ID" }: { text: string; label?: string 
     try {
       await navigator.clipboard.writeText(text);
       showToast(`${label} copied to clipboard`, { tone: "success" });
-    } catch (err) {
+    } catch {
       showToast("Failed to copy", { tone: "error" });
     }
   };

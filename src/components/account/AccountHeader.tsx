@@ -11,7 +11,7 @@ export function AccountHeader() {
   return (
     <div className="mb-8 border-b border-line pb-4">
       <h1 className="text-2xl font-serif tracking-widest text-ink">
-        Welcome back, {(user as any).name || (user as any).firstName || "Guest"}
+        Welcome back, {user.fullName || "Guest"}
       </h1>
       <p className="text-sm text-slate mt-1">{user.email}</p>
     </div>

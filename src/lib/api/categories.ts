@@ -1,3 +1,4 @@
+import type { Product } from "@/lib/types/product";
 import { apiFetch } from "./client";
 
 export interface Category {
@@ -10,6 +11,6 @@ export async function getCategories(): Promise<Category[]> {
   return apiFetch<Category[]>("/categories");
 }
 
-export async function getCategoryProducts(slug: string): Promise<any[]> {
-  return apiFetch<any[]>(`/categories/${slug}/products`);
+export async function getCategoryProducts(slug: string): Promise<Product[]> {
+  return apiFetch<Product[]>(`/categories/${slug}/products`);
 }

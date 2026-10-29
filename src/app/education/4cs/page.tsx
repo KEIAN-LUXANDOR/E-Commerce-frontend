@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ContentPage } from "@/components/common/ContentPage";
 import { CLARITIES, COLORS } from "@/lib/catalog/labels";
-import { ArrowRight, Sparkles } from "lucide-react";
+import {  Sparkles } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "The 4 Cs of diamonds, simply explained",

@@ -142,7 +142,7 @@ export default function AdminCouponsPage() {
               <td>{coupon.type === "PERCENT" ? `${coupon.value}%` : formatINR(coupon.value)}</td>
               <td>{formatINR(coupon.minOrderPaise)}</td>
               <td>{coupon.usedCount}{coupon.usageLimit === null ? "" : ` / ${coupon.usageLimit}`}</td>
-              <td>{new Date(coupon.startsAt).toLocaleDateString()}{coupon.endsAt ? ` – ${new Date(coupon.endsAt).toLocaleDateString()}` : ""}</td>
+              <td>{new Date(coupon.startsAt).toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata" })}{coupon.endsAt ? ` – ${new Date(coupon.endsAt).toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata" })}` : ""}</td>
               <td>{coupon.active ? "Active" : "Inactive"}</td>
               <td className="space-x-3 text-right"><button type="button" disabled={busy} className="btn-link" onClick={() => void toggle(coupon)}>{coupon.active ? "Deactivate" : "Activate"}</button><button type="button" disabled={busy} className="btn-link text-out" onClick={() => void remove(coupon)}>Delete</button></td>
             </tr>

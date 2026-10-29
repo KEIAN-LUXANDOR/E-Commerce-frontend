@@ -1,87 +1,141 @@
 "use client";
 
-import { createContext, useContext, ReactNode } from "react";
+import { useRouter } from "next/navigation";
+import { createContext, useContext, useTransition, type ReactNode } from "react";
 import Link from "next/link";
 import { SearchX, AlertCircle } from "lucide-react";
+import { toShopSearch } from "@/lib/catalog/query";
+import type { Origin, ProductQuery } from "@/lib/types/product";
+import { cn } from "@/lib/utils";
 
-// Safely define ShopParams locally to prevent missing export errors from query.ts
-export type ShopParams = Record<string, any>;
-
-export interface ListingStateContext {
-  params: ShopParams;
-  setParam: (key: string, value: any) => void;
+export interface ListingContextValue {
+  query: ProductQuery;
+  view: "grid" | "list";
+  basePath: string;
+  fixedOrigin?: Origin;
   isPending: boolean;
-  totalItems: number;
+  update: (patch: Partial<ProductQuery>) => void;
+  setView: (view: "grid" | "list") => void;
+  originHref: (origin: Origin | undefined) => string;
+  clearAll: () => void;
+  totalItems?: number;
   total?: number;
-  query?: ShopParams;
-  update?: (updates: Partial<ShopParams>) => void;
-  view?: "grid" | "table";
-  setView?: (view: "grid" | "table") => void;
-  originHref?: string;
-  fixedOrigin?: boolean;
-  clearAll?: () => void;
+  params?: Record<string, unknown>;
+  setParam?: (k: string, v: unknown) => void;
 }
 
-const ListingContext = createContext<ListingStateContext | null>(null);
+const ListingContext = createContext<ListingContextValue | null>(null);
 
-export function useListing() {
-  const context = useContext(ListingContext);
-  if (!context) {
-    throw new Error("useListing must be used within a ListingState provider");
-  }
-  return context;
+function pathForOrigin(origin: Origin | undefined): string {
+  if (origin === "NATURAL") return "/diamonds/natural";
+  if (origin === "LAB_GROWN") return "/diamonds/lab-grown";
+  return "/diamonds";
 }
 
-export function ListingStateProvider({
+const fallbackListingContext: ListingContextValue = {
+  query: {},
+  view: "grid",
+  basePath: "/diamonds",
+  fixedOrigin: undefined,
+  isPending: false,
+  update: () => {},
+  setView: () => {},
+  originHref: (origin) => pathForOrigin(origin),
+  clearAll: () => {},
+  totalItems: 0,
+  total: 0,
+  params: {},
+  setParam: () => {},
+};
+
+/**
+ * Access the active listing state. Safely returns a default fallback
+ * rather than throwing a fatal error if mounted outside a provider.
+ */
+export function useListing(): ListingContextValue {
+  const value = useContext(ListingContext);
+  return value ?? fallbackListingContext;
+}
+
+export function ListingProvider({
+  query = {},
+  view = "grid",
+  basePath = "/diamonds",
+  fixedOrigin,
   children,
+  totalItems = 0,
+  total,
   params,
   setParam,
-  isPending,
-  totalItems,
-  total,
-  view = "grid",
-  setView = () => {},
-  clearAll = () => {},
-  originHref,
-  fixedOrigin,
-  ...rest // Absorbs any legacy props passed by page wrappers
+  ...rest
 }: {
+  query?: ProductQuery;
+  view?: "grid" | "list";
+  basePath?: string;
+  fixedOrigin?: Origin;
   children: ReactNode;
-  params: ShopParams;
-  setParam: (key: string, value: any) => void;
-  isPending: boolean;
-  totalItems: number;
+  totalItems?: number;
   total?: number;
-  view?: "grid" | "table";
-  setView?: (view: "grid" | "table") => void;
-  clearAll?: () => void;
-  originHref?: string;
-  fixedOrigin?: boolean;
-  [key: string]: any;
+  params?: Record<string, unknown>;
+  setParam?: (k: string, v: unknown) => void;
+  [key: string]: unknown;
 }) {
-  const update = (updates: Partial<ShopParams>) => {
-    Object.entries(updates).forEach(([k, v]) => setParam(k, v));
+  const router = useRouter();
+  const [isPending, startTransition] = useTransition();
+
+  function go(href: string) {
+    startTransition(() => router.push(href, { scroll: false }));
+  }
+
+  const value: ListingContextValue = {
+    query,
+    view,
+    basePath,
+    fixedOrigin,
+    isPending,
+    totalItems,
+    total: total ?? totalItems,
+    params: params ?? (query as Record<string, unknown>),
+    setParam: setParam ?? ((k, v) => value.update({ [k]: v as ProductQuery[keyof ProductQuery] })),
+    update(patch) {
+      const next: ProductQuery = { ...query, ...patch, page: 0 };
+      if (fixedOrigin) next.origin = fixedOrigin;
+      go(basePath + toShopSearch(next, view, !fixedOrigin));
+    },
+    setView(nextView) {
+      go(basePath + toShopSearch(query, nextView, !fixedOrigin));
+    },
+    originHref(origin) {
+      const next: ProductQuery = { ...query, origin: undefined, page: 0 };
+      return pathForOrigin(origin) + toShopSearch(next, view);
+    },
+    clearAll() {
+      let keep: ProductQuery = {};
+      if (query.q) keep = { q: query.q };
+      go(basePath + toShopSearch(keep, view));
+    },
   };
 
   return (
-    <ListingContext.Provider
-      value={{
-        params,
-        setParam,
-        isPending,
-        totalItems,
-        total: total ?? totalItems,
-        query: params,
-        update,
-        view,
-        setView,
-        clearAll,
-        originHref,
-        fixedOrigin,
-      }}
-    >
+    <ListingContext.Provider value={value}>
       <div {...rest}>{children}</div>
     </ListingContext.Provider>
+  );
+}
+
+// Backward-compatibility alias
+export const ListingStateProvider = ListingProvider;
+
+/** Wraps catalog results and fades them while the next query transition loads. */
+export function ListingResults({ children }: { children: ReactNode }) {
+  const { isPending } = useListing();
+  return (
+    <div
+      aria-busy={isPending}
+      className={cn("transition-opacity duration-200", isPending ? "pointer-events-none opacity-50" : "opacity-100")}
+    >
+      {children}
+    </div>
   );
 }
 
@@ -91,9 +145,11 @@ export interface ListingEmptyProps {
   resetHref?: string;
   total?: number;
   totalItems?: number;
-  [key: string]: any; // Bypasses strict prop checks for `total`
+  [key: string]: unknown;
 }
 
+// `total` and `totalItems` are taken out so they are not passed on to the DOM element
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 export function ListingState({ kind = "empty", message, resetHref, total, totalItems, ...rest }: ListingEmptyProps) {
   return (
     <div className="flex flex-col items-center justify-center py-24 px-4 text-center" {...rest}>

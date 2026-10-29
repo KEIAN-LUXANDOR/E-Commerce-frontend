@@ -4,39 +4,43 @@ import { Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 /**
- * Button variant definitions following shadcn/ui standards and luxury aesthetics:
- * - Subtle luxury curvature (rounded-md)
- * - Clear, high-contrast states with smooth hover transitions
- * - Zero nested ternaries in rendering logic
+ * Button component synthesized from:
+ * - shadcn/ui: Solid CVA foundation & accessible Radix alignment
+ * - HeroUI: Tactile micro-scaling (active:scale-[0.98]) & soft modern curvatures
+ * - Magic UI: Ambient depth, subtle luxury borders, and high-visibility contrast
+ * - Cross-platform resilience: Semantic data-variant fallbacks for Windows & Mobile viewports
  */
 export const buttonVariants = cva(
-  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-xs font-medium uppercase tracking-[0.08em] transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-loupe)] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-40 select-none shadow-2xs active:scale-[0.99]",
+  "btn inline-flex items-center justify-center gap-2.5 whitespace-nowrap text-xs font-semibold uppercase tracking-[0.08em] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-loupe)] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-45 select-none active:scale-[0.98] cursor-pointer touch-manipulation",
   {
     variants: {
       variant: {
         default:
-          "bg-[var(--color-ink)] text-white hover:bg-[var(--color-loupe)] active:bg-[var(--color-loupe-deep)] border border-[var(--color-ink)]",
+          "btn-primary bg-slate-900 bg-[var(--color-ink)] text-white hover:bg-slate-800 hover:bg-[var(--color-loupe-deep)] border border-[var(--color-ink)] shadow-sm hover:shadow-md",
         primary:
-          "bg-[var(--color-ink)] text-white hover:bg-[var(--color-loupe)] active:bg-[var(--color-loupe-deep)] border border-[var(--color-ink)]",
+          "btn-primary bg-slate-900 bg-[var(--color-ink)] text-white hover:bg-slate-800 hover:bg-[var(--color-loupe-deep)] border border-[var(--color-ink)] shadow-sm hover:shadow-md",
         secondary:
-          "bg-white text-[var(--color-ink)] border border-[var(--color-line-dark)] hover:bg-[var(--color-stone)] hover:border-[var(--color-ink)] active:bg-[var(--color-stone-deep)]",
+          "btn-secondary bg-white text-slate-900 text-[var(--color-ink)] border border-[var(--color-line-dark)] hover:bg-slate-50 hover:bg-[var(--color-stone)] hover:border-[var(--color-ink)] shadow-xs",
         outline:
-          "bg-transparent text-[var(--color-ink)] border border-[var(--color-line)] hover:border-[var(--color-ink)] hover:bg-[var(--color-stone)]",
+          "btn-secondary bg-transparent text-slate-900 text-[var(--color-ink)] border border-[var(--color-line-strong)] hover:border-[var(--color-ink)] hover:bg-[var(--color-stone)]",
         ghost:
-          "bg-transparent text-[var(--color-ink)] hover:bg-[var(--color-stone)] hover:text-[var(--color-loupe)] shadow-none",
+          "bg-transparent text-slate-900 text-[var(--color-ink)] hover:bg-slate-100 hover:bg-[var(--color-stone)] hover:text-[var(--color-loupe)] shadow-none",
+        gold:
+          "bg-[#526D89] text-white hover:bg-[#334C67] border border-[#526D89] shadow-sm hover:shadow-md",
         accent:
-          "bg-[var(--color-loupe)] text-white hover:bg-[var(--color-loupe-deep)] border border-[var(--color-loupe)]",
+          "btn-primary bg-[var(--color-loupe)] text-white hover:bg-[var(--color-loupe-deep)] border border-[var(--color-loupe)] shadow-sm",
         danger:
-          "bg-[var(--color-out)] text-white hover:opacity-90 border border-[var(--color-out)]",
+          "bg-[var(--color-out)] text-white hover:bg-red-700 border border-[var(--color-out)] shadow-sm",
         destructive:
-          "bg-[var(--color-out)] text-white hover:opacity-90 border border-[var(--color-out)]",
+          "bg-[var(--color-out)] text-white hover:bg-red-700 border border-[var(--color-out)] shadow-sm",
       },
       size: {
-        default: "h-11 px-5 text-xs",
-        sm: "h-9 px-3.5 text-[0.6875rem]",
-        md: "h-11 px-5 text-xs",
-        lg: "h-13 px-8 text-sm tracking-[0.08em]",
-        icon: "h-10 w-10 p-0",
+        default: "h-11 min-h-[2.75rem] px-5 text-xs rounded-lg",
+        sm: "h-9 min-h-[2.25rem] px-3.5 text-[0.6875rem] rounded-md",
+        md: "h-11 min-h-[2.75rem] px-6 text-xs rounded-lg",
+        lg: "h-13 min-h-[3.25rem] px-8 text-sm tracking-[0.08em] rounded-lg",
+        xl: "h-14 min-h-[3.5rem] px-10 text-sm tracking-[0.1em] rounded-xl font-bold",
+        icon: "h-10 w-10 min-h-[2.5rem] min-w-[2.5rem] p-0 rounded-lg",
       },
     },
     defaultVariants: {
@@ -61,8 +65,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   (
     {
       className,
-      variant,
-      size,
+      variant = "primary",
+      size = "md",
       isLoading = false,
       leftIcon,
       rightIcon,
@@ -76,13 +80,15 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 
     let leadingContent = leftIcon;
     if (isLoading) {
-      leadingContent = <Loader2 className="h-3.5 w-3.5 animate-spin" aria-hidden="true" />;
+      leadingContent = <Loader2 className="h-3.5 w-3.5 animate-spin text-current" aria-hidden="true" />;
     }
 
     return (
       <button
         ref={ref}
         disabled={isInteractivityDisabled}
+        data-variant={variant ?? "primary"}
+        data-size={size ?? "md"}
         className={cn(buttonVariants({ variant, size, className }))}
         {...props}
       >

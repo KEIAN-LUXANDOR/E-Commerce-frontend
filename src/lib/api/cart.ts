@@ -41,6 +41,9 @@ export function removeCartItem(variantId: string) {
   return apiFetch<void>(`/account/cart/items/${encodeURIComponent(variantId)}`, { method: "DELETE" });
 }
 
+/** Backward compatibility alias */
+export const removeFromCart = removeCartItem;
+
 export function clearCart() {
   return apiFetch<void>("/account/cart", { method: "DELETE" });
 }

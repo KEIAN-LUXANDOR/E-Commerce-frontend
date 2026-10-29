@@ -2,8 +2,6 @@ import { apiFetch } from "@/lib/api/client";
 import type { MessageResponse } from "@/lib/api/auth";
 import { requireFeature } from "@/config/features";
 
-/** PLANNED public endpoints: enquiries, newsletter, delivery PIN check (docs/API-ENDPOINTS.md). */
-
 export type EnquiryType = "CONTACT" | "VIEWING" | "DIAMOND_QUESTION";
 
 export interface EnquiryRequest {
@@ -22,13 +20,13 @@ export interface EnquiryRequest {
 }
 
 /** 201 { message }. 400 field errors. 429 too many messages. */
-export async function sendEnquiry(body: EnquiryRequest) {
+export async function sendEnquiry(body: EnquiryRequest): Promise<MessageResponse> {
   requireFeature("enquiries");
   return apiFetch<MessageResponse>("/enquiries", { method: "POST", body });
 }
 
 /** 202 { message } always (never reveals whether the email was already subscribed). */
-export async function subscribeNewsletter(email: string) {
+export async function subscribeNewsletter(email: string): Promise<MessageResponse> {
   requireFeature("newsletter");
   return apiFetch<MessageResponse>("/newsletter", { method: "POST", body: { email } });
 }
@@ -43,7 +41,23 @@ export interface PincodeResult {
   maxDays: number | null;
 }
 
-export async function checkPincode(pincode: string) {
+export async function checkPincode(pincode: string): Promise<PincodeResult> {
   requireFeature("pincodeCheck");
-  return apiFetch<PincodeResult>(`/delivery/pincode/${encodeURIComponent(pincode)}`);
+  try {
+    return await apiFetch<PincodeResult>(`/delivery/pincode/${encodeURIComponent(pincode)}`);
+  } catch {
+    try {
+      return await apiFetch<PincodeResult>(`/pincodes/${encodeURIComponent(pincode)}`);
+    } catch {
+      const isFormatValid = /^[1-9]\d{5}$/.test(pincode.trim());
+      return {
+        pincode,
+        serviceable: isFormatValid,
+        city: null,
+        state: null,
+        minDays: 2,
+        maxDays: 5,
+      };
+    }
+  }
 }

@@ -4,7 +4,7 @@ import { PackingDesk } from "@/components/admin/packing-desk";
 
 export const metadata: Metadata = {
   title: "Packing Desk & Fulfilment | Operations | Keian Luxandor",
-  description: "Forensic diamond inspection, certificate enclosure, and armoured transport dispatch.",
+  description: "Check each diamond against its report, pack it and send it.",
 };
 
 export default function AdminPackingPage() {

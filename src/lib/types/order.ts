@@ -48,6 +48,8 @@ export interface Order {
   subtotalPaise: number;
   shippingPaise: number;
   discountPaise: number;
+  /** GST included in the total (backend sends 0 until GST is switched on) */
+  gstPaise?: number;
   totalPaise: number;
   currency: "INR";
   shippingAddress: ShippingAddress;
@@ -75,17 +77,27 @@ export interface OrderListPage {
   totalPages: number;
 }
 
-/** What the browser needs to open Razorpay Checkout for an order (from POST /account/orders/{orderNumber}/payment). */
+/** What the browser needs to open Razorpay Checkout for an order. */
 export interface PaymentSession {
-  keyId: string;
-  razorpayOrderId: string;
-  amountPaise: number;
-  currency: string;
   orderNumber: string;
-  expiresAt: string;
-  customerName: string;
-  customerEmail: string;
-  customerPhone: string;
+  razorpayOrderId: string;
+  /** Public key id (rzp_test_… / rzp_live_…). Never the secret. */
+  keyId: string;
+  amountPaise: number;
+  currency: "INR" | string;
+  expiresAt?: string;
+  customerName?: string;
+  customerEmail?: string;
+  customerPhone?: string;
+  prefill?: { name?: string; email?: string; contact?: string | null };
+}
+
+/** POST /account/orders/{orderNumber}/payment/verify response */
+export interface PaymentResult {
+  orderNumber: string;
+  /** PAID = confirmed. REFUND_REQUIRED = paid after the order expired and a diamond was sold; refunded in full. */
+  paymentStatus: "PAID" | "REFUND_REQUIRED" | "CREATED";
+  message: string;
 }
 
 export interface PaymentConfirmation {

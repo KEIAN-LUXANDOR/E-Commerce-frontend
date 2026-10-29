@@ -36,16 +36,22 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const role = session?.user?.role?.toUpperCase();
   const isAuthorized = role === "ADMIN" || role === "OWNER";
 
+  // The login and "no access" pages must show to people who aren't admins yet
+  const isPublicAdminPage = pathname === "/admin/login" || pathname === "/admin/unauthorized";
+
   useEffect(() => {
+    if (isPublicAdminPage) return;
     if (session.status === "unauthenticated" || (session.status === "authenticated" && !isAuthorized)) {
-      router.push("/admin/login");
+      router.push(`/admin/login?next=${encodeURIComponent(pathname ?? "/admin")}`);
     }
-  }, [session.status, isAuthorized, router]);
+  }, [session.status, isAuthorized, router, isPublicAdminPage, pathname]);
 
   async function handleLogout() {
     await sessionStore.logout();
     router.push("/admin/login");
   }
+
+  if (isPublicAdminPage) return <>{children}</>;
 
   if (session.status === "loading" || !isAuthorized) {
     return (

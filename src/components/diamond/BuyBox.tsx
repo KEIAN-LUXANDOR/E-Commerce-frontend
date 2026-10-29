@@ -1,11 +1,13 @@
 "use client";
 
 import { useState } from "react";
+import { ShieldCheck, Truck, Sparkles, FileText } from "lucide-react";
 import { SaveButton } from "@/components/product/SaveButton";
 import { AddToCartButton } from "@/components/product/AddToCartButton";
 import { CertificateModal } from "@/components/diamond/CertificateModal";
 import { compareAtPaise, mainVariant, originLine, shortTitle } from "@/lib/catalog/product";
 import { formatINR } from "@/lib/format";
+import { Button } from "@/components/ui/button";
 import type { Product } from "@/lib/types/product";
 
 export function BuyBox({ product }: { product: Product }) {
@@ -16,43 +18,73 @@ export function BuyBox({ product }: { product: Product }) {
 
   return (
     <>
-      <section className="sticky top-24 border border-line bg-surface p-6">
-        <p className="eyebrow">{originLine(product) || "Certified loose diamond"}</p>
-        <h1 className="mt-2 text-2xl font-serif text-ink">{shortTitle(product)}</h1>
-        {product.name !== shortTitle(product) && (
-          <p className="mt-1 text-sm text-slate">{product.name}</p>
-        )}
-
-        <div className="mt-6 flex items-baseline gap-3">
-          <p className="text-xl font-medium text-ink">
-            {variant ? formatINR(variant.pricePaise) : "Price on request"}
-          </p>
-          {crossedOutPrice !== null && (
-            <p className="text-sm text-slate line-through">{formatINR(crossedOutPrice)}</p>
+      <section className="sticky top-24 rounded-2xl border border-line bg-surface p-6 sm:p-8 shadow-xs space-y-6">
+        <div>
+          <span className="inline-flex items-center gap-1.5 rounded-full border border-line bg-stone px-3 py-1 text-[11px] font-medium uppercase tracking-wider text-slate">
+            <span className="size-1.5 rounded-full bg-loupe" />
+            {originLine(product) || "Certified Loose Diamond"}
+          </span>
+          <h1 className="mt-3 text-2xl sm:text-3xl font-serif font-medium text-ink tracking-tight">
+            {shortTitle(product)}
+          </h1>
+          {product.name !== shortTitle(product) && (
+            <p className="mt-1 text-xs text-slate font-mono">{product.name}</p>
           )}
         </div>
 
-        <dl className="mt-6 space-y-3 text-sm text-slate">
+        <div className="flex items-baseline gap-3 border-y border-line/60 py-4">
+          <p className="text-2xl sm:text-3xl font-bold font-mono text-ink">
+            {variant ? formatINR(variant.pricePaise) : "Price on request"}
+          </p>
+          {crossedOutPrice !== null && (
+            <p className="text-sm font-mono text-slate line-through">{formatINR(crossedOutPrice)}</p>
+          )}
+          <span className="text-[11px] font-mono text-muted uppercase tracking-wider ml-auto">
+            Excl. 3% GST
+          </span>
+        </div>
+
+        <dl className="space-y-2.5 text-sm">
           <Spec label="Shape" value={diamond?.shape.replace(/_/g, " ") ?? "Loose diamond"} />
-          {diamond && <Spec label="Carat" value={`${diamond.carat.toFixed(2)} ct`} />}
-          {diamond && <Spec label="Colour" value={diamond.color} />}
-          {diamond && <Spec label="Clarity" value={diamond.clarity} />}
-          {diamond && <Spec label="Cut" value={diamond.cut ?? "Not graded"} />}
+          {diamond && <Spec label="Carat Weight" value={`${diamond.carat.toFixed(2)} ct`} />}
+          {diamond && <Spec label="Colour Grade" value={diamond.color} />}
+          {diamond && <Spec label="Clarity Grade" value={diamond.clarity} />}
+          {diamond && <Spec label="Cut Grade" value={diamond.cut ?? "Not graded"} />}
+          {diamond && <Spec label="Grading Laboratory" value={diamond.lab} />}
         </dl>
 
-        <div className="mt-8 flex flex-col gap-3">
+        <div className="space-y-3 pt-2">
           <AddToCartButton product={product} />
           {diamond && (
-            <button type="button" className="btn btn-secondary" onClick={() => setCertificateOpen(true)}>
-              View grading report
-            </button>
+            <Button
+              type="button"
+              variant="secondary"
+              size="lg"
+              className="w-full"
+              leftIcon={<FileText className="size-4" />}
+              onClick={() => setCertificateOpen(true)}
+            >
+              View {diamond.lab} Grading Report
+            </Button>
           )}
           <SaveButton productId={product.id} variant="button" />
         </div>
 
-        <p className="mt-5 text-xs text-slate">
-          {variant?.inStock ? "Available for purchase" : "Currently unavailable"}
-        </p>
+        {/* TailGrids luxury trust points */}
+        <div className="pt-4 border-t border-line/60 space-y-2.5 text-xs text-slate">
+          <div className="flex items-center gap-2">
+            <Truck className="size-4 text-ink shrink-0" />
+            <span>Free delivery across India</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <ShieldCheck className="size-4 text-ok shrink-0" />
+            <span>Tamper-evident cassette with laser inscription verification</span>
+          </div>
+          <div className="flex items-center gap-2">
+            <Sparkles className="size-4 text-brand-accent shrink-0" />
+            <span>30-day inspection &amp; appraisal return guarantee</span>
+          </div>
+        </div>
       </section>
       {certificateOpen && <CertificateModal product={product} onClose={() => setCertificateOpen(false)} />}
     </>
@@ -61,9 +93,9 @@ export function BuyBox({ product }: { product: Product }) {
 
 function Spec({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex justify-between gap-4 border-b border-line pb-2">
-      <dt>{label}</dt>
-      <dd className="text-right font-medium text-ink">{value}</dd>
+    <div className="flex justify-between gap-4 border-b border-line/40 pb-2">
+      <dt className="text-slate font-normal">{label}</dt>
+      <dd className="text-right font-semibold font-mono text-ink uppercase">{value}</dd>
     </div>
   );
 }

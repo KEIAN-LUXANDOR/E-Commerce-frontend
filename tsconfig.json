@@ -31,16 +31,6 @@
     "**/*.mts"
   ],
   "exclude": [
-    "node_modules",
-    "**/__tests__/**",
-    "**/*.test.ts",
-    "**/*.test.tsx",
-    "src/components/store/**",
-    "src/components/shop/**",
-    "src/components/product/ProductView.tsx",
-    "src/components/product/RecentlyViewed.tsx",
-    "src/components/checkout/order-summary.tsx",
-    "src/components/checkout/razorpay-bridge.tsx",
-    "src/lib/api/catalog.ts"
+    "node_modules"
   ]
 }

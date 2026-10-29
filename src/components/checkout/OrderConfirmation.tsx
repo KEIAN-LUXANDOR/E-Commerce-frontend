@@ -65,7 +65,7 @@ export function OrderConfirmation({ orderNumber }: { orderNumber: string }) {
           <p className="mt-1 text-sm text-slate">We match it to its grading report and seal it with the report.</p>
         </li>
         <li>
-          <p className="font-medium">2. We send it insured</p>
+          <p className="font-medium">2. We ship it free</p>
           <p className="mt-1 text-sm text-slate">You’ll get the courier’s tracking number by email.</p>
         </li>
         <li>

@@ -17,7 +17,7 @@ export function AnnouncementBar() {
         <div className="flex items-center gap-2 truncate">
           <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-[var(--color-loupe)]" aria-hidden="true" />
           <span className="truncate tracking-[0.03em]">
-            Complimentary Insured Delivery Across India &bull; GIA &amp; IGI Certified Loose Diamonds
+            Free Delivery Across India &bull; GIA &amp; IGI Certified Loose Diamonds
           </span>
         </div>
 
@@ -44,7 +44,7 @@ export function AnnouncementBar() {
             href="/legal/shipping"
             className="text-[var(--color-slate)] hover:text-[var(--color-ink)] transition-colors"
           >
-            Transit Insurance
+            Delivery
           </Link>
         </div>
       </div>

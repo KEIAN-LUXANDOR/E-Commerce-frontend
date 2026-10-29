@@ -45,7 +45,7 @@ export default function PrivacyPage() {
             We do not sell, rent, or trade your personal data. Disclosures are limited strictly to:
           </p>
           <ul className="list-disc pl-5 space-y-1 font-mono text-[11px]">
-            <li>Sequel Logistics and Malca-Amit for armed delivery verification and OTP transmission.</li>
+            <li>Our courier partner, to deliver your order (name, phone number and delivery address only).</li>
             <li>Razorpay Software Private Limited for secure PCI-DSS tokenized payment execution.</li>
             <li>Official gemological verification registries (GIA, IGI) for certificate digital vault linkages.</li>
           </ul>

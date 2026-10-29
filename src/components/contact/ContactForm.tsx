@@ -10,7 +10,7 @@ export function ContactForm() {
   const session = sessionStore.useSession();
   const user = session?.user;
 
-  const initialName = user ? ((user as any).name || (user as any).fullName || (user as any).firstName || "") : "";
+  const initialName = user?.fullName ?? "";
   const initialEmail = user?.email || "";
 
   const [name, setName] = useState(initialName);
@@ -35,12 +35,12 @@ export function ContactForm() {
       showToast("Message sent successfully", { tone: "success" });
       setSubject("");
       setMessage("");
-    } catch (err: any) {
+    } catch (err: unknown) {
       if (err instanceof ApiError) {
         setError(err.detail || "Failed to send message.");
         if (err.errors) {
           const fe: Record<string, string> = {};
-          err.errors.forEach((e: any) => { fe[e.field] = e.message; });
+          if (err instanceof ApiError && err.errors) { err.errors.forEach((e) => { fe[e.field] = e.message; }); }
           setFieldErrors(fe);
         }
       } else {

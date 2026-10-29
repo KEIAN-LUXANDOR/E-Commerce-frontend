@@ -3,11 +3,12 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { login, resendVerification } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
 import { sessionStore } from "@/lib/session";
 import { normaliseEmail, safeNextPath, validateLogin, type FieldErrors } from "@/lib/validators";
+import { Button } from "@/components/ui/button";
 
 export function LoginForm() {
   const router = useRouter();
@@ -34,9 +35,7 @@ export function LoginForm() {
     setLoading(true);
     
     try {
-      // V3 strictly requires an object
       const user = await login({ email: normalizedEmail, password });
-      
       sessionStore.setAuthenticated(user);
 
       const next = new URLSearchParams(window.location.search).get("next");
@@ -69,16 +68,16 @@ export function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 w-full max-w-md mx-auto">
+    <form onSubmit={handleSubmit} className="space-y-5 w-full">
       {error && (
-        <div className="bg-out/5 border border-out p-4 text-sm text-out text-center">
+        <div className="rounded-lg bg-out/10 border border-out/30 p-3.5 text-sm text-out text-center">
           <p>{error}</p>
         </div>
       )}
 
       <div className="space-y-4">
         <div>
-          <label htmlFor="email" className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">
+          <label htmlFor="email" className="block text-xs font-semibold text-ink uppercase tracking-wider mb-1.5">
             Email Address
           </label>
           <input
@@ -86,20 +85,21 @@ export function LoginForm() {
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className={`w-full h-11 border bg-surface px-4 text-sm text-ink focus:outline-none focus:ring-1 transition-colors ${
-              fieldErrors.email ? "border-out focus:border-out focus:ring-out" : "border-line focus:border-ink focus:ring-ink"
+            className={`w-full h-12 rounded-lg border bg-surface px-4 text-sm text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-loupe/20 transition-all ${
+              fieldErrors.email ? "border-out focus:border-out" : "border-line focus:border-ink"
             }`}
+            placeholder="e.g. riya@example.com"
             required
           />
           {fieldErrors.email && <p className="mt-1 text-xs text-out">{fieldErrors.email}</p>}
         </div>
 
         <div>
-          <div className="flex items-center justify-between mb-2">
-            <label htmlFor="password" className="block text-xs font-medium text-ink uppercase tracking-widest">
+          <div className="flex items-center justify-between mb-1.5">
+            <label htmlFor="password" className="block text-xs font-semibold text-ink uppercase tracking-wider">
               Password
             </label>
-            <Link href="/forgot-password" className="text-xs text-slate hover:text-ink transition-colors">
+            <Link href="/forgot-password" className="text-xs text-slate hover:text-ink transition-colors font-medium">
               Forgot?
             </Link>
           </div>
@@ -108,32 +108,42 @@ export function LoginForm() {
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className={`w-full h-11 border bg-surface px-4 text-sm text-ink focus:outline-none focus:ring-1 transition-colors ${
-              fieldErrors.password ? "border-out focus:border-out focus:ring-out" : "border-line focus:border-ink focus:ring-ink"
+            className={`w-full h-12 rounded-lg border bg-surface px-4 text-sm text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-loupe/20 transition-all ${
+              fieldErrors.password ? "border-out focus:border-out" : "border-line focus:border-ink"
             }`}
+            placeholder="Enter your password"
             required
           />
           {fieldErrors.password && <p className="mt-1 text-xs text-out">{fieldErrors.password}</p>}
         </div>
       </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="btn btn-primary min-h-11 w-full justify-center"
-      >
-        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Sign In"}
-      </button>
+      <div className="pt-2">
+        <Button
+          type="submit"
+          size="lg"
+          className="w-full h-13 shadow-md"
+          isLoading={loading}
+          rightIcon={!loading ? <ArrowRight className="size-4" /> : undefined}
+        >
+          Sign In
+        </Button>
+      </div>
 
       {verificationMessage && <p role="status" className="text-center text-sm text-slate">{verificationMessage}</p>}
-      <button type="button" onClick={() => void handleResend()} disabled={!email.trim()} className="w-full py-1 text-center text-sm font-medium text-ink underline underline-offset-4 disabled:text-slate disabled:no-underline">
+      <button
+        type="button"
+        onClick={() => void handleResend()}
+        disabled={!email.trim()}
+        className="w-full py-1 text-center text-xs font-medium uppercase tracking-wider text-slate hover:text-ink underline underline-offset-4 disabled:opacity-40 disabled:no-underline transition-colors"
+      >
         Resend verification email
       </button>
 
-      <div className="text-center text-sm text-slate">
+      <div className="text-center text-sm text-slate pt-2">
         Don&apos;t have an account?{" "}
-        <Link href="/register" className="font-medium text-ink hover:underline">
-          Create Account
+        <Link href="/register" className="font-semibold text-ink hover:underline">
+          Create Account →
         </Link>
       </div>
     </form>

@@ -2,25 +2,15 @@
 
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { ArrowRight, FileText, ShieldCheck, ExternalLink, Loader2, Award } from "lucide-react";
+import { ArrowRight,  ShieldCheck, ExternalLink, Loader2, Award } from "lucide-react";
 import { listOrders } from "@/lib/api/orders";
-import { site } from "@/lib/site";
-import type { OrderSummary } from "@/lib/types/order";
 
-interface CertificateRecord {
-  orderNumber: string;
-  productName: string;
-  description: string;
-  imageUrl: string | null;
-  lab: "GIA" | "IGI" | "HRD" | "Certified";
-  reportNumber?: string;
-  verifyUrl?: string;
-}
+import type { OrderSummary } from "@/lib/types/order";
 
 export default function AccountVaultPage() {
   const [orders, setOrders] = useState<OrderSummary[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;

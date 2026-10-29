@@ -12,8 +12,8 @@ export function VerifyEmailNotice({ email }: { email: string }) {
     try {
       await resendVerification(email);
       showToast("Verification email sent.", { tone: "success" });
-    } catch (err: any) {
-      showToast(err.detail || "Failed to resend verification.", { tone: "error" });
+    } catch (err: unknown) {
+      showToast(err instanceof Error && err.message ? err.message : "Failed to resend verification.", { tone: "error" });
     } finally {
       setLoading(false);
     }

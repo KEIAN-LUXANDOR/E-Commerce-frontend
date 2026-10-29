@@ -29,7 +29,7 @@ export function AdminLoginForm() {
       sessionStore.setAuthenticated(user);
       router.push("/admin");
       router.refresh();
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err instanceof ApiError ? (err.detail || "Login failed") : "Login failed");
       setLoading(false);
     }
@@ -40,8 +40,8 @@ export function AdminLoginForm() {
       <h2 className="text-xl font-medium text-ink">Admin Sign In</h2>
       {error && <div className="text-out text-sm">{error}</div>}
       <div>
-        <label className="block text-xs uppercase mb-1">Email</label>
-        <input
+        <label htmlFor="adminloginform-f1" className="block text-xs uppercase mb-1">Email</label>
+        <input id="adminloginform-f1"
           type="email"
           required
           value={email}
@@ -50,8 +50,8 @@ export function AdminLoginForm() {
         />
       </div>
       <div>
-        <label className="block text-xs uppercase sm:mb-1">Password</label>
-        <input
+        <label htmlFor="adminloginform-f2" className="block text-xs uppercase sm:mb-1">Password</label>
+        <input id="adminloginform-f2"
           type="password"
           required
           value={password}

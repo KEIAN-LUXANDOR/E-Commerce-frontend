@@ -144,7 +144,7 @@ export function CheckoutStepper({ steps, currentStep, className }: CheckoutStepp
 
 export const CHECKOUT_STEPS: CheckoutStep[] = [
   { id: 1, label: "Contact", description: "Your email & identity" },
-  { id: 2, label: "Address", description: "Insured delivery address" },
+  { id: 2, label: "Address", description: "Delivery address" },
   { id: 3, label: "Review", description: "Confirm your order" },
   { id: 4, label: "Payment", description: "Secure payment" },
 ];

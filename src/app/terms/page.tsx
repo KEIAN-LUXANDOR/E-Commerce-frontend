@@ -49,7 +49,7 @@ export default function TermsPage() {
         <section className="space-y-3">
           <h2 className="font-serif text-xl text-[var(--color-ink)]">4. Custody Transfer & Passage of Risk</h2>
           <p>
-            Title and risk in the merchandise transfer to the client solely upon the physical handoff of the parcel by the authorized armoured courier officer, corroborated by the input of the one-time PIN (OTP) and signed proof of delivery.
+            Title and risk in the goods pass to the customer when the parcel is delivered and signed for at the delivery address.
           </p>
         </section>
 

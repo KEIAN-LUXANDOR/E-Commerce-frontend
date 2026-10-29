@@ -2,10 +2,11 @@
 
 import { useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Loader2 } from "lucide-react";
+import { ArrowRight } from "lucide-react";
 import { resetPassword } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
 import { showToast } from "@/lib/stores";
+import { Button } from "@/components/ui/button";
 
 export function ResetPasswordForm() {
   const router = useRouter();
@@ -22,11 +23,10 @@ export function ResetPasswordForm() {
     setLoading(true);
 
     try {
-      // Passes both required arguments (token and newPassword)
       await resetPassword(token, password);
       showToast("Password reset successfully", { tone: "success" });
       router.push("/login");
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err instanceof ApiError ? (err.detail || "Failed to reset password") : "Failed to reset password");
     } finally {
       setLoading(false);
@@ -34,25 +34,34 @@ export function ResetPasswordForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-md mx-auto">
-      {error && <div className="p-3 bg-out/10 text-out text-sm text-center">{error}</div>}
+    <form onSubmit={handleSubmit} className="space-y-5 w-full max-w-md mx-auto">
+      {error && (
+        <div className="p-3.5 rounded-lg bg-out/10 border border-out/30 text-out text-sm text-center">
+          {error}
+        </div>
+      )}
       <div>
-        <label className="block text-xs font-medium uppercase tracking-widest mb-2">New Password</label>
-        <input
+        <label htmlFor="resetpasswordform-f1" className="block text-xs font-semibold text-ink uppercase tracking-wider mb-1.5">
+          New Password
+        </label>
+        <input id="resetpasswordform-f1"
           type="password"
           required
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          className="w-full h-11 border bg-surface px-4 text-sm"
+          className="w-full h-12 rounded-lg border border-line bg-surface px-4 text-sm text-ink placeholder:text-muted focus:border-ink focus:outline-none transition-colors"
+          placeholder="Minimum 8 characters"
         />
       </div>
-      <button
+      <Button
         type="submit"
-        disabled={loading}
-        className="w-full h-11 bg-ink text-white text-xs uppercase tracking-widest"
+        size="lg"
+        isLoading={loading}
+        className="w-full shadow-md"
+        rightIcon={!loading ? <ArrowRight className="size-4" /> : undefined}
       >
-        {loading ? <Loader2 className="h-4 w-4 animate-spin mx-auto" /> : "Reset Password"}
-      </button>
+        Reset Password
+      </Button>
     </form>
   );
 }

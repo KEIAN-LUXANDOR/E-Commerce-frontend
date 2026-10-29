@@ -4,11 +4,11 @@
  * Order Transit Milestone Stepper
  *
  * Displays the 6-stage physical custody & security chain for diamond orders:
- *   1. Order Confirmed (Funds locked in escrow)
+ *   1. Order Confirmed (payment received)
  *   2. Loupe & Metrology Inspection (Gemologist verification)
  *   3. Tamper-Evident Security Seal (Barcoded serialized pouch)
- *   4. Armed Escort Transit (Sequel / Malca-Amit armoured logistics)
- *   5. Out for Delivery (Biometric / OTP handoff)
+ *   4. Shipped (courier tracking shared)
+ *   5. Delivered (signed for)
  *   6. Signed & Vault Delivered (Proof of delivery confirmed)
  *
  * Human-Centric Rules:
@@ -39,7 +39,7 @@ export const TRANSIT_MILESTONES: TransitMilestone[] = [
   {
     key: "CONFIRMED",
     label: "Order Confirmed",
-    sublabel: "Funds secured in escrow",
+    sublabel: "Payment received",
     icon: Shield,
   },
   {
@@ -56,14 +56,14 @@ export const TRANSIT_MILESTONES: TransitMilestone[] = [
   },
   {
     key: "ARMED_TRANSIT",
-    label: "Armoured Transit",
-    sublabel: "Insured Sequel / Malca-Amit",
+    label: "Shipped",
+    sublabel: "Tracking emailed to you",
     icon: Truck,
   },
   {
     key: "OUT_FOR_DELIVERY",
     label: "Courier Escort",
-    sublabel: "OTP verification required",
+    sublabel: "Signed for at your address",
     icon: UserCheck,
   },
   {

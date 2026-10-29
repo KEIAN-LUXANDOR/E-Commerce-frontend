@@ -1,9 +1,9 @@
 "use client";
 
-import { useState } from "react";
+
 import Link from "next/link";
 import { Plus, Image as ImageIcon, ExternalLink, Calendar } from "lucide-react";
-import { getActiveBanners } from "@/lib/api/catalog";
+import { apiFetch } from "@/lib/api/client";
 import {
   AdminHeader,
   AdminTable,
@@ -15,6 +15,9 @@ import {
 } from "@/components/admin/AdminBits";
 import { formatDate } from "@/lib/format";
 import type { Banner } from "@/lib/types/catalog";
+
+/** Browser-side read (planned endpoint, behind the adminCatalog switch). */
+const getActiveBanners = () => apiFetch<Banner[]>("/banners/active");
 
 export default function AdminBannersPage() {
   const q = useAdminQuery("adminCatalog", getActiveBanners, []);

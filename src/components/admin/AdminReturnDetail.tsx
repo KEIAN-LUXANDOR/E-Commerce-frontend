@@ -59,7 +59,7 @@ export function AdminReturnDetail({ returnId }: { returnId: string }) {
         <p><span className="block text-xs uppercase text-slate">Customer</span>{item.customerName} · {item.customerEmail}</p>
         <p><span className="block text-xs uppercase text-slate">Reason</span>{item.reason}</p>
         <p><span className="block text-xs uppercase text-slate">Details</span>{item.details || "—"}</p>
-        <p><span className="block text-xs uppercase text-slate">Requested</span>{new Date(item.requestedAt).toLocaleString()}</p>
+        <p><span className="block text-xs uppercase text-slate">Requested</span>{new Date(item.requestedAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</p>
         <p><span className="block text-xs uppercase text-slate">Refund</span>{item.refundPaise === null ? "—" : formatINR(item.refundPaise)}</p>
       </section>
       <section className="flex flex-wrap gap-3">

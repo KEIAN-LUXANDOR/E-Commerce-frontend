@@ -5,7 +5,7 @@ import { formatINR } from "@/lib/format";
 import { getAdminSummary } from "@/lib/api/admin";
 import {
   AdminHeader,
-  AdminTable,
+  
   ErrorNote,
   Loading,
   NotConnected,
@@ -13,7 +13,16 @@ import {
   StatCard,
   useAdminQuery,
 } from "@/components/admin/AdminBits";
-import { PackageCheck, Gem, Truck, Users, Tag, HelpCircle, RotateCcw } from "lucide-react";
+
+
+
+
+
+
+
+
+
+import { PackageCheck, Gem,     } from "lucide-react";
 
 export default function AdminDashboardPage() {
   const q = useAdminQuery("adminDashboard", getAdminSummary, []);

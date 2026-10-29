@@ -4,18 +4,26 @@ import { useSyncExternalStore } from "react";
 import { createLocalStore } from "@/lib/local-store";
 import { sessionStore } from "@/lib/session";
 import { ApiError, apiFetch } from "@/lib/api/client";
-import { addCartItem, type Cart } from "@/lib/api/cart";
+import { addCartItem,  type Cart } from "@/lib/api/cart";
 import type { Product } from "@/lib/types/product";
 import { mainVariant } from "@/lib/catalog/product";
 import { showToast } from "@/lib/stores";
 
 const localCartStore = createLocalStore<string[]>("kl_guest_cart_v1", []);
 
-interface CartSnapshot {
-  items: Array<Pick<Cart["items"][number], "variantId">>;
+export interface CartSnapshot {
+  items: Array<Pick<Cart["items"][number], "variantId"> & Partial<Cart["items"][number]>>;
   itemCount: number;
   subtotalPaise: number;
+  hasUnavailableItems?: boolean;
 }
+
+const EMPTY_CART: CartSnapshot = {
+  items: [],
+  itemCount: 0,
+  subtotalPaise: 0,
+  hasUnavailableItems: false,
+};
 
 let serverCart: CartSnapshot | null = null;
 const cartListeners = new Set<() => void>();
@@ -24,7 +32,7 @@ function notifyCart() {
   cartListeners.forEach((l) => l());
 }
 
-export async function fetchServerCart() {
+export async function fetchServerCart(): Promise<CartSnapshot | null> {
   try {
     const data = await apiFetch<Cart>("/account/cart");
     serverCart = data;
@@ -81,12 +89,8 @@ export async function removeFromCart(variantId: string) {
   }
 }
 
-
 /**
  * Move browser-only guest selections into the signed-in server cart.
- * The API accepts one unique diamond per variant; duplicate adds are idempotent.
- * Items rejected by the server (for example sold-out diamonds) are dropped from
- * the guest list and reported to the caller.
  */
 export async function syncGuestCartToServer(): Promise<{ migrated: number; failed: number }> {
   if (sessionStore.get().status !== "authenticated") {
@@ -106,7 +110,6 @@ export async function syncGuestCartToServer(): Promise<{ migrated: number; faile
     }
   }
 
-  // The account cart becomes the source of truth after login.
   if (guestIds.length > 0) {
     localCartStore.set([]);
   }
@@ -115,9 +118,24 @@ export async function syncGuestCartToServer(): Promise<{ migrated: number; faile
   return { migrated, failed };
 }
 
-// Cache for the local cart snapshot to prevent infinite loops in useSyncExternalStore
-let cachedLocalIds: string[] = [];
-let cachedLocalCart: CartSnapshot = { items: [], itemCount: 0, subtotalPaise: 0 };
+// Stable cached reference for guest cart snapshots to prevent infinite re-render loops
+let lastLocalCartKey = "";
+let cachedGuestSnapshot: CartSnapshot = EMPTY_CART;
+
+function getGuestCartSnapshot(localIds: string[]): CartSnapshot {
+  const key = localIds.join(",");
+  if (key === lastLocalCartKey) {
+    return cachedGuestSnapshot;
+  }
+  lastLocalCartKey = key;
+  cachedGuestSnapshot = {
+    items: localIds.map((id: string) => ({ variantId: id })),
+    itemCount: localIds.length,
+    subtotalPaise: 0,
+    hasUnavailableItems: false,
+  };
+  return cachedGuestSnapshot;
+}
 
 export const cartStore = {
   get: () => serverCart,
@@ -139,37 +157,27 @@ export const cartStore = {
       () => 0
     );
   },
-  useCart: () => {
+  useCart: (): CartSnapshot => {
     const session = sessionStore.useSession();
     const localIds = localCartStore.useValue();
     
-    return useSyncExternalStore(
+    const serverSnapshot = useSyncExternalStore(
       (listener) => {
         cartListeners.add(listener);
         return () => cartListeners.delete(listener);
       },
-      () => {
-        if (session.status === "authenticated") {
-          return serverCart;
-        }
-        
-        // Memoize the local cart object reference to prevent infinite loops
-        if (localIds !== cachedLocalIds) {
-          cachedLocalIds = localIds;
-          cachedLocalCart = { 
-            items: localIds.map((id: string) => ({ variantId: id })), 
-            itemCount: localIds.length,
-            subtotalPaise: 0 
-          };
-        }
-        return cachedLocalCart;
-      },
+      () => serverCart,
       () => null
     );
+
+    if (session.status === "authenticated") {
+      return serverSnapshot || EMPTY_CART;
+    }
+
+    return getGuestCartSnapshot(localIds);
   }
 };
 
-// Expose aliases
 export function useCartCount() {
   return cartStore.useCount();
 }

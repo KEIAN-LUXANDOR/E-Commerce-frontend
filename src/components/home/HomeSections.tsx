@@ -12,12 +12,12 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { DiamondProfile } from "@/components/art/FacetDiagram";
-import { ShapeIcon } from "@/components/art/ShapeIcon";
-import { SHAPES } from "@/lib/catalog-labels";
+
+
 import { site, whatsappLink } from "@/lib/site";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
 import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 

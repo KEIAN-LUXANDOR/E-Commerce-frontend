@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Suspense } from "react";
 import { OrderDetail } from "@/components/orders/OrderDetail";
-import { CheckCircle2, ShieldCheck, Truck, ArrowRight, Package } from "lucide-react";
+import { CheckCircle2,  Truck,  Package } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Order Confirmed | Keian Luxandor",
@@ -44,14 +44,14 @@ async function CheckoutStatus({
         <div className="flex items-center gap-3">
           <CheckCircle2 className="size-8 text-ok shrink-0" />
           <div>
-            <p className="eyebrow">Insured Acquisition Reserved</p>
+            <p className="eyebrow">Order confirmed</p>
             <h1 className="font-serif text-2xl sm:text-3xl font-medium text-ink">
               Order #{orderNumber} Confirmed
             </h1>
           </div>
         </div>
         <p className="text-xs text-slate leading-relaxed max-w-2xl">
-          Your certified loose diamond has been removed from public sale and placed in immediate vault custody. Our gemologists are preparing your certificate dossier and tamper-evident packaging.
+          Your diamond is reserved for you and off sale. We’ll check it against its grading report, pack it, and email you the tracking details when it ships.
         </p>
 
         {/* Quick Action Buttons */}

@@ -10,20 +10,9 @@ import {
   updateAddress,
 } from "@/lib/api/addresses";
 import { ApiError } from "@/lib/api/client";
-import type { DeliveryAddress } from "@/lib/types/address";
+import type { DeliveryAddress, DeliveryAddressRequest } from "@/lib/types/address";
 import { showToast } from "@/lib/stores";
-
-interface AddressFormState {
-  firstName: string;
-  lastName: string;
-  phone: string;
-  addressLine1: string;
-  addressLine2: string;
-  city: string;
-  state: string;
-  pincode: string;
-  isDefault: boolean;
-}
+import { Button } from "@/components/ui/button";
 
 export function AddressBook() {
   const [addresses, setAddresses] = useState<DeliveryAddress[]>([]);
@@ -33,23 +22,22 @@ export function AddressBook() {
   const [error, setError] = useState("");
   
   const [editId, setEditId] = useState<string | null>(null);
-  const [formData, setFormData] = useState<AddressFormState>({
-    firstName: "",
-    lastName: "",
+  const [formData, setFormData] = useState<DeliveryAddressRequest>({
+    fullName: "",
     phone: "",
-    addressLine1: "",
-    addressLine2: "",
+    line1: "",
+    line2: "",
+    landmark: "",
     city: "",
     state: "",
     pincode: "",
-    isDefault: false,
   });
 
   async function loadAddresses() {
     try {
       const data = await getAddresses();
       setAddresses(data || []);
-    } catch (err) {
+    } catch {
       showToast("Failed to load addresses", { tone: "error" });
     } finally {
       setLoading(false);
@@ -57,37 +45,48 @@ export function AddressBook() {
   }
 
   useEffect(() => {
-    loadAddresses();
+    let active = true;
+    getAddresses()
+      .then((data) => {
+        if (active) setAddresses(data || []);
+      })
+      .catch(() => {
+        if (active) showToast("Failed to load addresses", { tone: "error" });
+      })
+      .finally(() => {
+        if (active) setLoading(false);
+      });
+    return () => {
+      active = false;
+    };
   }, []);
 
-  function handleEdit(address: any) {
+  function handleEdit(address: DeliveryAddress) {
     setFormData({
-      firstName: address.firstName || address.name || "",
-      lastName: address.lastName || "",
+      fullName: address.fullName || "",
       phone: address.phone || "",
-      addressLine1: address.addressLine1 || address.address1 || "",
-      addressLine2: address.addressLine2 || address.address2 || "",
+      line1: address.line1 || "",
+      line2: address.line2 || "",
+      landmark: address.landmark || "",
       city: address.city || "",
       state: address.state || "",
-      pincode: address.pincode || address.pinCode || "",
-      isDefault: address.isDefault || address.default || false,
+      pincode: address.pincode || "",
     });
-    setEditId(address.id ? String(address.id) : null);
+    setEditId(address.id);
     setShowForm(true);
     setError("");
   }
 
   function handleAddNew() {
     setFormData({
-      firstName: "",
-      lastName: "",
+      fullName: "",
       phone: "",
-      addressLine1: "",
-      addressLine2: "",
+      line1: "",
+      line2: "",
+      landmark: "",
       city: "",
       state: "",
       pincode: "",
-      isDefault: addresses.length === 0,
     });
     setEditId(null);
     setShowForm(true);
@@ -109,32 +108,32 @@ export function AddressBook() {
       }
       await loadAddresses();
       setShowForm(false);
-    } catch (err: any) {
+    } catch (err: unknown) {
       setError(err instanceof ApiError ? (err.detail || "Failed to save address") : "Failed to save address");
     } finally {
       setSubmitting(false);
     }
   }
 
-  async function handleDelete(id: string | number | undefined) {
+  async function handleDelete(id: string) {
     if (!id) return;
     if (!confirm("Are you sure you want to delete this address?")) return;
     try {
-      await deleteAddress(String(id));
+      await deleteAddress(id);
       showToast("Address deleted", { tone: "success" });
       await loadAddresses();
-    } catch (err: any) {
+    } catch (err: unknown) {
       showToast(err instanceof ApiError ? (err.detail || "Failed to delete address") : "Failed to delete address", { tone: "error" });
     }
   }
 
-  async function handleSetDefault(id: string | number | undefined) {
+  async function handleSetDefault(id: string) {
     if (!id) return;
     try {
-      await setDefaultAddress(String(id));
+      await setDefaultAddress(id);
       showToast("Default address updated", { tone: "success" });
       await loadAddresses();
-    } catch (err: any) {
+    } catch {
       showToast("Failed to set default address", { tone: "error" });
     }
   }
@@ -152,70 +151,71 @@ export function AddressBook() {
       {!showForm ? (
         <div>
           <div className="mb-6 flex items-center justify-between">
-            <h2 className="text-lg font-medium text-ink">Saved Addresses</h2>
-            <button
+            <h2 className="text-lg font-medium font-serif text-ink">Saved Addresses</h2>
+            <Button
+              variant="outline"
+              size="sm"
               onClick={handleAddNew}
-              className="flex items-center text-xs font-medium uppercase tracking-widest text-ink hover:text-loupe transition-colors"
+              leftIcon={<Plus className="size-3.5" />}
             >
-              <Plus className="mr-2 h-4 w-4" /> Add New
-            </button>
+              Add New Address
+            </Button>
           </div>
 
           {addresses.length === 0 ? (
-            <div className="flex flex-col items-center justify-center border border-line bg-surface py-12 px-4 text-center shadow-sm">
+            <div className="flex flex-col items-center justify-center rounded-2xl border border-line bg-surface py-12 px-4 text-center shadow-xs">
               <MapPin className="h-8 w-8 text-slate mb-4 opacity-50" />
               <p className="text-sm text-slate">You haven&apos;t saved any addresses yet.</p>
             </div>
           ) : (
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
-              {addresses.map((address: any) => {
-                const isDef = address.isDefault || address.default;
-                const fName = address.firstName || address.name || "";
-                const lName = address.lastName || "";
-                const line1 = address.addressLine1 || address.address1 || "";
-                const line2 = address.addressLine2 || address.address2 || "";
-                const pc = address.pincode || address.pinCode || "";
+              {addresses.map((address) => {
+                const isDef = address.defaultAddress;
 
                 return (
                   <div
                     key={address.id}
-                    className={`relative flex flex-col border p-5 transition-colors shadow-sm ${
-                      isDef ? "border-ink bg-surface" : "border-line bg-platinum hover:border-slate"
+                    className={`relative flex flex-col rounded-xl border p-5 transition-colors shadow-xs ${
+                      isDef ? "border-ink bg-surface ring-1 ring-ink/10" : "border-line bg-stone hover:border-slate"
                     }`}
                   >
                     {isDef && (
-                      <span className="absolute right-4 top-4 text-[10px] font-medium uppercase tracking-widest text-ink bg-platinum px-2 py-1">
+                      <span className="absolute right-4 top-4 text-[10px] font-mono font-semibold uppercase tracking-wider text-ink bg-platinum px-2 py-0.5 rounded border border-line">
                         Default
                       </span>
                     )}
-                    <p className="font-medium text-ink text-sm">
-                      {fName} {lName}
+                    <p className="font-semibold text-ink text-sm">
+                      {address.fullName}
                     </p>
-                    <p className="mt-2 text-sm text-slate line-clamp-3 leading-relaxed">
-                      {line1}
-                      {line2 && `, ${line2}`}
+                    <p className="mt-2 text-xs text-slate line-clamp-3 leading-relaxed font-mono">
+                      {address.line1}
+                      {address.line2 && `, ${address.line2}`}
+                      {address.landmark && ` (near ${address.landmark})`}
                       <br />
-                      {address.city}, {address.state} {pc}
+                      {address.city}, {address.state} {address.pincode}
                     </p>
-                    <p className="mt-3 text-sm text-ink">{address.phone}</p>
+                    <p className="mt-3 text-xs font-mono font-medium text-ink">{address.phone}</p>
 
-                    <div className="mt-5 flex items-center gap-4 border-t border-line pt-4">
+                    <div className="mt-5 flex items-center gap-4 border-t border-line/60 pt-4">
                       <button
+                        type="button"
                         onClick={() => handleEdit(address)}
-                        className="text-xs font-medium text-slate hover:text-ink transition-colors flex items-center uppercase tracking-widest"
+                        className="text-xs font-semibold text-slate hover:text-ink transition-colors flex items-center uppercase tracking-wider"
                       >
-                        <Edit2 className="mr-1.5 h-3.5 w-3.5" /> Edit
+                        <Edit2 className="mr-1.5 size-3.5" /> Edit
                       </button>
                       <button
+                        type="button"
                         onClick={() => handleDelete(address.id)}
-                        className="text-xs font-medium text-out hover:opacity-80 transition-colors flex items-center uppercase tracking-widest"
+                        className="text-xs font-semibold text-out hover:opacity-80 transition-colors flex items-center uppercase tracking-wider"
                       >
-                        <Trash2 className="mr-1.5 h-3.5 w-3.5" /> Delete
+                        <Trash2 className="mr-1.5 size-3.5" /> Delete
                       </button>
                       {!isDef && (
                         <button
+                          type="button"
                           onClick={() => handleSetDefault(address.id)}
-                          className="ml-auto text-[10px] uppercase tracking-widest font-medium text-ink hover:underline"
+                          className="ml-auto text-[11px] uppercase tracking-wider font-semibold text-ink hover:underline"
                         >
                           Make Default
                         </button>
@@ -228,132 +228,143 @@ export function AddressBook() {
           )}
         </div>
       ) : (
-        <div className="border border-line bg-surface p-6 shadow-sm">
-          <h3 className="mb-6 text-base font-medium text-ink">
-            {editId !== null ? "Edit Address" : "Add New Address"}
+        <div className="rounded-2xl border border-line bg-surface p-6 sm:p-8 shadow-xs">
+          <h3 className="mb-6 text-base font-serif font-medium text-ink">
+            {editId !== null ? "Edit Delivery Address" : "Add New Delivery Address"}
           </h3>
 
           {error && (
-             <div className="mb-6 p-4 bg-out/5 border border-out text-out text-sm text-center">
+            <div className="mb-6 p-3.5 rounded-lg bg-out/10 border border-out/30 text-out text-sm text-center">
               {error}
             </div>
           )}
 
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-2">
-              <div>
-                <label className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">First Name</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.firstName}
-                  onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                  className="w-full h-11 border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none focus:ring-1 transition-colors"
-                />
-              </div>
-              <div>
-                <label className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">Last Name</label>
-                <input
-                  type="text"
-                  required
-                  value={formData.lastName}
-                  onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
-                  className="w-full h-11 border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none focus:ring-1 transition-colors"
-                />
-              </div>
+          <form onSubmit={handleSubmit} className="space-y-4">
+            <div>
+              <label htmlFor="addressbook-f1" className="block text-xs font-semibold text-ink uppercase tracking-wider mb-1.5">
+                Full Name
+              </label>
+              <input id="addressbook-f1"
+                type="text"
+                required
+                value={formData.fullName}
+                onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
+                className="w-full h-11 rounded-lg border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none transition-colors"
+                placeholder="Full name as on ID"
+              />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">Phone Number</label>
-              <input
+              <label htmlFor="addressbook-f2" className="block text-xs font-semibold text-ink uppercase tracking-wider mb-1.5">
+                Mobile Number
+              </label>
+              <input id="addressbook-f2"
                 type="tel"
                 required
                 value={formData.phone}
                 onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                className="w-full h-11 border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none focus:ring-1 transition-colors"
+                className="w-full h-11 rounded-lg border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none transition-colors"
+                placeholder="10-digit Indian mobile number"
               />
             </div>
 
             <div>
-              <label className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">Address Line 1</label>
-              <input
+              <label htmlFor="addressbook-f3" className="block text-xs font-semibold text-ink uppercase tracking-wider mb-1.5">
+                Address Line 1
+              </label>
+              <input id="addressbook-f3"
                 type="text"
                 required
-                value={formData.addressLine1}
-                onChange={(e) => setFormData({ ...formData, addressLine1: e.target.value })}
-                className="w-full h-11 border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none focus:ring-1 transition-colors"
+                value={formData.line1}
+                onChange={(e) => setFormData({ ...formData, line1: e.target.value })}
+                className="w-full h-11 rounded-lg border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none transition-colors"
+                placeholder="House/flat number, building name, street"
               />
             </div>
 
-            <div>
-              <label className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">Address Line 2 (Optional)</label>
-              <input
-                type="text"
-                value={formData.addressLine2}
-                onChange={(e) => setFormData({ ...formData, addressLine2: e.target.value })}
-                className="w-full h-11 border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none focus:ring-1 transition-colors"
-              />
-            </div>
-
-            <div className="grid grid-cols-1 gap-5 sm:grid-cols-3">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">City</label>
-                <input
+                <label htmlFor="addressbook-f4" className="block text-xs font-semibold text-ink uppercase tracking-wider mb-1.5">
+                  Address Line 2 (Optional)
+                </label>
+                <input id="addressbook-f4"
+                  type="text"
+                  value={formData.line2 ?? ""}
+                  onChange={(e) => setFormData({ ...formData, line2: e.target.value })}
+                  className="w-full h-11 rounded-lg border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none transition-colors"
+                  placeholder="Area, colony"
+                />
+              </div>
+              <div>
+                <label htmlFor="addressbook-f5" className="block text-xs font-semibold text-ink uppercase tracking-wider mb-1.5">
+                  Landmark (Optional)
+                </label>
+                <input id="addressbook-f5"
+                  type="text"
+                  value={formData.landmark ?? ""}
+                  onChange={(e) => setFormData({ ...formData, landmark: e.target.value })}
+                  className="w-full h-11 rounded-lg border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none transition-colors"
+                  placeholder="Nearby prominent landmark"
+                />
+              </div>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+              <div>
+                <label htmlFor="addressbook-f6" className="block text-xs font-semibold text-ink uppercase tracking-wider mb-1.5">City</label>
+                <input id="addressbook-f6"
                   type="text"
                   required
                   value={formData.city}
                   onChange={(e) => setFormData({ ...formData, city: e.target.value })}
-                  className="w-full h-11 border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none focus:ring-1 transition-colors"
+                  className="w-full h-11 rounded-lg border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none transition-colors"
+                  placeholder="Pune"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">State</label>
-                <input
+                <label htmlFor="addressbook-f7" className="block text-xs font-semibold text-ink uppercase tracking-wider mb-1.5">State</label>
+                <input id="addressbook-f7"
                   type="text"
                   required
                   value={formData.state}
                   onChange={(e) => setFormData({ ...formData, state: e.target.value })}
-                  className="w-full h-11 border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none focus:ring-1 transition-colors"
+                  className="w-full h-11 rounded-lg border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none transition-colors"
+                  placeholder="Maharashtra"
                 />
               </div>
               <div>
-                <label className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">PIN Code</label>
-                <input
+                <label htmlFor="addressbook-f8" className="block text-xs font-semibold text-ink uppercase tracking-wider mb-1.5">PIN Code</label>
+                <input id="addressbook-f8"
                   type="text"
                   required
                   value={formData.pincode}
                   onChange={(e) => setFormData({ ...formData, pincode: e.target.value })}
-                  className="w-full h-11 border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none focus:ring-1 transition-colors"
+                  className="w-full h-11 rounded-lg border border-line bg-surface px-4 text-sm text-ink focus:border-ink focus:outline-none transition-colors"
+                  placeholder="411045"
                 />
               </div>
             </div>
 
-            <label className="flex items-center gap-3 pt-2 cursor-pointer group">
-              <input
-                type="checkbox"
-                checked={formData.isDefault}
-                onChange={(e) => setFormData({ ...formData, isDefault: e.target.checked })}
-                className="h-4 w-4 rounded-none border-line text-ink focus:ring-ink focus:ring-offset-0 bg-surface checked:bg-ink"
-              />
-              <span className="text-sm text-ink group-hover:text-loupe transition-colors">Set as default delivery address</span>
-            </label>
-
-            <div className="flex flex-col sm:flex-row gap-4 pt-4">
-              <button
+            <div className="flex flex-col sm:flex-row gap-3 pt-4">
+              <Button
                 type="submit"
+                size="md"
                 disabled={submitting}
-                className="flex-1 h-11 flex items-center justify-center bg-ink text-white text-xs font-medium uppercase tracking-widest hover:bg-loupe-deep transition-colors disabled:opacity-50"
+                isLoading={submitting}
+                className="flex-1"
               >
-                {submitting ? <Loader2 className="h-4 w-4 animate-spin" /> : "Save Address"}
-              </button>
-              <button
+                Save Address
+              </Button>
+              <Button
                 type="button"
+                variant="secondary"
+                size="md"
                 onClick={() => setShowForm(false)}
                 disabled={submitting}
-                className="flex-1 h-11 flex items-center justify-center border border-line bg-surface text-ink text-xs font-medium uppercase tracking-widest hover:bg-platinum transition-colors disabled:opacity-50"
+                className="flex-1"
               >
                 Cancel
-              </button>
+              </Button>
             </div>
           </form>
         </div>

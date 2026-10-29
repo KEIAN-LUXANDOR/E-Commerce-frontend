@@ -22,42 +22,46 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
   const crossedOutPrice = compareAtPaise(variant);
 
   return (
-    <article className="group relative flex flex-col border border-line bg-surface transition-colors hover:border-ink">
-      <div className="absolute top-2 right-2 z-10">
+    <article className="group relative flex flex-col rounded-2xl border border-line bg-surface shadow-xs transition-all duration-300 hover:shadow-md hover:border-loupe/40 overflow-hidden">
+      <div className="absolute top-3 right-3 z-10">
         <SaveButton productId={product.id} />
       </div>
-      <Link href={href} className="relative block aspect-square overflow-hidden bg-platinum" aria-label={`View ${title}`}>
+
+      <Link href={href} className="relative block aspect-square overflow-hidden bg-stone" aria-label={`View ${title}`}>
         {image ? (
           <Image
             src={image.url}
             alt={image.altText || title}
             fill
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            className="object-contain p-4 transition-transform duration-500 group-hover:scale-105"
             unoptimized
           />
         ) : (
-          <div className="absolute inset-0 flex items-center justify-center text-slate text-xs uppercase tracking-widest">
+          <div className="absolute inset-0 flex items-center justify-center text-slate text-xs uppercase tracking-widest font-mono">
             {productShape(product).replace(/_/g, " ")}
           </div>
         )}
       </Link>
-      <div className={`flex flex-1 flex-col ${compact ? "p-3" : "p-4"}`}>
-        <Link href={href} className="mb-1 truncate text-sm font-medium text-ink hover:underline">
+
+      <div className={`flex flex-1 flex-col ${compact ? "p-4" : "p-5"}`}>
+        <Link href={href} className="mb-1 truncate text-base font-serif font-medium text-ink group-hover:text-loupe transition-colors">
           {title}
         </Link>
-        <p className="mb-4 flex-1 text-xs text-slate">
+        <p className="mb-4 flex-1 text-xs text-slate font-mono line-clamp-2">
           {subtitle}
         </p>
-        <div className="mt-auto space-y-3">
-          <span className="text-sm font-medium text-ink">
-            {variant ? formatINR(variant.pricePaise) : "Price on request"}
-            {crossedOutPrice !== null && (
-              <span className="ml-2 text-xs font-normal text-slate line-through">
-                {formatINR(crossedOutPrice)}
-              </span>
-            )}
-          </span>
+        <div className="mt-auto space-y-3 pt-2 border-t border-line/60">
+          <div className="flex items-baseline justify-between">
+            <span className="text-base font-bold font-mono text-ink">
+              {variant ? formatINR(variant.pricePaise) : "Price on request"}
+              {crossedOutPrice !== null && (
+                <span className="ml-2 text-xs font-normal text-slate line-through">
+                  {formatINR(crossedOutPrice)}
+                </span>
+              )}
+            </span>
+          </div>
           <AddToCartButton product={product} />
         </div>
       </div>

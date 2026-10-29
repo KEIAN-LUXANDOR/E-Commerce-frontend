@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import Link from "next/link";
 import { ShapeIcon } from "@/components/art/ShapeIcon";
-import { SHAPES } from "@/lib/catalog-labels";
-import { ArrowRight, Sparkles, Gem, Layers, Eye } from "lucide-react";
+
+import { ArrowRight,    } from "lucide-react";
 import type { Shape } from "@/lib/types/catalog";
 
 export const metadata: Metadata = {

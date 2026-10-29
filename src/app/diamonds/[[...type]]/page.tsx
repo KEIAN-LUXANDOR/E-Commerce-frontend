@@ -5,10 +5,10 @@ import { getProducts } from "@/lib/api/products";
 import { parseShopParams, toApiSearch } from "@/lib/catalog/query";
 import { FilterPanel } from "@/components/catalog/FilterPanel";
 import { ListingToolbar } from "@/components/catalog/ListingToolbar";
+import { ListingProvider, ListingResults, ListingState } from "@/components/catalog/ListingState";
 import { ProductGrid } from "@/components/catalog/ProductGrid";
 import { ProductTable } from "@/components/catalog/ProductTable";
 import { Pagination } from "@/components/catalog/Pagination";
-import { ListingState } from "@/components/catalog/ListingState";
 import type { Origin } from "@/lib/types/product";
 
 interface DiamondsPageProps {
@@ -43,14 +43,14 @@ async function DiamondsCatalogPage({ params, searchParams }: DiamondsPageProps) 
     notFound();
   }
 
-  const fixedOrigin =
+  const fixedOrigin: Origin | undefined =
     segment === "natural"
       ? "NATURAL"
       : segment === "lab-grown"
       ? "LAB_GROWN"
       : undefined;
 
-  const { query: filters, view } = parseShopParams(rawSearch, fixedOrigin as Origin);
+  const { query: filters, view } = parseShopParams(rawSearch, fixedOrigin);
   const apiQueryString = toApiSearch(filters);
 
   let pageData = null;
@@ -72,56 +72,66 @@ async function DiamondsCatalogPage({ params, searchParams }: DiamondsPageProps) 
   const basePath = segment ? `/diamonds/${segment}` : "/diamonds";
 
   return (
-    <div className="page py-8 sm:py-12 space-y-8">
-      <div className="flex flex-col gap-4 border-b border-line pb-6 md:flex-row md:items-end md:justify-between">
-        <div>
-          <p className="eyebrow">Catalogue</p>
-          <h1 className="mt-1 text-2xl sm:text-3xl font-medium text-ink">{title}</h1>
+    <ListingProvider
+      query={filters}
+      view={view}
+      basePath={basePath}
+      fixedOrigin={fixedOrigin}
+      totalItems={pageData?.totalItems ?? 0}
+    >
+      <div className="page py-8 sm:py-12 space-y-8">
+        <div className="flex flex-col gap-4 border-b border-line pb-6 md:flex-row md:items-end md:justify-between">
+          <div>
+            <p className="eyebrow">Catalogue</p>
+            <h1 className="mt-1 text-2xl sm:text-3xl font-serif font-medium text-ink">{title}</h1>
+          </div>
+          <div className="inline-flex rounded-lg border border-line bg-stone p-1 self-start">
+            <Link
+              href="/diamonds"
+              className={`rounded-md px-3.5 py-1.5 text-xs font-semibold transition-all ${
+                !fixedOrigin ? "bg-slate-900 bg-ink text-white shadow-xs" : "text-slate hover:text-ink hover:bg-surface"
+              }`}
+            >
+              All Diamonds
+            </Link>
+            <Link
+              href="/diamonds/natural"
+              className={`rounded-md px-3.5 py-1.5 text-xs font-semibold transition-all ${
+                fixedOrigin === "NATURAL" ? "bg-slate-900 bg-ink text-white shadow-xs" : "text-slate hover:text-ink hover:bg-surface"
+              }`}
+            >
+              Natural Mined
+            </Link>
+            <Link
+              href="/diamonds/lab-grown"
+              className={`rounded-md px-3.5 py-1.5 text-xs font-semibold transition-all ${
+                fixedOrigin === "LAB_GROWN" ? "bg-slate-900 bg-ink text-white shadow-xs" : "text-slate hover:text-ink hover:bg-surface"
+              }`}
+            >
+              Lab-Grown
+            </Link>
+          </div>
         </div>
-        <div className="inline-flex rounded-[3px] border border-line bg-platinum p-0.5 self-start">
-          <Link
-            href="/diamonds"
-            className={`px-3 py-1.5 text-xs font-medium transition-colors ${
-              !fixedOrigin ? "bg-ink text-white" : "text-ink hover:bg-surface"
-            }`}
-          >
-            All
-          </Link>
-          <Link
-            href="/diamonds/natural"
-            className={`px-3 py-1.5 text-xs font-medium transition-colors ${
-              fixedOrigin === "NATURAL" ? "bg-ink text-white" : "text-ink hover:bg-surface"
-            }`}
-          >
-            Natural
-          </Link>
-          <Link
-            href="/diamonds/lab-grown"
-            className={`px-3 py-1.5 text-xs font-medium transition-colors ${
-              fixedOrigin === "LAB_GROWN" ? "bg-ink text-white" : "text-ink hover:bg-surface"
-            }`}
-          >
-            Lab-Grown
-          </Link>
-        </div>
+
+        <FilterPanel />
+        <ListingToolbar total={pageData?.totalItems ?? 0} />
+
+        <ListingResults>
+          {loadError ? (
+            <ListingState kind="error" message={loadError} resetHref={basePath} />
+          ) : !pageData || pageData.items.length === 0 ? (
+            <ListingState kind="empty" />
+          ) : view === "list" ? (
+            <ProductTable products={pageData.items} />
+          ) : (
+            <ProductGrid products={pageData.items} />
+          )}
+        </ListingResults>
+
+        {pageData && pageData.totalPages > 1 && (
+          <Pagination totalPages={pageData.totalPages} basePath={basePath} query={filters} view={view} />
+        )}
       </div>
-
-      <FilterPanel />
-      <ListingToolbar total={pageData?.totalItems ?? 0} />
-
-      {loadError ? (
-        <ListingState kind="error" message={loadError} resetHref={basePath} />
-      ) : !pageData || pageData.items.length === 0 ? (
-        <ListingState kind="empty" />
-      ) : view === "list" ? (
-        <ProductTable products={pageData.items} />
-      ) : (
-        <ProductGrid products={pageData.items} />
-      )}
-
-      {pageData && pageData.totalPages > 1 && (
-        <Pagination totalPages={pageData.totalPages} basePath={basePath} query={filters} view={view} />
-      )}
-    </div>
+    </ListingProvider>
   );
 }

@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { ShieldCheck, Award, Eye, Truck, ArrowRight, CheckCircle2 } from "lucide-react";
+import { ShieldCheck, Award, Eye, Truck, ArrowRight, } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "About the Atelier | Keian Luxandor Certified Diamonds",
@@ -88,10 +88,10 @@ export default function AboutPage() {
                 <Truck className="size-6" aria-hidden="true" />
               </div>
               <h3 className="font-serif text-xl font-medium text-[var(--color-ink)]">
-                Armoured Transit Escort
+                Checked before dispatch
               </h3>
               <p className="mt-3 text-xs text-[var(--color-slate)] leading-relaxed">
-                All dispatches are encased in serialized tamper-evident security bags and transported via Sequel Logistics and Malca-Amit with 100% door-to-door insurance.
+                Every diamond is matched to its grading report and sealed before it leaves our Baner, Pune showroom. Delivery across India is free.
               </p>
             </div>
           </div>
@@ -103,10 +103,10 @@ export default function AboutPage() {
         <div className="page max-w-4xl">
           <div className="space-y-8 text-base text-[var(--color-slate)] leading-relaxed font-light">
             <h2 className="font-serif text-3xl font-medium text-[var(--color-ink)] not-italic">
-              From Surat Lapidaries to Your Personal Collection
+              From Certified Stone to Your Collection
             </h2>
             <p>
-              Surat and Mumbai represent the world’s pinnacle diamond cutting and trading hubs. By establishing direct pipeline access to master lapidaries, Keian Luxandor bypasses multi-tier intermediary markups. Each rough crystal or CVD/HPHT lab diamond is cut under strict optical metrology tolerances.
+              We sell certified loose diamonds only, natural and lab-grown, each with its GIA or IGI grading report. You can see them in person at our Baner, Pune showroom by appointment, or buy online with clear grades and prices that include GST.
             </p>
             <p>
               Before any loose stone is cleared for dispatch, it passes through our central Fulfillment &amp; Inspection Desk. Our gemologists verify carat weight on calibrated Mettler Toledo micro-balances, inspect clarity plots under 10x achromatic triplet loupes, and match the laser inscription directly with GIA/IGI central digital registries.

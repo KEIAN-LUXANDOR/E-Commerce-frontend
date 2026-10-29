@@ -34,7 +34,7 @@ export function SummaryLines({
         </div>
       )}
       <div className="flex justify-between">
-        <dt className="text-slate">Insured delivery</dt>
+        <dt className="text-slate">Delivery</dt>
         <dd>{shippingPaise > 0 ? formatINR(shippingPaise) : "Free"}</dd>
       </div>
       <div className="flex items-baseline justify-between border-t border-line pt-3">

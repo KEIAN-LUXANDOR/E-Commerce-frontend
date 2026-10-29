@@ -8,6 +8,15 @@ const frontendRoot = dirname(fileURLToPath(import.meta.url));
 const nextConfig: NextConfig = {
   cacheComponents: true,
   partialPrefetching: true,
+  async redirects() {
+    return [
+      {
+        source: "/store",
+        destination: "/diamonds",
+        permanent: true,
+      },
+    ];
+  },
   async rewrites() {
     if (process.env.NEXT_PUBLIC_USE_MOCK_API !== "false") return [];
     return [

@@ -5,6 +5,7 @@ import type {
   Order,
   OrderListPage,
   PaymentConfirmation,
+  PaymentResult,
   PaymentSession,
   ReturnRequestSummary,
   TrackingResult,
@@ -15,15 +16,18 @@ export function listOrders(page = 0, size = 20): Promise<OrderListPage> {
   const query = new URLSearchParams({ page: String(page), size: String(size) });
   return apiFetch<BackendOrderPage>(`/account/orders?${query}`, { cache: "no-store" }).then((result) => ({
     ...result,
-    items: result.items.map((order) => ({
-      orderNumber: order.orderNumber,
-      status: order.status,
-      createdAt: order.createdAt,
-      itemCount: order.items.length,
-      totalPaise: order.totalPaise,
-      firstItemName: order.items[0]?.productName ?? "Diamond order",
-      firstItemImageUrl: order.items[0]?.imageUrl ?? null,
-    })),
+    items: (result.items ?? []).map((order) => {
+      const lines = order.items ?? [];
+      return {
+        orderNumber: order.orderNumber,
+        status: order.status,
+        createdAt: order.createdAt,
+        itemCount: lines.length,
+        totalPaise: order.totalPaise,
+        firstItemName: lines[0]?.productName ?? "Diamond order",
+        firstItemImageUrl: lines[0]?.imageUrl ?? null,
+      };
+    }),
   }));
 }
 
@@ -62,9 +66,9 @@ export function startPayment(orderNumber: string): Promise<PaymentSession> {
 export function confirmPayment(
   orderNumber: string,
   payment: PaymentConfirmation,
-): Promise<unknown> {
+): Promise<PaymentResult> {
   requireFeature("payments");
-  return apiFetch<unknown>(`/account/orders/${encodeURIComponent(orderNumber)}/payment/verify`, {
+  return apiFetch<PaymentResult>(`/account/orders/${encodeURIComponent(orderNumber)}/payment/verify`, {
     method: "POST",
     body: payment,
   });

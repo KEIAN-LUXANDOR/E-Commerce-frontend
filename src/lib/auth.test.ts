@@ -39,6 +39,42 @@ describe("reading backend errors (ProblemDetail)", () => {
 describe("CSRF token on changes", () => {
   afterEach(() => vi.unstubAllGlobals());
 
+  it("submits register payload without CSRF token", async () => {
+    vi.stubGlobal("window", {});
+    const calls: { url: string; body: unknown; token: string | null }[] = [];
+    vi.stubGlobal("fetch", async (url: string, init?: RequestInit) => {
+      calls.push({
+        url,
+        body: typeof init?.body === "string" ? JSON.parse(init.body) : init?.body,
+        token: new Headers(init?.headers).get("X-CSRF-TOKEN"),
+      });
+      return Response.json({
+        id: "usr-123",
+        email: "riya@example.com",
+        fullName: "Riya Shah",
+        role: "CUSTOMER",
+        emailVerified: false,
+        createdAt: "2026-10-28T00:00:00Z",
+      }, { status: 201 });
+    });
+    vi.resetModules();
+    const { register } = await import("@/lib/api/auth");
+    const user = await register({
+      fullName: "Riya Shah",
+      email: "riya@example.com",
+      password: "Secret@123",
+    });
+
+    expect(user.id).toBe("usr-123");
+    expect(calls[0].url).toContain("/auth/register");
+    expect(calls[0].body).toEqual({
+      fullName: "Riya Shah",
+      email: "riya@example.com",
+      password: "Secret@123",
+    });
+    expect(calls[0].token).toBeNull();
+  });
+
   it("uses the documented public account endpoints and payload fields without CSRF", async () => {
     vi.stubGlobal("window", {});
     const calls: { url: string; body: string | undefined; token: string | null }[] = [];

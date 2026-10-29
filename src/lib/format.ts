@@ -33,3 +33,11 @@ export function addDays(date: Date, days: number): Date {
 export function formatGrams(g: number): string {
   return `${g.toFixed(2)} g`;
 }
+
+/** "29 Oct 2026" from an ISO string or Date (Indian English). Empty string for missing/invalid input. */
+export function formatDate(value: string | Date | null | undefined): string {
+  if (!value) return "";
+  const d = typeof value === "string" ? new Date(value) : value;
+  if (Number.isNaN(d.getTime())) return "";
+  return d.toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Kolkata" });
+}

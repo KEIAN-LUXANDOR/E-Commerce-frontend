@@ -1,11 +1,11 @@
 import * as React from "react";
 import type { Metadata } from "next";
-import { RotateCcw, ShieldAlert, Award, CheckCircle } from "lucide-react";
+import { RotateCcw,   CheckCircle } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "15-Day Return Guarantee & Laboratory Re-Inspection | Keian Luxandor",
+  title: "30-Day Return Guarantee & Laboratory Re-Inspection | Keian Luxandor",
   description:
-    "Review our 15-day complimentary return policy, tamper-evident security seal requirements, and gemological verification process.",
+    "Review our 30-day return policy, tamper-evident security seal requirements, and gemological verification process.",
 };
 
 export default function ReturnsPage() {
@@ -17,10 +17,10 @@ export default function ReturnsPage() {
             Keian Luxandor &bull; Collector Protection
           </p>
           <h1 className="font-serif text-3xl md:text-5xl text-[var(--color-ink)]">
-            15-Day Return Policy
+            30-Day Return Policy
           </h1>
           <p className="font-sans text-sm md:text-base text-[var(--color-slate)] max-w-xl mx-auto">
-            We offer a full 100% refund on unmounted loose diamonds returned within 15 calendar days of signed receipt, subject to intact security packaging.
+            We offer a full 100% refund on unmounted loose diamonds returned within 30 days of delivery, subject to intact security packaging.
           </p>
         </div>
       </div>
@@ -69,14 +69,14 @@ export default function ReturnsPage() {
           </div>
         </div>
 
-        {/* Armoured Return Process */}
+        {/* Return process */}
         <div className="border border-[var(--color-line)] bg-[var(--color-stone)] p-6 md:p-8 space-y-4">
           <div className="flex items-center gap-2">
             <RotateCcw className="size-4 text-[var(--color-ink)]" />
-            <h3 className="font-serif text-lg text-[var(--color-ink)]">Complimentary Armoured Collection</h3>
+            <h3 className="font-serif text-lg text-[var(--color-ink)]">How to send a diamond back</h3>
           </div>
           <p className="font-sans text-xs text-[var(--color-slate)] leading-relaxed">
-            Never return a high-value diamond via regular postal mail. Contact your private concierge at <strong>concierge@keianluxandor.com</strong> or via WhatsApp. We will dispatch an armed Sequel courier to collect and seal the parcel in your presence.
+            Please don’t post a diamond back yourself. Email <strong>info@keianluxandor.com</strong> or message us on WhatsApp with your order number, and we’ll arrange the collection with you.
           </p>
         </div>
       </div>

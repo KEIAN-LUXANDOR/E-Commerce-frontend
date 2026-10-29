@@ -3,9 +3,9 @@ import type { Metadata } from "next";
 import { ShieldCheck, Truck, Lock, Clock } from "lucide-react";
 
 export const metadata: Metadata = {
-  title: "Insured Armoured Shipping & Delivery Protocols | Keian Luxandor",
+  title: "Shipping & Delivery | Keian Luxandor",
   description:
-    "Learn about our complimentary, fully-insured armoured escort transit operated exclusively by Sequel and Malca-Amit.",
+    "Free delivery across India for every certified diamond: how we pack, ship and hand over your order.",
 };
 
 export default function ShippingPage() {
@@ -17,10 +17,10 @@ export default function ShippingPage() {
             Keian Luxandor &bull; Logistics Transparency
           </p>
           <h1 className="font-serif text-3xl md:text-5xl text-[var(--color-ink)]">
-            Insured Armoured Transit
+            Shipping & Delivery
           </h1>
           <p className="font-sans text-sm md:text-base text-[var(--color-slate)] max-w-xl mx-auto">
-            Every diamond leaves our vault under 100% full-value Lloyd&rsquo;s insurance coverage, escorted directly by specialized luxury transit couriers.
+            Delivery is free across India. Every diamond is checked against its grading report before it leaves our Baner, Pune showroom.
           </p>
         </div>
       </div>
@@ -30,10 +30,10 @@ export default function ShippingPage() {
           <div className="border border-[var(--color-line)] p-6 bg-white space-y-3">
             <div className="flex items-center gap-2 text-[var(--color-ink)]">
               <Truck className="size-5" />
-              <h2 className="font-serif text-lg">Specialized Armoured Logistics</h2>
+              <h2 className="font-serif text-lg">Trusted courier</h2>
             </div>
             <p className="font-sans text-xs text-[var(--color-slate)] leading-relaxed">
-              We never utilize conventional parcel carriers. All orders are transported exclusively by <strong>Sequel Logistics</strong> or <strong>Malca-Amit</strong> in bullet-resistant, GPS-tracked vehicles with armed guards.
+              We ship with a courier suited to high-value parcels. Once your order is dispatched we email you the courier name and tracking number.
             </p>
           </div>
 
@@ -50,10 +50,10 @@ export default function ShippingPage() {
           <div className="border border-[var(--color-line)] p-6 bg-white space-y-3">
             <div className="flex items-center gap-2 text-[var(--color-ink)]">
               <ShieldCheck className="size-5 text-emerald-700" />
-              <h2 className="font-serif text-lg">100% Comprehensive Insurance</h2>
+              <h2 className="font-serif text-lg">Signed delivery</h2>
             </div>
             <p className="font-sans text-xs text-[var(--color-slate)] leading-relaxed">
-              Risk of loss remains strictly with Keian Luxandor until the package is handed over and verified via one-time PIN (OTP) and signed by the recipient.
+              Someone needs to be at the address to receive and sign for the parcel. Check the seal before you sign.
             </p>
           </div>
 
@@ -63,7 +63,7 @@ export default function ShippingPage() {
               <h2 className="font-serif text-lg">Transit Timelines</h2>
             </div>
             <p className="font-sans text-xs text-[var(--color-slate)] leading-relaxed">
-              Domestic shipments across Tier-1 Indian metropolitan cities arrive within 48 to 72 business hours post gemological audit.
+              Most orders arrive within 3–7 working days after dispatch.
             </p>
           </div>
         </div>

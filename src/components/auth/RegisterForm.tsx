@@ -2,15 +2,17 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Loader2 } from "lucide-react";
+import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { register, resendVerification } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
 import { normaliseEmail, validateRegister, type FieldErrors } from "@/lib/validators";
+import { Button } from "@/components/ui/button";
 
 export function RegisterForm() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
+  const [phone, setPhone] = useState("");
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [loading, setLoading] = useState(false);
@@ -23,30 +25,43 @@ export function RegisterForm() {
     setFieldErrors({});
 
     const normalizedEmail = normaliseEmail(email);
-    const validation = validateRegister({ email: normalizedEmail, password, fullName, phone: "" });
+    const errors = validateRegister({
+      email: normalizedEmail,
+      password,
+      fullName: fullName.trim(),
+      phone: phone.trim(),
+    });
 
-    if (!validation.valid) {
-      if (typeof validation.errors === "string") {
-        setError(validation.errors);
-      } else if (validation.errors) {
-        setFieldErrors(validation.errors as FieldErrors);
-      }
+    // Check for client-side validation errors
+    if (Object.keys(errors).length > 0) {
+      setFieldErrors(errors);
       return;
     }
 
     setLoading(true);
 
     try {
-      await register({ fullName, email: normalizedEmail, password });
+      await register({
+        fullName: fullName.trim(),
+        email: normalizedEmail,
+        password,
+        phone: phone.trim() ? phone.trim() : undefined,
+      });
       setRegistered(true);
     } catch (err: unknown) {
       if (err instanceof ApiError) {
-        if (err.errors) {
+        if (err.errors && err.errors.length > 0) {
           const apiErrors: FieldErrors = {};
-          err.errors.forEach(({ field, message }) => { apiErrors[field] = message; });
+          err.errors.forEach(({ field, message }) => {
+            apiErrors[field] = message;
+          });
           setFieldErrors(apiErrors);
         } else {
-          setError(err.detail || "Registration failed.");
+          setError(
+            err.detail ||
+            err.title ||
+            "Registration failed. An account with this email may already exist."
+          );
         }
       } else {
         setError(err instanceof Error ? err.message : "An unexpected error occurred.");
@@ -70,91 +85,135 @@ export function RegisterForm() {
 
   if (registered) {
     return (
-      <section className="space-y-4 text-center" aria-live="polite">
-        <h2 className="font-serif text-2xl">Check your email</h2>
-        <p className="text-sm text-slate">We sent a verification link to {email}. Verify your address before signing in.</p>
+      <section className="space-y-5 text-center" aria-live="polite">
+        <div className="rounded-xl border border-ok/30 bg-ok-bg/30 p-6 space-y-3">
+          <div className="mx-auto grid size-12 place-items-center rounded-full bg-ok text-white">
+            <CheckCircle2 className="size-6" />
+          </div>
+          <h2 className="font-serif text-2xl text-ink">Check your email</h2>
+          <p className="text-sm text-slate leading-relaxed">
+            We sent a verification link to <strong className="text-ink font-semibold">{email}</strong>. Please verify your address before signing in.
+          </p>
+        </div>
         {error && <p role="status" className="text-sm text-slate">{error}</p>}
-        <button type="button" onClick={() => void handleResendVerification()} disabled={resending} className="btn btn-primary min-h-11 w-full justify-center">
-          {resending ? "Sending…" : "Resend verification email"}
-        </button>
-        <Link href="/login" className="btn btn-secondary min-h-11 w-full justify-center">Back to sign in</Link>
+        <div className="space-y-3 pt-2">
+          <Button
+            type="button"
+            onClick={() => void handleResendVerification()}
+            disabled={resending}
+            size="lg"
+            className="w-full"
+            isLoading={resending}
+          >
+            Resend verification email
+          </Button>
+          <Link href="/login" className="block w-full">
+            <Button variant="secondary" size="lg" className="w-full">
+              Back to sign in
+            </Button>
+          </Link>
+        </div>
       </section>
     );
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-md mx-auto">
+    <form onSubmit={handleSubmit} className="space-y-5 w-full">
       {error && (
-        <div className="bg-out/5 border border-out p-4 text-sm text-out text-center">
+        <div className="rounded-lg bg-out/10 border border-out/30 p-3.5 text-sm text-out text-center">
           {error}
         </div>
       )}
 
       <div className="space-y-4">
         <div>
-          <label htmlFor="fullName" className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">
-            Full Name
+          <label htmlFor="fullName" className="block text-xs font-semibold text-ink uppercase tracking-wider mb-1.5">
+            Full Name *
           </label>
           <input
             id="fullName"
             type="text"
             value={fullName}
             onChange={(e) => setFullName(e.target.value)}
-            className={`w-full h-11 border bg-surface px-4 text-sm text-ink focus:outline-none focus:ring-1 transition-colors ${
-              fieldErrors.fullName ? "border-out focus:border-out focus:ring-out" : "border-line focus:border-ink focus:ring-ink"
+            className={`w-full h-12 rounded-lg border bg-surface px-4 text-sm text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-loupe/20 transition-all ${
+              fieldErrors.fullName ? "border-out focus:border-out" : "border-line focus:border-ink"
             }`}
+            placeholder="e.g. Riya Shah"
             required
           />
           {fieldErrors.fullName && <p className="mt-1 text-xs text-out">{fieldErrors.fullName}</p>}
         </div>
 
         <div>
-          <label htmlFor="email" className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">
-            Email Address
+          <label htmlFor="email" className="block text-xs font-semibold text-ink uppercase tracking-wider mb-1.5">
+            Email Address *
           </label>
           <input
             id="email"
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className={`w-full h-11 border bg-surface px-4 text-sm text-ink focus:outline-none focus:ring-1 transition-colors ${
-              fieldErrors.email ? "border-out focus:border-out focus:ring-out" : "border-line focus:border-ink focus:ring-ink"
+            className={`w-full h-12 rounded-lg border bg-surface px-4 text-sm text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-loupe/20 transition-all ${
+              fieldErrors.email ? "border-out focus:border-out" : "border-line focus:border-ink"
             }`}
+            placeholder="e.g. riya@example.com"
             required
           />
           {fieldErrors.email && <p className="mt-1 text-xs text-out">{fieldErrors.email}</p>}
         </div>
 
         <div>
-          <label htmlFor="password" className="block text-xs font-medium text-ink uppercase tracking-widest mb-2">
-            Password
+          <label htmlFor="phone" className="block text-xs font-semibold text-ink uppercase tracking-wider mb-1.5">
+            Mobile Number (Optional)
+          </label>
+          <input
+            id="phone"
+            type="tel"
+            value={phone}
+            onChange={(e) => setPhone(e.target.value)}
+            className={`w-full h-12 rounded-lg border bg-surface px-4 text-sm text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-loupe/20 transition-all ${
+              fieldErrors.phone ? "border-out focus:border-out" : "border-line focus:border-ink"
+            }`}
+            placeholder="10-digit Indian mobile number"
+          />
+          {fieldErrors.phone && <p className="mt-1 text-xs text-out">{fieldErrors.phone}</p>}
+        </div>
+
+        <div>
+          <label htmlFor="password" className="block text-xs font-semibold text-ink uppercase tracking-wider mb-1.5">
+            Password *
           </label>
           <input
             id="password"
             type="password"
             value={password}
             onChange={(e) => setPassword(e.target.value)}
-            className={`w-full h-11 border bg-surface px-4 text-sm text-ink focus:outline-none focus:ring-1 transition-colors ${
-              fieldErrors.password ? "border-out focus:border-out focus:ring-out" : "border-line focus:border-ink focus:ring-ink"
+            className={`w-full h-12 rounded-lg border bg-surface px-4 text-sm text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-loupe/20 transition-all ${
+              fieldErrors.password ? "border-out focus:border-out" : "border-line focus:border-ink"
             }`}
+            placeholder="Minimum 8 characters"
             required
           />
           {fieldErrors.password && <p className="mt-1 text-xs text-out">{fieldErrors.password}</p>}
         </div>
       </div>
 
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full h-11 flex items-center justify-center bg-ink text-white text-xs font-medium uppercase tracking-widest hover:bg-loupe-deep transition-colors disabled:opacity-50"
-      >
-        {loading ? <Loader2 className="h-4 w-4 animate-spin" /> : "Create Account"}
-      </button>
+      <div className="pt-2">
+        <Button
+          type="submit"
+          size="lg"
+          className="w-full h-13 shadow-md"
+          isLoading={loading}
+          rightIcon={!loading ? <ArrowRight className="size-4" /> : undefined}
+        >
+          Create Account
+        </Button>
+      </div>
 
       <div className="text-center text-sm text-slate pt-2">
         Already have an account?{" "}
-        <Link href="/login" className="font-medium text-ink hover:underline">
-          Sign In
+        <Link href="/login" className="font-semibold text-ink hover:underline">
+          Sign In →
         </Link>
       </div>
     </form>

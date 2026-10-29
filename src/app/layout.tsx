@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/jost";
 import "./globals.css";
 import { site } from "@/lib/site";
@@ -10,6 +10,13 @@ import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { CookieNotice } from "@/components/layout/CookieNotice";
 import { ShopSync } from "@/components/layout/ShopSync";
 import { Toaster } from "@/components/ui/Toaster";
+
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+  themeColor: "#0A192F",
+};
 
 export const metadata: Metadata = {
   title: {
@@ -25,8 +32,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className="min-h-screen flex flex-col bg-paper text-ink font-sans antialiased selection:bg-loupe/15 selection:text-ink">
+    <html lang="en" className="overflow-x-clip">
+      <body className="min-h-screen min-h-[100dvh] overflow-x-clip flex flex-col bg-paper text-ink font-sans antialiased selection:bg-loupe/15 selection:text-ink">
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:bg-ink focus:text-white focus:px-4 focus:py-2 focus:text-xs focus:uppercase focus:tracking-widest"
@@ -36,7 +43,7 @@ export default function RootLayout({
         <ShopSync />
         <AnnouncementBar />
         <Header />
-        <main id="main" className="flex-1">
+        <main id="main" className="flex-1 w-full max-w-full">
           {children}
         </main>
         <Footer />

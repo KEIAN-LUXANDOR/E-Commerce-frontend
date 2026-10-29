@@ -3,14 +3,9 @@
 import { useSyncExternalStore } from "react";
 import { createLocalStore } from "@/lib/local-store";
 import { sessionStore } from "@/lib/session";
-import { apiFetch } from "@/lib/api/client";
+import { ApiError, apiFetch } from "@/lib/api/client";
 
-// Safe toast import fallback
-import * as storesMod from "@/lib/stores";
-const toastStoreObj = storesMod as Record<string, any>;
-const showToast = typeof toastStoreObj.showToast === "function" 
-  ? toastStoreObj.showToast 
-  : (msg: string) => console.log(msg);
+import { showToast } from "@/lib/stores";
 
 const localWishlistStore = createLocalStore<string[]>("kl_guest_wishlist_v1", []);
 let serverWishlistIds: string[] = [];
@@ -26,7 +21,7 @@ export async function fetchServerWishlistIds() {
     serverWishlistIds = ids || [];
     notifyWishlist();
     return serverWishlistIds;
-  } catch (e) {
+  } catch {
     return [];
   }
 }
@@ -58,8 +53,9 @@ export async function toggleWishlist(productId: string, action?: "add" | "remove
         showToast("Removed from your wishlist");
       }
       await fetchServerWishlistIds();
-    } catch (e: any) {
-      showToast(e.detail || "Could not update wishlist", { tone: "error" });
+    } catch (e: unknown) {
+      const detail = e instanceof ApiError ? e.detail : undefined;
+      showToast(detail || "Could not update wishlist", { tone: "error" });
     }
   } else {
     if (isAdding) {
@@ -71,6 +67,9 @@ export async function toggleWishlist(productId: string, action?: "add" | "remove
     }
   }
 }
+
+// Cached immutable empty array reference to prevent React 19 getServerSnapshot infinite loop warning
+const EMPTY_WISHLIST_IDS: string[] = [];
 
 export const wishlistStore = {
   getIds: () => {
@@ -92,7 +91,7 @@ export const wishlistStore = {
         }
         return localIds;
       },
-      () => []
+      () => EMPTY_WISHLIST_IDS
     );
   },
   toggle: toggleWishlist,

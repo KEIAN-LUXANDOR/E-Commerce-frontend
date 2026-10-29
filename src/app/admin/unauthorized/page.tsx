@@ -1,6 +1,6 @@
 import { Metadata } from "next";
 import Link from "next/link";
-import { ShieldAlert, ArrowLeft, LogOut, Lock } from "lucide-react";
+import {  ArrowLeft,  Lock } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Access Restricted | Keian Luxandor Operations Desk",

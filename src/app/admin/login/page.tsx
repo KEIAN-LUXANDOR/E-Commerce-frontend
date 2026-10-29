@@ -42,11 +42,11 @@ export default function AdminLoginPage() {
       
       router.push("/admin");
       router.refresh();
-    } catch (err: any) {
+    } catch (err: unknown) {
       if (err instanceof ApiError) {
         setError(err.detail || "Invalid email or password.");
       } else {
-        setError(err.message || "An unexpected error occurred.");
+        setError(err instanceof Error ? err.message : "An unexpected error occurred.");
       }
       setLoading(false);
     }

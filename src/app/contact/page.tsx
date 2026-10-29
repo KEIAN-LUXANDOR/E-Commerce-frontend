@@ -1,5 +1,7 @@
 "use client";
 
+import { Button } from "@/components/ui/button";
+
 import { useState } from "react";
 import { Mail, Phone, MapPin, Clock, MessageCircle, Send, CheckCircle2 } from "lucide-react";
 import { site, whatsappUrl, telUrl, mailtoUrl } from "@/lib/site";
@@ -176,10 +178,10 @@ export default function ContactPage() {
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
                 <div>
-                  <label className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5">
+                  <label htmlFor="page-f1" className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5">
                     Inquiry Type
                   </label>
-                  <select
+                  <select id="page-f1"
                     value={inquiryType}
                     onChange={(e) => setInquiryType(e.target.value as EnquiryType)}
                     className="w-full h-11 border border-line bg-surface px-3 text-xs text-ink focus:border-ink focus:outline-none"
@@ -192,10 +194,10 @@ export default function ContactPage() {
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5">
+                    <label htmlFor="page-f2" className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5">
                       Full Name *
                     </label>
-                    <input
+                    <input id="page-f2"
                       type="text"
                       required
                       placeholder="e.g. Priya Sharma"
@@ -205,10 +207,10 @@ export default function ContactPage() {
                     />
                   </div>
                   <div>
-                    <label className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5">
+                    <label htmlFor="page-f3" className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5">
                       Email Address *
                     </label>
-                    <input
+                    <input id="page-f3"
                       type="email"
                       required
                       placeholder="e.g. priya@example.com"
@@ -220,10 +222,10 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5">
+                  <label htmlFor="page-f4" className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5">
                     Mobile Number (Optional)
                   </label>
-                  <input
+                  <input id="page-f4"
                     type="tel"
                     placeholder="10-digit Indian mobile (e.g. 9876543210)"
                     value={phone}
@@ -233,10 +235,10 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5">
+                  <label htmlFor="page-f5" className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5">
                     Inquiry or Viewing Notes *
                   </label>
-                  <textarea
+                  <textarea id="page-f5"
                     required
                     rows={4}
                     placeholder="Please specify carat weight, cut preferences, or preferred viewing dates..."
@@ -246,14 +248,16 @@ export default function ContactPage() {
                   />
                 </div>
 
-                <button
+                <Button
                   type="submit"
+                  size="lg"
                   disabled={loading}
-                  className="w-full h-11 flex items-center justify-center gap-2 bg-ink text-white text-xs font-medium uppercase tracking-widest hover:bg-loupe-deep transition-colors disabled:opacity-50"
+                  isLoading={loading}
+                  leftIcon={!loading ? <Send className="size-4" /> : undefined}
+                  className="w-full shadow-md"
                 >
-                  <Send className="size-3.5" />
                   {loading ? "Transmitting..." : "Submit Consultation Request"}
-                </button>
+                </Button>
               </form>
             )}
           </div>

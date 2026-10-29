@@ -1,7 +1,7 @@
 import * as React from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowLeft, ShieldCheck, FileCheck, CheckCircle2 } from "lucide-react";
+import { ArrowLeft, ShieldCheck,  } from "lucide-react";
 
 export const metadata: Metadata = {
   title: "Anatomy of a GIA/IGI Diamond Certificate | Keian Luxandor",
