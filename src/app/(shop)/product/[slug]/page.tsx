@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { Suspense } from "react";
 import { redirect } from "next/navigation";
 
 export const metadata: Metadata = {
@@ -8,15 +7,8 @@ export const metadata: Metadata = {
 
 type Props = PageProps<"/product/[slug]">;
 
-export default function LegacyProductPage({ params }: Props) {
-  return (
-    <Suspense fallback={null}>
-      <LegacyProductRedirect params={params} />
-    </Suspense>
-  );
-}
-
-async function LegacyProductRedirect({ params }: Pick<Props, "params">): Promise<never> {
+export default async function LegacyProductPage({ params }: Props) {
   const { slug } = await params;
-  return redirect(`/diamond/${encodeURIComponent(slug)}`);
+
+  redirect(`/diamond/${encodeURIComponent(slug)}`);
 }

@@ -28,10 +28,12 @@ export function Header() {
 
   return (
     <header
-      className={`sticky top-0 z-40 w-full bg-[#F5F0E8] transition-all duration-300 ${
-        isScrolled ? "border-b border-line shadow-sm" : ""
-      }`}
-    >
+  className={`sticky top-0 z-40 w-full transition-all duration-300 ${
+    isScrolled
+      ? "bg-white border-b border-line shadow-sm"
+      : "bg-[#F5F0E8] border-b border-transparent"
+  }`}
+>
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         
         {/* Left: Primary Navigation (Desktop) */}
@@ -64,13 +66,12 @@ export function Header() {
         <div className="flex justify-center flex-shrink-0">
           <Link href="/" aria-label="KEIAN Luxandor - Home" className="flex shrink-0 flex-col items-center justify-center">
             <Image
-              src="/Keian.png"
+              src="/Keian_Luxandor_logo2.png"
               alt="KEIAN Luxandor"
-              width={220}
-              height={90}
+              width={200}
+              height={100}
               priority
               unoptimized
-              className="h-auto p-3 w-[150px] object-contain lg:w-[100px]"
             />
           </Link>
         </div>

@@ -13,17 +13,35 @@
  *   - Zero nested ternaries.
  *   - Responsive horizontal pills on mobile, left-side list on desktop.
  */
-
-import * as React from "react";
+/**
+ * Customer Account Navigation Bar
+ *
+ * Minimal editorial navigation:
+ *   - Profile & Security
+ *   - Delivery Addresses
+ *   - Orders & Logistics
+ *   - Digital Vault
+ *
+ * Responsive:
+ *   - Horizontal navigation on mobile
+ *   - Vertical navigation on desktop
+ */
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { UserRound, MapPin, Package, FileText } from "lucide-react";
+import {
+  FileText,
+  MapPin,
+  Package,
+  UserRound,
+} from "lucide-react";
+import type { ComponentType } from "react";
+
 import { cn } from "@/lib/utils";
 
 export interface NavItem {
   href: string;
   label: string;
-  icon: React.ComponentType<{ className?: string }>;
+  icon: ComponentType<{ className?: string }>;
 }
 
 export const ACCOUNT_NAV_ITEMS: NavItem[] = [
@@ -33,42 +51,82 @@ export const ACCOUNT_NAV_ITEMS: NavItem[] = [
   { href: "/account/vault", label: "Certificates", icon: FileText },
 ];
 
-export function AccountNav({ className }: { className?: string }) {
-  const pathname = usePathname();
+function isActivePath(pathname: string, href: string): boolean {
+  if (href === "/account") return pathname === href;
+
+  return pathname === href || pathname.startsWith(`${href}/`);
+}
+
+export function AccountNav({
+  className,
+}: {
+  className?: string;
+}) {
+  const pathname = usePathname() ?? "";
 
   return (
     <nav
-      className={cn("w-full", className)}
+      className={cn("w-full min-w-0", className)}
       aria-label="Account navigation"
     >
-      <div className="flex gap-1 overflow-x-auto border-b border-line pb-3 lg:flex-col lg:overflow-visible lg:border-0 lg:pb-0">
+      <ul
+        className={cn(
+          "flex min-w-0 items-center gap-1.5",
+          "overflow-x-auto border-b border-line pb-2",
+          "lg:flex-col lg:items-stretch lg:gap-1.5",
+          "lg:overflow-visible lg:border-0 lg:pb-0",
+        )}
+      >
         {ACCOUNT_NAV_ITEMS.map((item) => {
-          const isActive = pathname === item.href;
+          const active = isActivePath(pathname, item.href);
           const Icon = item.icon;
 
-          let linkStyle =
-            "border-transparent text-slate hover:bg-stone hover:text-ink";
-          if (isActive) {
-            linkStyle =
-              "border-ink bg-stone text-ink font-medium";
-          }
-
           return (
-            <Link
-              key={item.href}
-              href={item.href}
-              className={cn(
-                "flex min-h-10 items-center gap-2.5 border-l-2 px-3 py-2 text-sm transition-colors whitespace-nowrap lg:w-full",
-                linkStyle
-              )}
-              aria-current={isActive ? "page" : undefined}
-            >
-              <Icon className="size-4 shrink-0" />
-              <span>{item.label}</span>
-            </Link>
+            <li key={item.href} className="shrink-0 lg:w-full">
+              <Link
+                href={item.href}
+                aria-current={active ? "page" : undefined}
+                className={cn(
+                  "group relative flex h-11 items-center",
+                  "gap-2.5 rounded-lg border px-3",
+                  "text-[13px] font-medium whitespace-nowrap",
+                  "transition-colors duration-200",
+                  "focus-visible:outline-none",
+                  "focus-visible:ring-2 focus-visible:ring-brand-accent",
+                  "focus-visible:ring-offset-2",
+                  "lg:h-11 lg:w-full lg:px-3.5",
+
+                  active
+                    ? "border-brand-anchor bg-brand-anchor text-white"
+                    : "border-line bg-stone text-ink-secondary hover:border-brand-accent-muted hover:bg-brand-accent-muted hover:text-brand-anchor",
+                )}
+              >
+                <Icon
+                  className={cn(
+                    "size-[17px] shrink-0 transition-colors",
+                    active
+                      ? "text-white"
+                      : "text-slate group-hover:text-brand-anchor",
+                  )}
+                />
+
+                <span className="min-w-0 flex-1 leading-none">
+                  {item.label}
+                </span>
+
+                {active && (
+                  <span
+                    className="size-1.5 shrink-0 rounded-full bg-white"
+                    aria-hidden="true"
+                  />
+                )}
+              </Link>
+            </li>
           );
         })}
-      </div>
+      </ul>
     </nav>
   );
 }
+
+export default AccountNav;

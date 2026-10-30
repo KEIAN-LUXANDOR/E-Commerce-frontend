@@ -18,7 +18,7 @@ export function HeroCarousel({ banners }: { banners: Banner[] }) {
     <section
       aria-roledescription="carousel"
       aria-label="Featured Collection"
-      className="relative overflow-hidden border-b border-line bg-[var(--surface-warm)]"
+      className="relative overflow-hidden border-b border-line bg-[#F5F0E8]"
     >
       <div className=" bg-[#F5F0E8] page relative z-10 grid items-center gap-10 py-12 md:grid-cols-[1.1fr_1fr] md:py-20 lg:gap-16">
         <div key={b.id} aria-live="polite" aria-atomic="true" className="order-2 animate-fade-up md:order-1">
