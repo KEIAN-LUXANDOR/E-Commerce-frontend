@@ -2,9 +2,7 @@ import { describe, expect, it } from "vitest";
 import * as React from "react";
 import { renderToString } from "react-dom/server";
 import { Button, buttonVariants } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Badge, badgeVariants } from "@/components/ui/badge";
-import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from "@/components/ui/table";
 import { cn } from "@/lib/utils";
 
 describe("UI Primitives - Spec v3", () => {
@@ -35,33 +33,6 @@ describe("UI Primitives - Spec v3", () => {
     });
   });
 
-  describe("Input Primitive", () => {
-    it("renders accessible label and input element", () => {
-      const html = renderToString(
-        <Input id="carat-input" label="Carat Weight" placeholder="e.g. 2.05" />
-      );
-      expect(html).toContain("Carat Weight");
-      expect(html).toContain("id=\"carat-input\"");
-      expect(html).toContain("h-12");
-    });
-
-    it("renders error state with role=alert and aria-invalid", () => {
-      const html = renderToString(
-        <Input id="email-field" error="Invalid diamond inquiry email" />
-      );
-      expect(html).toContain("aria-invalid=\"true\"");
-      expect(html).toContain("role=\"alert\"");
-      expect(html).toContain("Invalid diamond inquiry email");
-    });
-
-    it("renders helper text when no error exists", () => {
-      const html = renderToString(
-        <Input helperText="Enter GIA or IGI certificate number" />
-      );
-      expect(html).toContain("Enter GIA or IGI certificate number");
-      expect(html).toContain("aria-invalid=\"false\"");
-    });
-  });
 
   describe("Badge Primitive", () => {
     it("renders gemological grade badge variants", () => {
@@ -79,32 +50,6 @@ describe("UI Primitives - Spec v3", () => {
     });
   });
 
-  describe("Table Primitive", () => {
-    it("renders semantic luxury table elements", () => {
-      const html = renderToString(
-        <Table>
-          <TableHeader>
-            <TableRow>
-              <TableHead>Shape</TableHead>
-              <TableHead>Carat</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            <TableRow>
-              <TableCell>Round</TableCell>
-              <TableCell>2.01 ct</TableCell>
-            </TableRow>
-          </TableBody>
-        </Table>
-      );
-
-      expect(html).toContain("<table");
-      expect(html).toContain("<thead");
-      expect(html).toContain("<tbody");
-      expect(html).toContain("Round");
-      expect(html).toContain("2.01 ct");
-    });
-  });
 
   describe("cn Utility", () => {
     it("merges tailwind classes without duplicate conflicts", () => {

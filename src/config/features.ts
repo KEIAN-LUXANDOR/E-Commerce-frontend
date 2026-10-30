@@ -14,29 +14,29 @@ const defaults = {
   /** Download invoice PDF. GET /account/orders/{no}/invoice */
   invoices: true,
   /** Return request from My orders. POST /account/orders/{no}/return */
-  returns: false,
+  returns: true,
   /** Coupon box in the cart. POST/DELETE /account/cart/coupon */
   coupons: true,
   /** Delivery PIN code check on the diamond page. GET /delivery/pincode/{pin} */
-  pincodeCheck: false,
+  pincodeCheck: true,
   /** Contact form and "Book a viewing". POST /enquiries */
-  enquiries: false,
+  enquiries: true,
   /** Newsletter sign-up in the footer. POST /newsletter */
-  newsletter: false,
+  newsletter: true,
   /** Admin: dashboard metrics. GET /admin/summary */
-  adminDashboard: false,
+  adminDashboard: true,
   /** Admin: add/edit diamonds, photos, CSV import. /admin/products/** */
-  adminCatalog: false,
+  adminCatalog: true,
   /** Admin: orders, packing, shipping. /admin/orders/** */
-  adminOrders: false,
+  adminOrders: true,
   /** Admin: customers list and detail. /admin/customers/** */
-  adminCustomers: false,
+  adminCustomers: true,
   /** Admin: return requests. /admin/returns/** */
-  adminReturns: false,
+  adminReturns: true,
   /** Admin: coupons. /admin/coupons/** */
-  adminCoupons: false,
+  adminCoupons: true,
   /** Admin: contact messages and viewing requests. /admin/enquiries/** */
-  adminEnquiries: false,
+  adminEnquiries: true,
 };
 
 export type Feature = keyof typeof defaults;

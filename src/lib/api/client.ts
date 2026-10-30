@@ -88,6 +88,20 @@ export async function toApiError(response: Response): Promise<ApiError> {
   }
 
   let detail = problem.detail || problem.title;
+  // Endpoint not built on the backend yet (Spring: unmapped path → 404 "No static resource …", or 405/501).
+  // Show a friendly message, and let screens switch to their "coming soon" view (code NOT_AVAILABLE).
+  const missingEndpoint =
+    response.status === 501 ||
+    response.status === 405 ||
+    (response.status === 404 && /no static resource|no endpoint|no handler found/i.test(String(problem.detail ?? "")));
+  if (missingEndpoint) {
+    return new ApiError({
+      ...problem,
+      status: response.status,
+      code: "NOT_AVAILABLE",
+      detail: "This isn’t available online yet. Please contact us and we’ll help you straight away.",
+    });
+  }
   if (!detail && response.status === 429) {
     detail = "Too many attempts. Please wait before trying again.";
   } else if (!detail && response.status >= 500) {
