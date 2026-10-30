@@ -81,7 +81,7 @@ const INSPECTION_STEPS = [
     title: "Prepared for your collection",
     subtitle: "Final verification & delivery",
     description:
-      "The diamond is matched to its grading report and securely sealed before dispatch. Our displayed prices include GST, with complimentary delivery available across India.",
+      "The diamond is matched to its grading report and securely sealed before dispatch. Prices are shown in US dollars, with complimentary delivery available across India.",
   },
 ];
 
@@ -97,9 +97,9 @@ const FAQS = [
       "Yes. You can arrange a private viewing of selected diamonds at our Baner, Pune showroom. Please contact our team to arrange an appointment.",
   },
   {
-    question: "Are the listed prices inclusive of GST?",
+    question: "What currency are prices shown in?",
     answer:
-      "Yes. The displayed prices include GST, so you can compare your selections with greater clarity.",
+      "All prices are shown and charged in US dollars (USD), so what you see is what you pay.",
   },
   {
     question: "Do you deliver across India?",

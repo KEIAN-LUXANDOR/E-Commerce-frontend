@@ -4,7 +4,7 @@ import Link from "next/link";
 import { AdminHeader, AdminTable, ErrorNote, Loading, NotConnected, Panel, StatCard, useAdminQuery } from "@/components/admin/AdminBits";
 import { formatDateTime, OrderStatusBadge } from "@/components/orders/OrderBits";
 import { getAdminSummary, listAdminOrders } from "@/lib/api/admin";
-import { formatINR } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
 
 /** What needs doing today, at a glance. */
 export function Dashboard() {
@@ -22,8 +22,8 @@ export function Dashboard() {
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           <StatCard label="To pack and ship" value={String(summary.data.ordersToShip)} note="Paid orders" href="/admin/packing" />
           <StatCard label="Waiting for payment" value={String(summary.data.awaitingPayment)} note="Held for 15 minutes" href="/admin/orders?status=PENDING_PAYMENT" />
-          <StatCard label="Paid today" value={formatINR(summary.data.paidToday.totalPaise)} note={`${summary.data.paidToday.count} orders`} />
-          <StatCard label="Last 30 days" value={formatINR(summary.data.last30Days.totalPaise)} note={`${summary.data.last30Days.count} orders · ${summary.data.soldLast30Days} diamonds`} />
+          <StatCard label="Paid today" value={formatPrice(summary.data.paidToday.totalPaise)} note={`${summary.data.paidToday.count} orders`} />
+          <StatCard label="Last 30 days" value={formatPrice(summary.data.last30Days.totalPaise)} note={`${summary.data.last30Days.count} orders · ${summary.data.soldLast30Days} diamonds`} />
           <StatCard label="Diamonds on sale" value={String(summary.data.activeDiamonds)} href="/admin/inventory" />
           <StatCard label="Open returns" value={String(summary.data.openReturns)} href="/admin/returns" />
           <StatCard label="New enquiries" value={String(summary.data.newEnquiries)} note="Messages and viewings" href="/admin/enquiries" />
@@ -66,7 +66,7 @@ export function Dashboard() {
                     <OrderStatusBadge status={o.status} />
                   </td>
                   <td className="text-slate">{formatDateTime(o.createdAt)}</td>
-                  <td className="text-right tabular-nums">{formatINR(o.totalPaise)}</td>
+                  <td className="text-right tabular-nums">{formatPrice(o.totalPaise)}</td>
                 </tr>
               ))}
             </tbody>

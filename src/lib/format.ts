@@ -1,12 +1,14 @@
-const inr = new Intl.NumberFormat("en-IN", {
-  style: "currency",
-  currency: "INR",
-  maximumFractionDigits: 0,
-});
+/**
+ * Prices are US dollars. The backend sends amounts in the smallest unit (cents) in fields
+ * still named *Paise (e.g. pricePaise): 123400 → "$1,234", 123450 → "$1,234.50".
+ */
+export const CURRENCY = "USD";
+const wholeDollars = new Intl.NumberFormat("en-US", { style: "currency", currency: CURRENCY, maximumFractionDigits: 0 });
+const withCents = new Intl.NumberFormat("en-US", { style: "currency", currency: CURRENCY, minimumFractionDigits: 2, maximumFractionDigits: 2 });
 
-/** 12500000 paise → "₹1,25,000". Rounds to whole rupees for display only. */
-export function formatINR(paise: number): string {
-  return inr.format(Math.round(paise / 100));
+export function formatPrice(cents: number): string {
+  if (!Number.isFinite(cents)) return "";
+  return cents % 100 === 0 ? wholeDollars.format(cents / 100) : withCents.format(cents / 100);
 }
 
 /** 1 → "1.00 ct", 0.5 → "0.50 ct" */

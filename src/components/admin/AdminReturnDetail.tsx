@@ -5,12 +5,12 @@ import { AdminHeader, ErrorNote, Loading, NotConnected, useAdminQuery } from "@/
 import { actOnAdminReturn, getAdminReturn } from "@/lib/api/admin";
 import { isEnabled } from "@/config/features";
 import { RETURN_STATUS_LABEL } from "@/lib/types/order";
-import { formatINR } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
 
 export function AdminReturnDetail({ returnId }: { returnId: string }) {
   const query = useAdminQuery("adminReturns", () => getAdminReturn(returnId), [returnId]);
   const [note, setNote] = useState("");
-  const [refundRupees, setRefundRupees] = useState("");
+  const [refundDollars, setRefundDollars] = useState("");
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string>();
 
@@ -35,12 +35,12 @@ export function AdminReturnDetail({ returnId }: { returnId: string }) {
 
   function refund(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    const rupees = Number(refundRupees);
-    if (!Number.isFinite(rupees) || rupees <= 0) {
+    const dollars = Number(refundDollars);
+    if (!Number.isFinite(dollars) || dollars <= 0) {
       setError("Enter a refund amount greater than zero.");
       return;
     }
-    void act("refund", { refundPaise: Math.round(rupees * 100) });
+    void act("refund", { refundPaise: Math.round(dollars * 100) });
   }
 
   if (query.loading) return <Loading />;
@@ -60,7 +60,7 @@ export function AdminReturnDetail({ returnId }: { returnId: string }) {
         <p><span className="block text-xs uppercase text-slate">Reason</span>{item.reason}</p>
         <p><span className="block text-xs uppercase text-slate">Details</span>{item.details || "—"}</p>
         <p><span className="block text-xs uppercase text-slate">Requested</span>{new Date(item.requestedAt).toLocaleString("en-IN", { timeZone: "Asia/Kolkata" })}</p>
-        <p><span className="block text-xs uppercase text-slate">Refund</span>{item.refundPaise === null ? "—" : formatINR(item.refundPaise)}</p>
+        <p><span className="block text-xs uppercase text-slate">Refund</span>{item.refundPaise === null ? "—" : formatPrice(item.refundPaise)}</p>
       </section>
       <section className="flex flex-wrap gap-3">
         {item.status === "REQUESTED" && (
@@ -76,8 +76,8 @@ export function AdminReturnDetail({ returnId }: { returnId: string }) {
         {item.status === "APPROVED" && <button type="button" className="btn btn-primary" disabled={busy || !enabled} onClick={() => void act("receive")}>Mark received</button>}
         {item.status === "RECEIVED" && (
           <form onSubmit={refund} className="flex flex-wrap gap-2">
-            <label htmlFor="refund-amount" className="sr-only">Refund amount in rupees</label>
-            <input id="refund-amount" required type="number" min="0.01" step="0.01" value={refundRupees} onChange={(e) => setRefundRupees(e.target.value)} placeholder="Refund ₹" className="field" />
+            <label htmlFor="refund-amount" className="sr-only">Refund amount in US dollars</label>
+            <input id="refund-amount" required type="number" min="0.01" step="0.01" value={refundDollars} onChange={(e) => setRefundDollars(e.target.value)} placeholder="Refund $" className="field" />
             <button type="submit" className="btn btn-primary" disabled={busy || !enabled}>{busy ? "Saving..." : "Record refund"}</button>
           </form>
         )}

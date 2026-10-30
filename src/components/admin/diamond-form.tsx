@@ -22,8 +22,8 @@ type FormValues = {
   name: string;
   description: string;
   sku: string;
-  priceRupees: string;
-  mrpRupees: string;
+  priceDollars: string;
+  mrpDollars: string;
   stock: string;
   status: ProductStatus;
   diamond: Diamond;
@@ -47,8 +47,8 @@ const EMPTY_FORM: FormValues = {
   name: "",
   description: "",
   sku: "",
-  priceRupees: "",
-  mrpRupees: "",
+  priceDollars: "",
+  mrpDollars: "",
   stock: "1",
   status: "DRAFT",
   diamond: EMPTY_DIAMOND,
@@ -60,8 +60,8 @@ function valuesFromProduct(product: AdminProduct | null | undefined): FormValues
     name: product.name,
     description: product.description ?? "",
     sku: product.variant.sku,
-    priceRupees: String(product.variant.pricePaise / 100),
-    mrpRupees: product.variant.mrpPaise === null ? "" : String(product.variant.mrpPaise / 100),
+    priceDollars: String(product.variant.pricePaise / 100),
+    mrpDollars: product.variant.mrpPaise === null ? "" : String(product.variant.mrpPaise / 100),
     stock: String(product.variant.stockQuantity),
     status: product.status,
     diamond: product.diamond ?? EMPTY_DIAMOND,
@@ -99,8 +99,8 @@ export function DiamondForm({ productId }: { productId?: string }) {
     event.preventDefault();
     setError(undefined);
     if (!enabled) return;
-    const price = Number(values.priceRupees);
-    const mrp = values.mrpRupees.trim() ? Number(values.mrpRupees) : null;
+    const price = Number(values.priceDollars);
+    const mrp = values.mrpDollars.trim() ? Number(values.mrpDollars) : null;
     const stock = Number(values.stock);
     if (!Number.isFinite(price) || price <= 0 || (mrp !== null && (!Number.isFinite(mrp) || mrp < price))) {
       setError("Enter a valid price and an MRP that is at least the selling price.");
@@ -157,11 +157,11 @@ export function DiamondForm({ productId }: { productId?: string }) {
             <label className="space-y-1 text-sm">SKU
               <input required value={values.sku} onChange={(e) => setField("sku", e.target.value)} className="field" />
             </label>
-            <label className="space-y-1 text-sm">Price (₹)
-              <input required type="number" min="0.01" step="0.01" value={values.priceRupees} onChange={(e) => setField("priceRupees", e.target.value)} className="field" />
+            <label className="space-y-1 text-sm">Price ($)
+              <input required type="number" min="0.01" step="0.01" value={values.priceDollars} onChange={(e) => setField("priceDollars", e.target.value)} className="field" />
             </label>
-            <label className="space-y-1 text-sm">MRP (₹, optional)
-              <input type="number" min="0.01" step="0.01" value={values.mrpRupees} onChange={(e) => setField("mrpRupees", e.target.value)} className="field" />
+            <label className="space-y-1 text-sm">Compare-at price ($, optional)
+              <input type="number" min="0.01" step="0.01" value={values.mrpDollars} onChange={(e) => setField("mrpDollars", e.target.value)} className="field" />
             </label>
             <label className="space-y-1 text-sm">Stock
               <input required type="number" min="0" step="1" value={values.stock} onChange={(e) => setField("stock", e.target.value)} className="field" />

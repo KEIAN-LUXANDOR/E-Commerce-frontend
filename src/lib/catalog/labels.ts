@@ -88,13 +88,13 @@ export const SORTS: { value: SortOption; label: string }[] = [
   { value: "carat_asc", label: "Carat: small to large" },
 ];
 
-/** Ready-made price bands in rupees for the filter panel. */
+/** Ready-made price bands in US dollars for the filter panel. */
 export const PRICE_BANDS: { label: string; min?: number; max?: number }[] = [
-  { label: "Under ₹1 lakh", max: 100000 },
-  { label: "₹1–3 lakh", min: 100000, max: 300000 },
-  { label: "₹3–6 lakh", min: 300000, max: 600000 },
-  { label: "₹6–15 lakh", min: 600000, max: 1500000 },
-  { label: "Above ₹15 lakh", min: 1500000 },
+  { label: "Under $1,000", max: 1000 },
+  { label: "$1,000–3,000", min: 1000, max: 3000 },
+  { label: "$3,000–6,000", min: 3000, max: 6000 },
+  { label: "$6,000–15,000", min: 6000, max: 15000 },
+  { label: "Above $15,000", min: 15000 },
 ];
 
 /** Ready-made carat bands for the filter panel. */

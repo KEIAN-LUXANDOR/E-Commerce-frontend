@@ -20,7 +20,7 @@ import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/
 
 /** Quick curation pills for human buyers */
 export const POPULAR_CURATIONS = [
-  { label: "Under ₹1,00,000", href: "/shop?sort=price_asc", badge: "Accessible Luxury" },
+  { label: "Under $1,000", href: "/shop?sort=price_asc", badge: "Accessible Luxury" },
   { label: "1.00 – 1.50 Carat Solitaires", href: "/shop?q=1.0", badge: "Most Popular" },
   { label: "Triple Excellent Cut Rounds", href: "/shop?q=round", badge: "Maximum Brilliance" },
   { label: "Eye-Clean Step Cuts", href: "/shop?q=emerald", badge: "Understated Elegance" },

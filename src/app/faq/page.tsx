@@ -72,9 +72,9 @@ const FAQ_DATA: FaqItem[] = [
   {
     id: "payment-1",
     category: "payment",
-    question: "What taxes apply to loose diamond purchases?",
+    question: "What currency are prices in?",
     answer:
-      "In India, loose diamonds fall under HSN Code 7102 and are subject to Goods and Services Tax (GST) at statutory rates. All prices displayed on Keian Luxandor include applicable taxes, and a comprehensive GST tax invoice with our GSTIN is provided with every shipment.",
+      "All prices are shown and charged in US dollars (USD). An invoice is provided with every order.",
   },
   {
     id: "payment-2",
@@ -158,7 +158,7 @@ export default function FaqPage() {
               { id: "certification", label: "Certification & Grading" },
               { id: "transit", label: "Delivery" },
               { id: "returns", label: "30-Day Returns & Forensics" },
-              { id: "payment", label: "Payment & GST Taxes" },
+              { id: "payment", label: "Payment & Currency" },
             ].map((cat) => (
               <button
                 key={cat.id}

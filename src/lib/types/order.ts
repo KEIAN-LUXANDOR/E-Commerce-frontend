@@ -48,10 +48,10 @@ export interface Order {
   subtotalPaise: number;
   shippingPaise: number;
   discountPaise: number;
-  /** GST included in the total (backend sends 0 until GST is switched on) */
+  /** Tax included in the total, if any (not shown on the site) */
   gstPaise?: number;
   totalPaise: number;
-  currency: "INR";
+  currency: "USD" | string;
   shippingAddress: ShippingAddress;
   shipment?: Shipment | null;
   /** A return request on this order, if any (planned "returns") */
@@ -84,7 +84,7 @@ export interface PaymentSession {
   /** Public key id (rzp_test_… / rzp_live_…). Never the secret. */
   keyId: string;
   amountPaise: number;
-  currency: "INR" | string;
+  currency: "USD" | string;
   expiresAt?: string;
   customerName?: string;
   customerEmail?: string;

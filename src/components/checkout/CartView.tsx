@@ -4,7 +4,7 @@ import { useEffect, useState, useSyncExternalStore } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Trash2, ArrowRight, ShoppingBag, Loader2 } from "lucide-react";
-import { formatINR } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
 import { useCart, fetchServerCart, removeFromCart } from "@/lib/shop/cart";
 import { getProducts } from "@/lib/api/products";
 import { productHref, shortTitle, gradeLine } from "@/lib/catalog/product";
@@ -95,7 +95,6 @@ export function CartView({ compact = false }: { compact?: boolean }) {
         }, 0);
 
   const hasUnavailableItems = cart?.hasUnavailableItems ?? items.some((i) => !i.available);
-  const gstPaise = Math.round(subtotalPaise * 0.03);
 
   if (items.length === 0) {
     return (
@@ -164,7 +163,7 @@ export function CartView({ compact = false }: { compact?: boolean }) {
                 <div className="flex items-center justify-between gap-6 sm:justify-end">
                   <div className="text-right">
                     <p className="font-mono text-lg font-bold text-ink">
-                      {linePrice !== null ? formatINR(linePrice) : "—"}
+                      {linePrice !== null ? formatPrice(linePrice) : "—"}
                     </p>
                     <p className="font-mono text-[11px] text-muted uppercase">1 Piece</p>
                   </div>
@@ -192,11 +191,7 @@ export function CartView({ compact = false }: { compact?: boolean }) {
         <div className="space-y-2.5 text-sm text-slate border-b border-line pb-4">
           <div className="flex justify-between">
             <span>Items ({itemCount})</span>
-            <span className="font-mono text-ink">{formatINR(subtotalPaise)}</span>
-          </div>
-          <div className="flex justify-between">
-            <span>Includes GST (3%)</span>
-            <span className="font-mono text-ink">{formatINR(gstPaise)}</span>
+            <span className="font-mono text-ink">{formatPrice(subtotalPaise)}</span>
           </div>
           <div className="flex justify-between">
             <span>Free delivery across India</span>
@@ -206,7 +201,7 @@ export function CartView({ compact = false }: { compact?: boolean }) {
 
         <div className="flex justify-between items-baseline pt-1">
           <span className="font-medium text-ink text-base">Total Amount</span>
-          <span className="font-mono text-2xl font-bold text-ink">{formatINR(subtotalPaise)}</span>
+          <span className="font-mono text-2xl font-bold text-ink">{formatPrice(subtotalPaise)}</span>
         </div>
         <p className="text-xs text-muted">All prices include applicable 3% Goods & Services Tax.</p>
 

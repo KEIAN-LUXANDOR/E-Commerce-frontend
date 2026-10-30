@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { formatINR } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
 import { getAdminSummary } from "@/lib/api/admin";
 import {
   AdminHeader,
@@ -79,13 +79,13 @@ export default function AdminDashboardPage() {
           />
           <StatCard
             label="Paid Realization (Today)"
-            value={formatINR(q.data.paidToday.totalPaise)}
+            value={formatPrice(q.data.paidToday.totalPaise)}
             note={`${q.data.paidToday.count} settled orders`}
             href="/admin/orders?status=PAID"
           />
           <StatCard
             label="Revenue (Last 30 Days)"
-            value={formatINR(q.data.last30Days.totalPaise)}
+            value={formatPrice(q.data.last30Days.totalPaise)}
             note={`${q.data.last30Days.count} confirmed orders`}
           />
         </div>

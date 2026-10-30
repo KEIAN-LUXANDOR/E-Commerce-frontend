@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import { X, ShoppingBag, Trash2 } from "lucide-react";
 import { useCart, removeFromCart } from "@/lib/shop/cart";
-import { formatINR } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
 import { getProducts } from "@/lib/api/products";
 import { productHref, shortTitle, gradeLine } from "@/lib/catalog/product";
 import { Button } from "@/components/ui/button";
@@ -141,7 +141,7 @@ export function MiniCartDrawer() {
                               </Link>
                             </h3>
                             <p className="font-mono font-semibold text-ink text-sm shrink-0">
-                              {itemPrice !== null ? formatINR(itemPrice) : "—"}
+                              {itemPrice !== null ? formatPrice(itemPrice) : "—"}
                             </p>
                           </div>
                           <p className="mt-0.5 text-xs font-mono text-slate truncate">
@@ -174,11 +174,11 @@ export function MiniCartDrawer() {
               <div className="flex justify-between items-baseline text-base font-medium text-ink">
                 <span className="text-sm text-slate">Subtotal</span>
                 <span className="font-mono font-bold text-xl text-ink">
-                  {formatINR(computedSubtotal)}
+                  {formatPrice(computedSubtotal)}
                 </span>
               </div>
               <p className="text-[11px] font-mono text-muted">
-                Includes 3% GST · Free delivery
+                Free delivery
               </p>
               <div className="space-y-2.5 pt-1">
                 <Link href="/cart" onClick={handleClose} className="block w-full">

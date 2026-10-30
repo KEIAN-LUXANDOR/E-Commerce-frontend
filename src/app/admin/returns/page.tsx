@@ -6,7 +6,7 @@ import { AdminHeader, AdminTable, ErrorNote, Loading, NotConnected, useAdminQuer
 import { listAdminReturns } from "@/lib/api/admin";
 import type { ReturnStatus } from "@/lib/types/order";
 import { RETURN_STATUS_LABEL } from "@/lib/types/order";
-import { formatINR } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
 
 const STATUSES: (ReturnStatus | "")[] = ["", "REQUESTED", "APPROVED", "RECEIVED", "REFUNDED", "REJECTED"];
 
@@ -35,7 +35,7 @@ export default function AdminReturnsPage() {
               <tr key={item.id}>
                 <td>{item.returnNumber}</td><td>{item.orderNumber}</td>
                 <td>{item.customerName}<span className="block text-xs text-slate">{item.customerEmail}</span></td>
-                <td>{item.reason}</td><td>{item.refundPaise === null ? "—" : formatINR(item.refundPaise)}</td>
+                <td>{item.reason}</td><td>{item.refundPaise === null ? "—" : formatPrice(item.refundPaise)}</td>
                 <td>{RETURN_STATUS_LABEL[item.status]}</td>
                 <td className="text-right"><Link href={`/admin/returns/${encodeURIComponent(item.id)}`} className="btn-link">Review</Link></td>
               </tr>

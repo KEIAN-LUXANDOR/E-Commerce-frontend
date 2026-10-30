@@ -5,7 +5,6 @@ import { notFound } from "next/navigation";
 import { Suspense } from "react";
 import {
   ArrowLeft,
-  ArrowRight,
   ArrowUpRight,
   Gem,
   ShieldCheck,
@@ -102,7 +101,7 @@ function ProductLoadError({ message }: { message: string }) {
           </h1>
 
           <p className="mx-auto mt-4 max-w-md text-sm leading-7 text-slate">
-            We couldn't retrieve this diamond's information right now.
+            We couldn&apos;t retrieve this diamond&apos;s information right now.
             Please try again shortly or return to the collection.
           </p>
 
@@ -453,7 +452,7 @@ async function DiamondDetailContent({
                     Understanding the grades
                   </p>
                   <p className="mt-1 text-xs text-slate">
-                    A guide to this diamond's colour and clarity.
+                    A guide to this diamond&apos;s colour and clarity.
                   </p>
                 </div>
 

@@ -6,7 +6,7 @@ import { Lock, } from "lucide-react";
 import { Dialog } from "@/components/ui/dialog";
 import { isEnabled } from "@/config/features";
 import { confirmPayment, startPayment } from "@/lib/api/orders";
-import { formatINR } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
 import { isMockPayment, openRazorpay } from "@/lib/payments/razorpay";
 import { site } from "@/lib/site";
 import { Button } from "@/components/ui/button";
@@ -74,7 +74,7 @@ export function usePayment() {
 
   const mockDialog = (
     <Dialog open={mock !== null} onClose={() => setMock(null)} title="Test Payment (Development Only)">
-      <p className="text-sm text-slate">Choose a test response for {formatINR(mock?.session.amountPaise ?? 0)}.</p>
+      <p className="text-sm text-slate">Choose a test response for {formatPrice(mock?.session.amountPaise ?? 0)}.</p>
       <div className="mt-5 flex flex-wrap gap-2.5">
         <Button type="button" size="sm" onClick={() => finishMock("pay_mock_ok", "mock_signature_ok")}>
           Payment Succeeds
@@ -107,7 +107,7 @@ export function PayNow({ orderNumber, totalPaise, className }: { orderNumber: st
         leftIcon={!busy ? <Lock className="size-4" /> : undefined}
         className="w-full shadow-md"
       >
-        {busy ? "Opening Razorpay…" : `Pay ${formatINR(totalPaise)} Securely`}
+        {busy ? "Opening Razorpay…" : `Pay ${formatPrice(totalPaise)} Securely`}
       </Button>
       <p className="mt-2 text-center text-xs text-slate">
         {enabled ? "Instant verification via Razorpay (UPI, Cards, Net Banking)." : "Online payment is currently unavailable."}

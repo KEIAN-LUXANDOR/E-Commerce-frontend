@@ -1,7 +1,7 @@
 
 "use client";
 
-import { useEffect, useState, type FormEvent, type ReactNode } from "react";
+import { useState, type FormEvent, type ReactNode } from "react";
 import {
   Image as ImageIcon,
   RotateCcw,
@@ -162,21 +162,16 @@ function NumberRangeFilter({
   const [error, setError] = useState<string | null>(null);
   const [activeThumb, setActiveThumb] = useState<"min" | "max">("max");
 
-  useEffect(() => {
-    setMinimum(
-      minValue === undefined
-        ? ""
-        : formatNumber(minValue / storageFactor, decimals),
-    );
-
-    setMaximum(
-      maxValue === undefined
-        ? ""
-        : formatNumber(maxValue / storageFactor, decimals),
-    );
-
+  // When the filter values change from outside (URL, "clear all"), reset the boxes during render
+  // (derived state, no effect needed)
+  const sourceKey = `${minValue ?? ""}|${maxValue ?? ""}|${storageFactor}|${decimals}`;
+  const [syncedKey, setSyncedKey] = useState(sourceKey);
+  if (syncedKey !== sourceKey) {
+    setSyncedKey(sourceKey);
+    setMinimum(minValue === undefined ? "" : formatNumber(minValue / storageFactor, decimals));
+    setMaximum(maxValue === undefined ? "" : formatNumber(maxValue / storageFactor, decimals));
     setError(null);
-  }, [minValue, maxValue, storageFactor, decimals]);
+  }
 
   const parsedMinimum =
     minimum.trim() === "" ? undefined : Number(minimum);
@@ -555,7 +550,7 @@ function FilterControls({ compact = false }: { compact?: boolean }) {
           <AccordionContent>
             <NumberRangeFilter
               label="price"
-              unit="₹"
+              unit="$"
               minValue={query.minPrice}
               maxValue={query.maxPrice}
               domainMax={10_000_000}

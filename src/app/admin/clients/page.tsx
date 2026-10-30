@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useState } from "react";
 import { AdminHeader, AdminTable, ErrorNote, Loading, NotConnected, useAdminQuery } from "@/components/admin/AdminBits";
 import { listAdminCustomers } from "@/lib/api/admin";
-import { formatINR } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
 import { formatDateTime } from "@/components/orders/OrderBits";
 
 export default function AdminClientsPage() {
@@ -30,7 +30,7 @@ export default function AdminClientsPage() {
               <td>{client.fullName}<span className="block text-xs text-slate">{client.email}{client.phone ? ` · ${client.phone}` : ""}</span></td>
               <td>{client.emailVerified ? "Verified" : "Not verified"}</td>
               <td>{client.orderCount}</td>
-              <td>{formatINR(client.totalSpentPaise)}</td>
+              <td>{formatPrice(client.totalSpentPaise)}</td>
               <td>{formatDateTime(client.createdAt)}</td>
               <td className="text-right"><Link href={`/admin/clients/${encodeURIComponent(client.id)}`} className="btn-link">View</Link></td>
             </tr>

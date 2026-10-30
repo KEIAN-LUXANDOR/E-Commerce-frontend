@@ -5,7 +5,7 @@ import { useState } from "react";
 import { AdminHeader, AdminTable, ErrorNote, Loading, NotConnected, useAdminQuery } from "@/components/admin/AdminBits";
 import { listAdminProducts } from "@/lib/api/admin";
 import type { ProductStatus } from "@/lib/types/admin";
-import { formatINR } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
 
 export function DiamondList() {
   const [query, setQuery] = useState("");
@@ -40,7 +40,7 @@ export function DiamondList() {
                 <td>{product.variant.sku}</td>
                 <td>{product.status}</td>
                 <td>{product.variant.stockQuantity}</td>
-                <td>{formatINR(product.variant.pricePaise)}</td>
+                <td>{formatPrice(product.variant.pricePaise)}</td>
                 <td className="text-right"><Link href={`/admin/diamonds/${product.id}`} className="btn-link">Edit</Link></td>
               </tr>
             ))}

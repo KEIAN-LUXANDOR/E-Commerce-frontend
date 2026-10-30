@@ -14,7 +14,7 @@ import {
 } from "lucide-react";
 
 import { DiamondArt } from "@/components/art/DiamondArt";
-import { formatINR } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
 import {
   ORDER_STATUS_LABEL,
   type OrderItem,
@@ -469,7 +469,7 @@ export function OrderItems({
               </span>
 
               <p className="text-sm font-bold tabular-nums text-[#5E4728] sm:text-base">
-                {formatINR(item.pricePaise)}
+                {formatPrice(item.pricePaise)}
               </p>
             </div>
           </li>

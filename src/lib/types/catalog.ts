@@ -8,7 +8,7 @@
  * Later, run `npm run gen:api` and replace these with the generated types,
  * keeping the same names so components don't need to change.
  *
- * All money values are in PAISE (₹1 = 100 paise), the same as the database.
+ * All money values are in CENTS ($1 = 100 cents), the same as the database (fields keep the *Paise names).
  */
 
 export type Shape =
@@ -140,7 +140,7 @@ export interface ProductFilters {
   fluorescence?: Fluorescence[];
   caratMin?: number;
   caratMax?: number;
-  /** In rupees (not paise) because shoppers type rupees. */
+  /** In dollars (not cents) because shoppers type dollars. */
   priceMin?: number;
   priceMax?: number;
   sort?: SortOption;

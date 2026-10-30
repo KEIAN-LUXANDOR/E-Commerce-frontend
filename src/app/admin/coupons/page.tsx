@@ -5,7 +5,7 @@ import { AdminHeader, AdminTable, ErrorNote, Loading, NotConnected, useAdminQuer
 import { isEnabled } from "@/config/features";
 import { createCoupon, deleteCoupon, listCoupons, updateCoupon } from "@/lib/api/admin";
 import type { Coupon, CouponRequest, CouponType } from "@/lib/types/admin";
-import { formatINR } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
 
 const EMPTY: CouponRequest = {
   code: "",
@@ -122,9 +122,9 @@ export default function AdminCouponsPage() {
           <label className="space-y-1 text-sm">Code<input required minLength={3} maxLength={20} value={form.code} onChange={(e) => setForm((current) => ({ ...current, code: e.target.value.toUpperCase() }))} className="field" /></label>
           <label className="space-y-1 text-sm">Description<input required value={form.description} onChange={(e) => setForm((current) => ({ ...current, description: e.target.value }))} className="field" /></label>
           <label className="space-y-1 text-sm">Discount type<select value={form.type} onChange={(e) => setType(e.target.value as CouponType)} className="field"><option value="PERCENT">Percent</option><option value="FLAT">Fixed amount</option></select></label>
-          <label className="space-y-1 text-sm">{form.type === "PERCENT" ? "Discount (%)" : "Discount (₹)"}<input required type="number" min={form.type === "PERCENT" ? 1 : 0.01} max={form.type === "PERCENT" ? 100 : undefined} step={form.type === "PERCENT" ? 1 : 0.01} value={valueInput} onChange={(e) => setValueInput(e.target.value)} className="field" /></label>
-          <label className="space-y-1 text-sm">Minimum order (₹)<input required type="number" min="0" step="0.01" value={minOrder} onChange={(e) => setMinOrder(e.target.value)} className="field" /></label>
-          {form.type === "PERCENT" && <label className="space-y-1 text-sm">Maximum discount (₹, optional)<input type="number" min="0.01" step="0.01" value={discountCap} onChange={(e) => setDiscountCap(e.target.value)} className="field" /></label>}
+          <label className="space-y-1 text-sm">{form.type === "PERCENT" ? "Discount (%)" : "Discount ($)"}<input required type="number" min={form.type === "PERCENT" ? 1 : 0.01} max={form.type === "PERCENT" ? 100 : undefined} step={form.type === "PERCENT" ? 1 : 0.01} value={valueInput} onChange={(e) => setValueInput(e.target.value)} className="field" /></label>
+          <label className="space-y-1 text-sm">Minimum order ($)<input required type="number" min="0" step="0.01" value={minOrder} onChange={(e) => setMinOrder(e.target.value)} className="field" /></label>
+          {form.type === "PERCENT" && <label className="space-y-1 text-sm">Maximum discount ($, optional)<input type="number" min="0.01" step="0.01" value={discountCap} onChange={(e) => setDiscountCap(e.target.value)} className="field" /></label>}
           <label className="space-y-1 text-sm">Starts on<input required type="datetime-local" value={form.startsAt} onChange={(e) => setForm((current) => ({ ...current, startsAt: e.target.value }))} className="field" /></label>
           <label className="space-y-1 text-sm">Ends on (optional)<input type="datetime-local" value={form.endsAt ?? ""} onChange={(e) => setForm((current) => ({ ...current, endsAt: e.target.value || null }))} className="field" /></label>
           <label className="space-y-1 text-sm">Usage limit (optional)<input type="number" min="1" step="1" value={usageLimit} onChange={(e) => setUsageLimit(e.target.value)} className="field" /></label>
@@ -139,8 +139,8 @@ export default function AdminCouponsPage() {
           <tbody>{coupons.data.map((coupon) => (
             <tr key={coupon.id}>
               <td>{coupon.code}<span className="block text-xs text-slate">{coupon.description}</span></td>
-              <td>{coupon.type === "PERCENT" ? `${coupon.value}%` : formatINR(coupon.value)}</td>
-              <td>{formatINR(coupon.minOrderPaise)}</td>
+              <td>{coupon.type === "PERCENT" ? `${coupon.value}%` : formatPrice(coupon.value)}</td>
+              <td>{formatPrice(coupon.minOrderPaise)}</td>
               <td>{coupon.usedCount}{coupon.usageLimit === null ? "" : ` / ${coupon.usageLimit}`}</td>
               <td>{new Date(coupon.startsAt).toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata" })}{coupon.endsAt ? ` – ${new Date(coupon.endsAt).toLocaleDateString("en-IN", { timeZone: "Asia/Kolkata" })}` : ""}</td>
               <td>{coupon.active ? "Active" : "Inactive"}</td>

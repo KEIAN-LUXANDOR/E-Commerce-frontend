@@ -50,7 +50,7 @@ export default function ReturnsPage() {
                   2. Original Laboratory Dossier Included
                 </h3>
                 <p className="font-sans text-xs text-[var(--color-slate)] mt-0.5 leading-relaxed">
-                  The original physical GIA or IGI laminated grading report must be returned. If missing or damaged, a ₹15,000 laboratory replacement re-issuance fee will be deducted from your refund.
+                  The original physical GIA or IGI laminated grading report must be returned. If missing or damaged, the laboratory’s fee for re-issuing the report will be deducted from your refund.
                 </p>
               </div>
             </div>

@@ -40,9 +40,9 @@ export default function TermsPage() {
         </section>
 
         <section className="space-y-3">
-          <h2 className="font-serif text-xl text-[var(--color-ink)]">3. Pricing & Statutory Goods and Services Tax (GST)</h2>
+          <h2 className="font-serif text-xl text-[var(--color-ink)]">3. Pricing and Currency</h2>
           <p>
-            All prices are quoted in Indian Rupees (INR) and are inclusive of the applicable 3% Goods and Services Tax (GST) on polished precious stones. Keian Luxandor issues formal tax invoices referencing the purchaser&rsquo;s GSTIN or PAN details.
+            All prices are quoted and charged in US Dollars (USD). Keian Luxandor issues an invoice with every order.
           </p>
         </section>
 

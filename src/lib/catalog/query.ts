@@ -20,7 +20,7 @@ import {
  * Address format (made for people):        API format (docs/API-ENDPOINTS.md):
  *   shape=oval,pear      (lower case)          shape=OVAL,PEAR
  *   cut=very_good        (lower case)          cut=VERY_GOOD
- *   minPrice=100000      (rupees)              minPrice=10000000 (paise)
+ *   minPrice=1000        (dollars)             minPrice=100000   (cents)
  *   page=2               (starts at 1)         page=1 (starts at 0)
  *   photo=1 / quickShip=1                      withImage=true / quickShip=true
  */
@@ -73,8 +73,8 @@ export function parseShopParams(params: SearchParamsRecord, fixedOrigin?: Origin
   const pageNumber = positiveNumber(first(params, "page"), 10_000);
   const page = pageNumber && pageNumber >= 1 ? Math.floor(pageNumber) - 1 : 0;
 
-  const minRupees = positiveNumber(first(params, "minPrice"), 1_000_000_000);
-  const maxRupees = positiveNumber(first(params, "maxPrice"), 1_000_000_000);
+  const minDollars = positiveNumber(first(params, "minPrice"), 1_000_000_000);
+  const maxDollars = positiveNumber(first(params, "maxPrice"), 1_000_000_000);
 
   const sortRaw = first(params, "sort");
   const sort = SORT_VALUES.find((s) => s === sortRaw);
@@ -91,8 +91,8 @@ export function parseShopParams(params: SearchParamsRecord, fixedOrigin?: Origin
     shape: list(params, "shape", SHAPE_VALUES),
     minCarat: positiveNumber(first(params, "minCarat"), 50),
     maxCarat: positiveNumber(first(params, "maxCarat"), 50),
-    minPrice: minRupees === undefined ? undefined : Math.round(minRupees) * 100,
-    maxPrice: maxRupees === undefined ? undefined : Math.round(maxRupees) * 100,
+    minPrice: minDollars === undefined ? undefined : Math.round(minDollars) * 100,
+    maxPrice: maxDollars === undefined ? undefined : Math.round(maxDollars) * 100,
     color: list(params, "color", COLOR_VALUES),
     clarity: list(params, "clarity", CLARITY_VALUES),
     cut: list(params, "cut", CUT_VALUES),

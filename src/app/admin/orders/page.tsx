@@ -6,7 +6,7 @@ import { AdminHeader, AdminTable, ErrorNote, Loading, NotConnected, useAdminQuer
 import { OrderStatusBadge, formatDateTime } from "@/components/orders/OrderBits";
 import { listAdminOrders } from "@/lib/api/admin";
 import type { OrderStatus } from "@/lib/types/order";
-import { formatINR } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
 
 const STATUSES: { value: OrderStatus | ""; label: string }[] = [
   { value: "", label: "All statuses" },
@@ -59,7 +59,7 @@ export default function AdminOrdersPage() {
                 <td>{order.itemCount}</td>
                 <td><OrderStatusBadge status={order.status} /></td>
                 <td>{formatDateTime(order.createdAt)}</td>
-                <td>{formatINR(order.totalPaise)}</td>
+                <td>{formatPrice(order.totalPaise)}</td>
                 <td className="text-right"><Link href={`/admin/orders/${encodeURIComponent(order.orderNumber)}`} className="btn-link">View</Link></td>
               </tr>
             ))}

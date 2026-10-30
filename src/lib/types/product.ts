@@ -2,7 +2,7 @@
  * Products as the backend sends them (docs/API-ENDPOINTS.md, "Products").
  * The store sells loose diamonds: every product is one stone with ONE variant
  * (its price and stock) and a `diamond` object with its grades.
- * All money is in paise (₹1 = 100 paise).
+ * All money is in cents ($1 = 100 cents); the fields keep their *Paise names from the backend.
  */
 
 export const SHAPE_VALUES = ["ROUND", "OVAL", "CUSHION", "EMERALD", "PEAR", "PRINCESS", "RADIANT", "ASSCHER", "MARQUISE", "HEART"] as const;

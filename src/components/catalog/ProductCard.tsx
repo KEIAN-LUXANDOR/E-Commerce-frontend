@@ -5,7 +5,7 @@ import Image from "next/image";
 import { SaveButton } from "@/components/product/SaveButton";
 import { AddToCartButton } from "@/components/product/AddToCartButton";
 import { compareAtPaise, gradeLine, mainVariant, productHref, productShape, shortTitle } from "@/lib/catalog/product";
-import { formatINR } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
 import type { Product } from "@/lib/types/product";
 
 interface ProductCardProps {
@@ -54,10 +54,10 @@ export function ProductCard({ product, compact = false }: ProductCardProps) {
         <div className="mt-auto space-y-3 pt-2 border-t border-line/60">
           <div className="flex items-baseline justify-between">
             <span className="text-base font-bold font-mono text-ink">
-              {variant ? formatINR(variant.pricePaise) : "Price on request"}
+              {variant ? formatPrice(variant.pricePaise) : "Price on request"}
               {crossedOutPrice !== null && (
                 <span className="ml-2 text-xs font-normal text-slate line-through">
-                  {formatINR(crossedOutPrice)}
+                  {formatPrice(crossedOutPrice)}
                 </span>
               )}
             </span>

@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { SaveButton } from "@/components/product/SaveButton";
 import { AddToCartButton } from "@/components/product/AddToCartButton";
-import { formatINR } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
 import { mainVariant, productHref, shortTitle } from "@/lib/catalog/product";
 import { shapeLabel, cutLabel } from "@/lib/catalog/labels";
 import type { Product } from "@/lib/types/product";
@@ -28,7 +28,7 @@ export function ProductTable({ products }: ProductTableProps) {
             <th className="p-4 font-medium">Color</th>
             <th className="p-4 font-medium">Clarity</th>
             <th className="p-4 font-medium">Cut</th>
-            <th className="p-4 font-medium">Price (incl. GST)</th>
+            <th className="p-4 font-medium">Price</th>
             <th className="p-4 font-medium text-right">Actions</th>
           </tr>
         </thead>
@@ -38,7 +38,7 @@ export function ProductTable({ products }: ProductTableProps) {
             const d = product.diamond;
             const href = productHref(product.slug);
             const title = shortTitle(product);
-            const priceDisplay = variant ? formatINR(variant.pricePaise) : "Price on request";
+            const priceDisplay = variant ? formatPrice(variant.pricePaise) : "Price on request";
             const shapeDisplay = d?.shape ? shapeLabel(d.shape) : "Loose Diamond";
             const caratDisplay = d?.carat ? `${d.carat.toFixed(2)} ct` : "—";
             const colorDisplay = d?.color ?? "—";

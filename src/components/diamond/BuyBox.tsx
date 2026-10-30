@@ -6,7 +6,7 @@ import { SaveButton } from "@/components/product/SaveButton";
 import { AddToCartButton } from "@/components/product/AddToCartButton";
 import { CertificateModal } from "@/components/diamond/CertificateModal";
 import { compareAtPaise, mainVariant, originLine, shortTitle } from "@/lib/catalog/product";
-import { formatINR } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import type { Product } from "@/lib/types/product";
 
@@ -34,14 +34,11 @@ export function BuyBox({ product }: { product: Product }) {
 
         <div className="flex items-baseline gap-3 border-y border-line/60 py-4">
           <p className="text-2xl sm:text-3xl font-bold font-mono text-ink">
-            {variant ? formatINR(variant.pricePaise) : "Price on request"}
+            {variant ? formatPrice(variant.pricePaise) : "Price on request"}
           </p>
           {crossedOutPrice !== null && (
-            <p className="text-sm font-mono text-slate line-through">{formatINR(crossedOutPrice)}</p>
+            <p className="text-sm font-mono text-slate line-through">{formatPrice(crossedOutPrice)}</p>
           )}
-          <span className="text-[11px] font-mono text-muted uppercase tracking-wider ml-auto">
-            Excl. 3% GST
-          </span>
         </div>
 
         <dl className="space-y-2.5 text-sm">

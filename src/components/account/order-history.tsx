@@ -13,7 +13,7 @@ import {
 
 import { listOrders } from "@/lib/api/orders";
 import type { OrderListPage } from "@/lib/types/order";
-import { formatINR } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
 import {
   formatDateTime,
   OrderStatusBadge,
@@ -135,7 +135,7 @@ export function OrderHistory() {
         </div>
 
         <h3 className="relative mt-5 font-serif text-2xl tracking-tight text-ink">
-          We couldn't load your orders
+          We couldn&apos;t load your orders
         </h3>
 
         <p className="relative mx-auto mt-2 max-w-sm text-sm leading-relaxed text-slate">
@@ -202,7 +202,7 @@ export function OrderHistory() {
           </h3>
 
           <p className="mt-1.5 text-sm text-slate">
-            A record of the pieces you've chosen.
+            A record of the pieces you&apos;ve chosen.
           </p>
         </div>
 
@@ -310,7 +310,7 @@ export function OrderHistory() {
                     </p>
 
                     <p className="font-serif text-xl tracking-tight text-ink sm:mt-2 sm:text-[26px]">
-                      {formatINR(order.totalPaise)}
+                      {formatPrice(order.totalPaise)}
                     </p>
                   </div>
                 </div>

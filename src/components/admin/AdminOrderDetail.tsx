@@ -6,7 +6,7 @@ import { isEnabled } from "@/config/features";
 import { cancelAdminOrder, getAdminOrder, markAdminOrderDelivered, shipAdminOrder } from "@/lib/api/admin";
 import { invoiceUrl } from "@/lib/api/orders";
 import { OrderStatusBadge, formatDateTime } from "@/components/orders/OrderBits";
-import { formatINR } from "@/lib/format";
+import { formatPrice } from "@/lib/format";
 import type { AdminOrder } from "@/lib/types/admin";
 
 export function AdminOrderDetail({ orderNumber }: { orderNumber: string }) {
@@ -66,13 +66,13 @@ export function AdminOrderDetail({ orderNumber }: { orderNumber: string }) {
         <div><p className="text-xs uppercase text-slate">Status</p><div className="mt-2"><OrderStatusBadge status={order.status} /></div></div>
         <div><p className="text-xs uppercase text-slate">Placed</p><p className="mt-2">{formatDateTime(order.createdAt)}</p></div>
         <div><p className="text-xs uppercase text-slate">Shipping address</p><p className="mt-2">{order.shippingAddress.fullName}<br />{order.shippingAddress.line1}{order.shippingAddress.line2 ? `, ${order.shippingAddress.line2}` : ""}<br />{order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.pincode}</p></div>
-        <div><p className="text-xs uppercase text-slate">Total</p><p className="mt-2 font-medium">{formatINR(order.totalPaise)}</p></div>
+        <div><p className="text-xs uppercase text-slate">Total</p><p className="mt-2 font-medium">{formatPrice(order.totalPaise)}</p></div>
       </section>
 
       <section className="border border-line bg-white p-5">
         <h2 className="text-xl">Items</h2>
         <ul className="mt-3 divide-y divide-line">
-          {order.items.map((item) => <li key={item.lineNumber} className="flex justify-between gap-4 py-3"><span>{item.productName}<span className="block text-sm text-slate">SKU {item.sku}</span></span><span>{formatINR(item.pricePaise)}</span></li>)}
+          {order.items.map((item) => <li key={item.lineNumber} className="flex justify-between gap-4 py-3"><span>{item.productName}<span className="block text-sm text-slate">SKU {item.sku}</span></span><span>{formatPrice(item.pricePaise)}</span></li>)}
         </ul>
       </section>
 

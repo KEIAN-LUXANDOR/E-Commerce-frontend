@@ -1,5 +1,7 @@
 "use client";
 
+import { formatPrice } from "@/lib/format";
+
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
@@ -18,13 +20,9 @@ export interface SearchBoxProps {
   autoFocus?: boolean;
 }
 
-function formatINRFromPaise(paise?: number | null): string {
-  if (typeof paise !== "number" || Number.isNaN(paise)) return "";
-  return new Intl.NumberFormat("en-IN", {
-    style: "currency",
-    currency: "INR",
-    maximumFractionDigits: 0,
-  }).format(Math.round(paise / 100));
+function formatPriceFromCents(cents?: number | null): string {
+  if (typeof cents !== "number" || Number.isNaN(cents)) return "";
+  return formatPrice(cents);
 }
 
 export function SearchBox({
@@ -168,7 +166,7 @@ export function SearchBox({
                       </div>
                       {variant?.pricePaise != null && (
                         <span className="shrink-0 text-xs font-medium tabular-nums text-ink">
-                          {formatINRFromPaise(variant.pricePaise)}
+                          {formatPriceFromCents(variant.pricePaise)}
                         </span>
                       )}
                     </Link>
