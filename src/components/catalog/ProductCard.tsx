@@ -45,7 +45,7 @@ export function ProductCard({
         "rounded-2xl border border-line bg-surface",
         "transition-all duration-300 ease-out",
         "hover:-translate-y-1 hover:border-brand-accent/40",
-        "hover:shadow-[0_18px_45px_-28px_rgba(10,25,47,0.3)]",
+        "hover:shadow-[0_18px_45px_-28px_rgba(43,45,49,0.24)]",
       ].join(" ")}
     >
       {/* Consistent photography stage */}

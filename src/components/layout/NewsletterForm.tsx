@@ -65,12 +65,12 @@ export function NewsletterForm() {
         <button
           type="submit"
           disabled={!enabled || busy}
-          className="btn btn-primary shrink-0 disabled:opacity-60 text-xs uppercase tracking-wider"
+          className="btn btn-bronze shrink-0 disabled:opacity-60 text-xs uppercase tracking-wider"
         >
           {busy ? "Subscribing..." : "Subscribe"}
         </button>
       </div>
-      <label className="flex items-start gap-2 text-xs text-slate select-none">
+      <label className="flex items-start gap-2 text-xs text-white/70 select-none">
         <input
           type="checkbox"
           checked={consent}
@@ -86,7 +86,7 @@ export function NewsletterForm() {
         </p>
       )}
       {!enabled && (
-        <p className="text-[11px] text-muted italic">
+        <p className="text-[11px] text-white/60 italic">
           Private Dispatch alerts are scheduled to go live with the upcoming collection.
         </p>
       )}

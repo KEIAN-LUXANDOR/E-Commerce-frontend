@@ -22,6 +22,7 @@ import {
   type ShippingAddress,
 } from "@/lib/types/order";
 import { cn } from "@/lib/utils";
+import { getAddressCountryName } from "@/lib/market/address-validation";
 
 /* -------------------------------------------------------------------------- */
 /*                                DESIGN TOKENS                               */
@@ -549,9 +550,9 @@ export function AddressBlock({
             )}
 
             <p className="font-semibold text-[#29251F]">
-              {address.city}, {address.state}{" "}
-              {address.pincode}
+              {address.city}, {address.state} {address.pincode}
             </p>
+            <p>{getAddressCountryName(address.countryCode)}</p>
           </div>
 
           {/* Contact */}

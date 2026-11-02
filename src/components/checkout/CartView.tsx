@@ -11,6 +11,7 @@ import { productHref, shortTitle, gradeLine } from "@/lib/catalog/product";
 import { sessionStore } from "@/lib/session";
 import { Button } from "@/components/ui/button";
 import type { Product } from "@/lib/types/product";
+import { useMarket } from "@/components/market/MarketProvider";
 
 interface CartLineItem {
   variantId: string;
@@ -20,6 +21,7 @@ interface CartLineItem {
 }
 
 export function CartView({ compact = false }: { compact?: boolean }) {
+  const { countryCode } = useMarket();
   const cart = useCart();
   const session = sessionStore.useSession();
   const [removingId, setRemovingId] = useState<string | null>(null);
@@ -193,17 +195,34 @@ export function CartView({ compact = false }: { compact?: boolean }) {
             <span>Items ({itemCount})</span>
             <span className="font-mono text-ink">{formatPrice(subtotalPaise)}</span>
           </div>
-          <div className="flex justify-between">
-            <span>Free delivery across India</span>
-            <span className="text-ok font-semibold">Complimentary</span>
+          <div className="flex justify-between gap-3">
+            {countryCode === "IN" ? (
+              <>
+                <span>Delivery within India</span>
+                <span className="text-ok font-semibold">Complimentary</span>
+              </>
+            ) : (
+              <>
+                <span>International delivery</span>
+                <span className="text-slate font-semibold">Quote required</span>
+              </>
+            )}
           </div>
         </div>
 
         <div className="flex justify-between items-baseline pt-1">
-          <span className="font-medium text-ink text-base">Total Amount</span>
+          <span className="font-medium text-ink text-base">
+            {countryCode === "IN" ? "Total Amount" : "Cart subtotal"}
+          </span>
           <span className="font-mono text-2xl font-bold text-ink">{formatPrice(subtotalPaise)}</span>
         </div>
-        <p className="text-xs text-muted">All prices include applicable 3% Goods & Services Tax.</p>
+        {countryCode === "IN" ? (
+          <p className="text-xs text-muted">Applicable domestic GST is reflected in the order total.</p>
+        ) : (
+          <p className="text-xs leading-relaxed text-muted">
+            This is a merchandise subtotal, not a final landed-cost quote. International shipping, import duties and destination taxes must be confirmed before payment.
+          </p>
+        )}
 
         {hasUnavailableItems && (
           <div className="rounded-lg bg-out/10 border border-out/30 p-3 text-xs text-out">

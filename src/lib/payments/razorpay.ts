@@ -70,7 +70,7 @@ export async function openRazorpay(session: PaymentSession, storeName: string): 
         contact: session.customerPhone ?? session.prefill?.contact ?? undefined,
       },
       notes: { orderNumber: session.orderNumber },
-      theme: { color: "#0A192F" },
+      theme: { color: "#1F3A32" },
       handler: (r: RazorpayResponse) =>
         resolve({ razorpayOrderId: r.razorpay_order_id, razorpayPaymentId: r.razorpay_payment_id, razorpaySignature: r.razorpay_signature }),
       modal: { ondismiss: () => resolve(null), confirm_close: true },

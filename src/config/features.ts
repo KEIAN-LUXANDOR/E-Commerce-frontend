@@ -17,7 +17,7 @@ const defaults = {
   returns: true,
   /** Coupon box in the cart. POST/DELETE /account/cart/coupon */
   coupons: true,
-  /** Delivery PIN code check on the diamond page. GET /delivery/pincode/{pin} */
+  /** Delivery PIN code check on the diamond page. GET /delivery/pincode/{postalCode}?countryCode={ISO-3166-1-alpha-2} */
   pincodeCheck: true,
   /** Contact form and "Book a viewing". POST /enquiries */
   enquiries: true,

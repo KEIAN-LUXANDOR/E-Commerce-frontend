@@ -11,24 +11,24 @@ import { cn } from "@/lib/utils";
  * - Cross-platform resilience: Semantic data-variant fallbacks for Windows & Mobile viewports
  */
 export const buttonVariants = cva(
-  "btn inline-flex items-center justify-center gap-2.5 whitespace-nowrap text-xs font-semibold uppercase tracking-[0.08em] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-loupe)] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-45 select-none active:scale-[0.98] cursor-pointer touch-manipulation",
+  "btn inline-flex items-center justify-center gap-2.5 whitespace-nowrap text-xs font-semibold uppercase tracking-[0.08em] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-anchor)] focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-45 select-none active:scale-[0.98] cursor-pointer touch-manipulation",
   {
     variants: {
       variant: {
         default:
-          "btn-primary bg-slate-900 bg-[var(--color-ink)] text-white hover:bg-slate-800 hover:bg-[var(--color-loupe-deep)] border border-[var(--color-ink)] shadow-sm hover:shadow-md",
+          "btn-primary bg-[var(--brand-anchor)] text-white hover:bg-[var(--brand-accent-deep)] border border-[var(--brand-anchor)] shadow-sm hover:shadow-md",
         primary:
-          "btn-primary bg-slate-900 bg-[var(--color-ink)] text-white hover:bg-slate-800 hover:bg-[var(--color-loupe-deep)] border border-[var(--color-ink)] shadow-sm hover:shadow-md",
+          "btn-primary bg-[var(--brand-anchor)] text-white hover:bg-[var(--brand-accent-deep)] border border-[var(--brand-anchor)] shadow-sm hover:shadow-md",
         secondary:
-          "btn-secondary bg-white text-slate-900 text-[var(--color-ink)] border border-[var(--color-line-dark)] hover:bg-slate-50 hover:bg-[var(--color-stone)] hover:border-[var(--color-ink)] shadow-xs",
+          "btn-secondary bg-white text-[var(--color-ink)] border border-[var(--color-line-dark)] hover:bg-[var(--color-stone)] hover:border-[var(--brand-anchor)] shadow-xs",
         outline:
-          "btn-secondary bg-transparent text-slate-900 text-[var(--color-ink)] border border-[var(--color-line-strong)] hover:border-[var(--color-ink)] hover:bg-[var(--color-stone)]",
+          "btn-secondary bg-transparent text-[var(--color-ink)] border border-[var(--color-line-strong)] hover:border-[var(--brand-anchor)] hover:bg-[var(--color-stone)]",
         ghost:
-          "bg-transparent text-slate-900 text-[var(--color-ink)] hover:bg-slate-100 hover:bg-[var(--color-stone)] hover:text-[var(--color-loupe)] shadow-none",
+          "bg-transparent text-[var(--color-ink)] hover:bg-[var(--color-stone)] hover:text-[var(--brand-anchor)] shadow-none",
         gold:
-          "bg-[#526D89] text-white hover:bg-[#334C67] border border-[#526D89] shadow-sm hover:shadow-md",
+          "bg-[var(--color-bronze)] text-white hover:bg-[#594226] border border-[var(--color-bronze)] shadow-sm hover:shadow-md",
         accent:
-          "btn-primary bg-[var(--color-loupe)] text-white hover:bg-[var(--color-loupe-deep)] border border-[var(--color-loupe)] shadow-sm",
+          "btn-primary bg-[var(--brand-anchor)] text-white hover:bg-[var(--brand-accent-deep)] border border-[var(--brand-anchor)] shadow-sm",
         danger:
           "bg-[var(--color-out)] text-white hover:bg-red-700 border border-[var(--color-out)] shadow-sm",
         destructive:

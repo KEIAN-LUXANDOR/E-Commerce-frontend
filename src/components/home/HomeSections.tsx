@@ -61,7 +61,7 @@ export function StatStrip() {
   const stats = [
     { icon: ShieldCheck, label: "GIA & IGI Certified" },
     { icon: CheckCircle2, label: "30-day free returns" },
-    { icon: Truck, label: "Free delivery across India" },
+    { icon: Truck, label: "Complimentary India delivery" },
     { icon: Sparkles, label: "Baner, Pune showroom" },
   ];
   return (
@@ -460,8 +460,8 @@ export function HowItWorks() {
     },
     {
       number: "03",
-      title: "Free delivery",
-      text: "Sealed and shipped free across India, with tracking details by email. Someone signs for it at your door.",
+      title: "Domestic delivery",
+      text: "Domestic orders are shipped with tracking and signed delivery. International destinations are confirmed individually by our concierge.",
     },
     {
       number: "04",
@@ -670,8 +670,8 @@ export function HomeFAQ() {
       a: "Both are physically, chemically, and optically identical pure crystallised carbon with a Mohs hardness of 10 and identical refractive properties. Natural diamonds formed in the earth over billions of years, while lab-grown diamonds are crystallised in specialised laboratories over several weeks.",
     },
     {
-      q: "How does delivery across India work?",
-      a: "Delivery is free across India. Each diamond is sealed and shipped with tracking, and someone must sign for it at the address.",
+      q: "How do domestic and international deliveries work?",
+      a: "Domestic delivery is complimentary across India. International delivery is arranged by request after destination eligibility, insured shipping and applicable import charges are confirmed.",
     },
     {
       q: "What is your 30-day return policy?",
@@ -1110,8 +1110,8 @@ export function GemologistConciergeBand() {
             },
             {
               icon: Truck,
-              title: "Free Delivery",
-              text: "Free delivery across India, with tracking details by email.",
+              title: "Domestic Delivery",
+              text: "Complimentary domestic delivery; international destinations by enquiry.",
             },
             {
               icon: CheckCircle2,

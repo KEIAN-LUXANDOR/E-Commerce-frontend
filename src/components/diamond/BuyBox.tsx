@@ -9,9 +9,11 @@ import { compareAtPaise, mainVariant, originLine, shortTitle } from "@/lib/catal
 import { formatPrice } from "@/lib/format";
 import { Button } from "@/components/ui/button";
 import type { Product } from "@/lib/types/product";
+import { useMarket } from "@/components/market/MarketProvider";
 
 export function BuyBox({ product }: { product: Product }) {
   const [certificateOpen, setCertificateOpen] = useState(false);
+  const { country, countryCode, hydrated } = useMarket();
   const variant = mainVariant(product);
   const diamond = product.diamond;
   const crossedOutPrice = compareAtPaise(variant);
@@ -71,7 +73,11 @@ export function BuyBox({ product }: { product: Product }) {
         <div className="pt-4 border-t border-line/60 space-y-2.5 text-xs text-slate">
           <div className="flex items-center gap-2">
             <Truck className="size-4 text-ink shrink-0" />
-            <span>Free delivery across India</span>
+            <span>
+              {!hydrated || countryCode === "IN"
+                ? "Complimentary delivery across India"
+                : `International delivery to ${country.name} by request`}
+            </span>
           </div>
           <div className="flex items-center gap-2">
             <ShieldCheck className="size-4 text-ok shrink-0" />

@@ -24,6 +24,12 @@ export default function TermsPage() {
         </div>
       </div>
 
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-6 md:py-8">
+        <div className="border border-[var(--color-line)] bg-[var(--color-stone)] p-5 text-sm leading-relaxed text-[var(--color-slate)]">
+          <strong className="text-[var(--color-ink)]">International orders:</strong> Online checkout is not yet enabled for international destinations. Any international sale will require separate written confirmation of destination eligibility, payment currency, shipping, taxes, import charges and applicable terms before payment is accepted.
+        </div>
+      </div>
+
       <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 md:py-16 font-sans text-xs text-[var(--color-slate)] space-y-8 leading-relaxed">
         <section className="space-y-3">
           <h2 className="font-serif text-xl text-[var(--color-ink)]">1. General Provisions & Scope</h2>
@@ -42,7 +48,7 @@ export default function TermsPage() {
         <section className="space-y-3">
           <h2 className="font-serif text-xl text-[var(--color-ink)]">3. Pricing and Currency</h2>
           <p>
-            All prices are quoted and charged in US Dollars (USD). Keian Luxandor issues an invoice with every order.
+            Product prices on the storefront are displayed in US Dollars (USD). The final amount and payment currency must be presented by the payment provider before the customer authorises a charge. International orders are not accepted through automatic checkout at this stage; destination, shipping, tax and import-charge terms must be confirmed in writing before payment.
           </p>
         </section>
 

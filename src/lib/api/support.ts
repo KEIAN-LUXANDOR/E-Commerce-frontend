@@ -1,4 +1,4 @@
-import { apiFetch } from "@/lib/api/client";
+import { apiFetch, ApiError } from "@/lib/api/client";
 import type { MessageResponse } from "@/lib/api/auth";
 import { requireFeature } from "@/config/features";
 
@@ -33,31 +33,37 @@ export async function subscribeNewsletter(email: string): Promise<MessageRespons
 
 export interface PincodeResult {
   pincode: string;
+  countryCode?: string;
   serviceable: boolean;
   city: string | null;
   state: string | null;
-  /** Working days for delivery after dispatch */
+  /** Working days for delivery after dispatch. */
   minDays: number | null;
   maxDays: number | null;
 }
 
-export async function checkPincode(pincode: string): Promise<PincodeResult> {
+/**
+ * Uses the existing delivery serviceability endpoint. The countryCode query
+ * disambiguates postal-code formats that are not globally unique.
+ * The older /pincodes alias remains as a compatibility fallback.
+ */
+export async function checkPincode(
+  pincode: string,
+  countryCode = "IN",
+): Promise<PincodeResult> {
   requireFeature("pincodeCheck");
+  const postalCode = pincode.trim().toUpperCase();
+  const market = countryCode.trim().toUpperCase();
+  const query = `?countryCode=${encodeURIComponent(market)}`;
+  const primaryPath = `/delivery/pincode/${encodeURIComponent(postalCode)}${query}`;
+  const legacyPath = `/pincodes/${encodeURIComponent(postalCode)}${query}`;
+
   try {
-    return await apiFetch<PincodeResult>(`/delivery/pincode/${encodeURIComponent(pincode)}`);
-  } catch {
-    try {
-      return await apiFetch<PincodeResult>(`/pincodes/${encodeURIComponent(pincode)}`);
-    } catch {
-      const isFormatValid = /^[1-9]\d{5}$/.test(pincode.trim());
-      return {
-        pincode,
-        serviceable: isFormatValid,
-        city: null,
-        state: null,
-        minDays: 2,
-        maxDays: 5,
-      };
-    }
+    return await apiFetch<PincodeResult>(primaryPath);
+  } catch (error) {
+    // Only fall back for a missing legacy route. Do not turn network/server
+    // failures into a fake "serviceable" result.
+    if (!(error instanceof ApiError) || error.status !== 404) throw error;
+    return apiFetch<PincodeResult>(legacyPath);
   }
 }

@@ -120,13 +120,13 @@ export function HeroCarousel({ banners }: { banners: Banner[] }) {
               </div>
 
               {/* Star facet fire sparkles */}
-              <svg className="absolute top-1/4 right-1/4 w-5 h-5 text-[#B3A8F4] opacity-80" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="absolute top-1/4 right-1/4 w-5 h-5 text-[#6E5230] opacity-80" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 0L14 9L23 12L14 15L12 24L10 15L1 12L10 9Z" />
               </svg>
-              <svg className="absolute bottom-1/4 left-1/4 w-4 h-4 text-[#7FD3F2] opacity-80" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="absolute bottom-1/4 left-1/4 w-4 h-4 text-[#A9BDB0] opacity-80" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 0L14 9L23 12L14 15L12 24L10 15L1 12L10 9Z" />
               </svg>
-              <svg className="absolute top-1/3 left-1/3 w-3.5 h-3.5 text-[#F2A9C9] opacity-75" fill="currentColor" viewBox="0 0 24 24">
+              <svg className="absolute top-1/3 left-1/3 w-3.5 h-3.5 text-[#C6B38D] opacity-75" fill="currentColor" viewBox="0 0 24 24">
                 <path d="M12 0L14 9L23 12L14 15L12 24L10 15L1 12L10 9Z" />
               </svg>
 

@@ -29,7 +29,7 @@ export default function HomePage() {
     {
       id: "b1",
       title: "Every diamond, certified and inspected.",
-      text: "Natural diamonds graded by GIA and lab-grown diamonds graded by IGI. Clear grades, honest prices, free delivery across India.",
+      text: "Natural diamonds graded by GIA and lab-grown diamonds graded by IGI. Clear grades, honest prices, complimentary delivery in India and international enquiries by request.",
       ctaLabel: "Shop now",
       ctaHref: "/diamonds",
       shape: "ROUND",

@@ -39,7 +39,14 @@ const FAQ_DATA: FaqItem[] = [
     category: "transit",
     question: "How are high-value diamonds delivered safely across India?",
     answer:
-      "Delivery is free across India. Every diamond is sealed and shipped with a courier suited to high-value parcels, and we email you the tracking details once it is dispatched. Someone must be at the address to sign for it.",
+      "Domestic delivery is complimentary across India. International delivery to the United States, United Kingdom, UAE, Canada, Europe and Australia is currently handled by enquiry. We confirm serviceability, insured shipping, delivery timing and any import charges before accepting an international order.",
+  },
+  {
+    id: "transit-international",
+    category: "transit",
+    question: "Do you offer international delivery?",
+    answer:
+      "International delivery is currently arranged by request for selected destinations. Contact our concierge so we can confirm destination eligibility, insured shipping, delivery timing and applicable import charges before you place an order.",
   },
   {
     id: "transit-2",
@@ -74,7 +81,7 @@ const FAQ_DATA: FaqItem[] = [
     category: "payment",
     question: "What currency are prices in?",
     answer:
-      "All prices are shown and charged in US dollars (USD). An invoice is provided with every order.",
+      "Product prices on the storefront are displayed in US dollars (USD). International checkout is not yet enabled; our concierge confirms the complete amount, payment currency, shipping and any import charges in writing before accepting an international order.",
   },
   {
     id: "payment-2",

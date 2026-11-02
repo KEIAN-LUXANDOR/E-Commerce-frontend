@@ -5,7 +5,7 @@ import { ShieldCheck, Truck, Lock, Clock } from "lucide-react";
 export const metadata: Metadata = {
   title: "Shipping & Delivery | Keian Luxandor",
   description:
-    "Free delivery across India for every certified diamond: how we pack, ship and hand over your order.",
+    "How certified diamonds are prepared, insured and dispatched. International delivery is currently confirmed individually before an order is accepted.",
 };
 
 export default function ShippingPage() {
@@ -20,7 +20,7 @@ export default function ShippingPage() {
             Shipping & Delivery
           </h1>
           <p className="font-sans text-sm md:text-base text-[var(--color-slate)] max-w-xl mx-auto">
-            Delivery is free across India. Every diamond is checked against its grading report before it leaves our Baner, Pune showroom.
+            Complimentary delivery is available for domestic orders across India. For the United States, United Kingdom, UAE, Canada, Europe and Australia, contact our concierge to confirm whether delivery can be arranged.
           </p>
         </div>
       </div>
@@ -63,10 +63,28 @@ export default function ShippingPage() {
               <h2 className="font-serif text-lg">Transit Timelines</h2>
             </div>
             <p className="font-sans text-xs text-[var(--color-slate)] leading-relaxed">
-              Most orders arrive within 3–7 working days after dispatch.
+              Most domestic orders arrive within 3–7 working days after dispatch. International delivery timing is confirmed individually before an order is accepted.
             </p>
           </div>
         </div>
+
+        <section className="border border-[var(--color-line)] bg-white p-6 md:p-8 space-y-3">
+          <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.16em] text-[var(--color-ink)]">
+            International destinations
+          </p>
+          <h2 className="font-serif text-2xl text-[var(--color-ink)]">
+            Confirm the full journey before you order.
+          </h2>
+          <p className="font-sans text-sm leading-relaxed text-[var(--color-slate)]">
+            International shipping is not yet available as an automatic checkout option. Our team must first confirm destination eligibility, carrier arrangements, insurance, delivery timing and the treatment of any import duties or taxes. We will provide the applicable charges and delivery terms in writing before accepting payment for an international order.
+          </p>
+          <a
+            href="mailto:info@keianluxandor.com?subject=International%20shipping%20enquiry"
+            className="inline-flex text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-ink)] underline underline-offset-4"
+          >
+            Enquire about international shipping
+          </a>
+        </section>
 
         <div className="border border-[var(--color-line)] bg-[var(--color-stone)] p-6 text-center space-y-2">
           <p className="font-mono text-xs uppercase tracking-[0.08em] text-[var(--color-ink)] font-semibold">

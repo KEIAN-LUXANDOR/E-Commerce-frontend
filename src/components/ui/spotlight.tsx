@@ -10,7 +10,7 @@ import { cn } from "@/lib/utils";
  */
 export function Spotlight({
   className,
-  fill = "rgba(30, 74, 109, 0.12)",
+  fill = "rgba(31, 58, 50, 0.12)",
 }: {
   className?: string;
   fill?: string;
@@ -70,7 +70,7 @@ export function Spotlight({
 export function SpotlightCard({
   children,
   className,
-  spotlightColor = "rgba(30, 74, 109, 0.08)",
+  spotlightColor = "rgba(31, 58, 50, 0.08)",
   ...props
 }: React.HTMLAttributes<HTMLDivElement> & {
   spotlightColor?: string;

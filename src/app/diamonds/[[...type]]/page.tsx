@@ -589,10 +589,7 @@ async function DiamondsCatalogPage({
                   ) : view === "list" ? (
                     <ProductTable products={pageData.items} />
                   ) : (
-                    <ProductGrid
-                      products={pageData.items}
-                      columns={4}
-                    />
+                    <ProductGrid products={pageData.items} />
                   )}
                 </ListingResults>
               </div>

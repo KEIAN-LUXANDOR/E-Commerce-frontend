@@ -79,6 +79,13 @@ export default function ReturnsPage() {
             Please don’t post a diamond back yourself. Email <strong>info@keianluxandor.com</strong> or message us on WhatsApp with your order number, and we’ll arrange the collection with you.
           </p>
         </div>
+
+        <section className="border border-[var(--color-line)] bg-white p-6 md:p-8 space-y-3">
+          <h2 className="font-serif text-xl text-[var(--color-ink)]">International orders</h2>
+          <p className="font-sans text-xs text-[var(--color-slate)] leading-relaxed">
+            International return eligibility, collection arrangements, insurance, customs documentation and return-shipping costs must be confirmed in writing before an international order is accepted. The domestic return process above should not be treated as confirmation of an international return arrangement.
+          </p>
+        </section>
       </div>
     </div>
   );

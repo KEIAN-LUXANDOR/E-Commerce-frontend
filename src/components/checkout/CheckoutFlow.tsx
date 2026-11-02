@@ -16,10 +16,13 @@ import { usePayment } from "@/components/orders/PayNow";
 import { Button } from "@/components/ui/button";
 import type { DeliveryAddress, DeliveryAddressRequest } from "@/lib/types/address";
 import { isDevVerifiedAccount } from "@/lib/auth/devVerifiedAccounts";
+import { useMarket } from "@/components/market/MarketProvider";
+import { isOnlineCheckoutAvailable } from "@/lib/market/rollout";
 
 export function CheckoutFlow() {
   const router = useRouter();
   const session = sessionStore.useSession();
+  const { country, countryCode, hydrated: marketHydrated } = useMarket();
   const cart = useCart();
   const [step, setStep] = useState<1 | 2 | 3>(1);
   const [addressId, setAddressId] = useState<string | null>(null);
@@ -45,8 +48,11 @@ export function CheckoutFlow() {
       }
 
       const savedAddresses = await getAddresses();
-      setAddresses(savedAddresses);
-      const defaultAddress = savedAddresses.find((address) => address.defaultAddress) ?? savedAddresses[0];
+      setAddresses(savedAddresses.map((address) => ({ ...address, countryCode: address.countryCode || "IN" })));
+      const marketAddresses = savedAddresses.filter(
+        (address) => (address.countryCode || "IN").toUpperCase() === countryCode,
+      );
+      const defaultAddress = marketAddresses.find((address) => address.defaultAddress) ?? marketAddresses[0];
       setAddressId(defaultAddress?.id ?? null);
     } catch (error) {
       setCheckoutError(
@@ -59,14 +65,19 @@ export function CheckoutFlow() {
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [countryCode]);
 
   useEffect(() => {
-    if (session.status === "authenticated") {
-      // Start after this render; loadCheckout updates state as it goes
-      void Promise.resolve().then(loadCheckout);
-    }
-  }, [session.status, loadCheckout]);
+    if (!marketHydrated || session.status !== "authenticated") return;
+
+    // Each supported market uses the same address and delivery endpoints,
+    // with its ISO country code included in the request. Unsupported markets
+    // render the concierge state below and do not start checkout loading.
+    if (!isOnlineCheckoutAvailable(countryCode)) return;
+
+    // Defer the loader so its state updates happen after this effect completes.
+    void Promise.resolve().then(loadCheckout);
+  }, [session.status, loadCheckout, marketHydrated, countryCode]);
 
   const handleResendEmail = useCallback(async () => {
     const email = session.user?.email;
@@ -84,6 +95,12 @@ export function CheckoutFlow() {
   }, [session.user?.email]);
 
   async function handlePlaceOrder() {
+    // Re-check at action time as well as at render time; market preferences can change.
+    if (!isOnlineCheckoutAvailable(countryCode)) {
+      setCheckoutError("Online checkout is not available for this destination yet. Please contact our international concierge.");
+      return;
+    }
+
     if (!addressId) {
       setCheckoutError("Please select a delivery address.");
       return;
@@ -115,9 +132,62 @@ export function CheckoutFlow() {
 
   async function handleNewAddress(request: DeliveryAddressRequest): Promise<DeliveryAddress> {
     const saved = await createAddress(request);
-    setAddresses((current) => [...current, saved]);
-    setAddressId(saved.id);
-    return saved;
+    const address = { ...saved, countryCode: saved.countryCode || request.countryCode || countryCode };
+    setAddresses((current) => [...current, address]);
+    setAddressId(address.id);
+    return address;
+  }
+
+  if (!marketHydrated) {
+    return (
+      <div className="flex items-center justify-center gap-3 rounded-2xl border border-line bg-surface p-12 text-sm text-slate shadow-xs">
+        <Loader2 className="h-5 w-5 animate-spin text-ink" aria-hidden="true" />
+        Preparing your shopping region…
+      </div>
+    );
+  }
+
+  if (!isOnlineCheckoutAvailable(countryCode)) {
+    return (
+      <div className="grid grid-cols-1 items-start gap-8 lg:grid-cols-12">
+        <section className="space-y-5 rounded-2xl border border-line bg-surface p-7 shadow-xs sm:p-9 lg:col-span-7">
+          <div className="grid size-12 place-items-center rounded-full border border-line bg-stone">
+            <LockKeyhole className="size-5 text-brand-accent" aria-hidden="true" />
+          </div>
+          <div>
+            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-accent">
+              International concierge
+            </p>
+            <h2 className="mt-2 font-serif text-3xl font-medium tracking-tight text-ink">
+              Let us arrange delivery to {country.name}.
+            </h2>
+            <p className="mt-3 max-w-xl text-sm leading-6 text-slate">
+              Online checkout for this destination is not available yet. Our team can confirm delivery eligibility, insured shipping, the applicable import charges and the final amount in writing before you decide to proceed.
+            </p>
+          </div>
+          <div className="rounded-xl border border-line bg-stone/70 p-4 text-sm leading-6 text-slate">
+            Your cart is safe. We will not take payment until the destination, delivery terms and all charges have been confirmed.
+          </div>
+          <div className="flex flex-col gap-3 sm:flex-row">
+            <a
+              href={`mailto:info@keianluxandor.com?subject=${encodeURIComponent(`International diamond enquiry — ${country.name}`)}`}
+              className="inline-flex h-12 items-center justify-center rounded-full bg-ink px-6 text-xs font-semibold uppercase tracking-[0.12em] text-white transition-colors hover:bg-brand-anchor"
+            >
+              Contact the concierge
+            </a>
+            <Link
+              href="/diamonds"
+              className="inline-flex h-12 items-center justify-center rounded-full border border-line px-6 text-xs font-semibold uppercase tracking-[0.12em] text-ink transition-colors hover:border-brand-accent"
+            >
+              Continue browsing
+            </Link>
+          </div>
+        </section>
+        <div className="lg:col-span-5">
+          <CartView compact />
+        </div>
+      </div>
+    );
   }
 
   if (session.status === "loading") {
@@ -276,11 +346,11 @@ export function CheckoutFlow() {
           {step >= 2 && (
             <div className="mt-6 space-y-6">
               {addresses.length === 0 && (
-                <p className="text-sm text-slate">Add the Indian address where someone can sign for the parcel.</p>
+                <p className="text-sm text-slate">Add the delivery address where someone can sign for the insured parcel.</p>
               )}
               <AddressSelector
                 selectedId={addressId}
-                onSelect={(address) => setAddressId(address.id)}
+                onSelect={(address) => { setAddressId(address.id); setCheckoutError(null); }}
                 savedAddresses={addresses}
                 onNewAddress={handleNewAddress}
               />

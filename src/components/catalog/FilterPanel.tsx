@@ -328,7 +328,7 @@ function NumberRangeFilter({
                 setError(null);
               }}
               placeholder="Any"
-              className="h-10 w-full rounded-lg border border-line bg-white px-3 text-sm text-ink outline-none transition-colors placeholder:text-muted focus:border-brand-accent focus:ring-2 focus:ring-[rgba(82,109,137,0.15)]"
+              className="h-10 w-full rounded-lg border border-line bg-white px-3 text-sm text-ink outline-none transition-colors placeholder:text-muted focus:border-brand-accent focus:ring-2 focus:ring-[rgba(31,58,50,0.15)]"
             />
           </label>
 
@@ -348,7 +348,7 @@ function NumberRangeFilter({
                 setError(null);
               }}
               placeholder="Any"
-              className="h-10 w-full rounded-lg border border-line bg-white px-3 text-sm text-ink outline-none transition-colors placeholder:text-muted focus:border-brand-accent focus:ring-2 focus:ring-[rgba(82,109,137,0.15)]"
+              className="h-10 w-full rounded-lg border border-line bg-white px-3 text-sm text-ink outline-none transition-colors placeholder:text-muted focus:border-brand-accent focus:ring-2 focus:ring-[rgba(31,58,50,0.15)]"
             />
           </label>
         </div>
@@ -401,8 +401,8 @@ function NumberRangeFilter({
           margin-top: -5px;
           border: 3px solid white;
           border-radius: 9999px;
-          background: #0a192f;
-          box-shadow: 0 0 0 1px #526d89, 0 2px 6px rgba(10, 25, 47, 0.18);
+          background: #1f3a32;
+          box-shadow: 0 0 0 1px #1f3a32, 0 2px 6px rgba(43, 45, 49, 0.14);
           cursor: grab;
         }
 
@@ -412,17 +412,17 @@ function NumberRangeFilter({
           height: 11px;
           border: 3px solid white;
           border-radius: 9999px;
-          background: #0a192f;
-          box-shadow: 0 0 0 1px #526d89, 0 2px 6px rgba(10, 25, 47, 0.18);
+          background: #1f3a32;
+          box-shadow: 0 0 0 1px #1f3a32, 0 2px 6px rgba(43, 45, 49, 0.14);
           cursor: grab;
         }
 
         .catalog-range-input:focus-visible::-webkit-slider-thumb {
-          box-shadow: 0 0 0 3px rgba(82, 109, 137, 0.25);
+          box-shadow: 0 0 0 3px rgba(31, 58, 50, 0.22);
         }
 
         .catalog-range-input:focus-visible::-moz-range-thumb {
-          box-shadow: 0 0 0 3px rgba(82, 109, 137, 0.25);
+          box-shadow: 0 0 0 3px rgba(31, 58, 50, 0.22);
         }
       `}</style>
     </div>

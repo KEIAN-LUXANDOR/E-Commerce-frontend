@@ -387,10 +387,10 @@ async function DiamondDetailContent({
 
                 <div className="min-w-0">
                   <p className="text-xs font-semibold text-ink">
-                    Complimentary delivery
+                    Domestic delivery
                   </p>
                   <p className="mt-1 text-[11px] leading-4 text-slate">
-                    Across India
+                    Domestic orders
                   </p>
                 </div>
               </div>

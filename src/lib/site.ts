@@ -31,7 +31,7 @@ export const site: SiteConfig = {
   legalName: "Keian Luxandor Private Limited",
   tagline: "Certified Loose Diamonds",
   description:
-    "Natural (GIA) and lab-grown (IGI) certified loose diamonds, inspected in our Pune showroom and delivered free across India.",
+    "Discover GIA and IGI certified natural and lab-grown loose diamonds, carefully selected and inspected in our Pune atelier. International delivery enquiries are welcome.",
   url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
   phone: "",
   get phoneHref() {

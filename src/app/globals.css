@@ -1,37 +1,40 @@
 @import "tailwindcss";
 
 :root {
-  --canvas-dark: #0A192F;
-  --canvas-light: #FFFFFF;
-  --brand-anchor: #0A192F;
-  --brand-accent: #526D89;
-  --brand-accent-muted: #DCE6F0;
-  --brand-accent-deep: #334C67;
-  --color-gold: #526D89;
-  --color-gold-hover: #334C67;
+  /* Brand anchors */
+  --canvas-dark: #1F3A32;
+  --canvas-light: #FBFAF6;
+  --brand-anchor: #1F3A32;
+  --brand-accent: #1F3A32;
+  --brand-accent-muted: #E9EFEA;
+  --brand-accent-deep: #162C26;
+  --color-gold: #6E5230;
+  --color-gold-hover: #594226;
 
-  --color-paper: #FFFFFF;
+  /* Light 75%: ivory, white, sand and pale sage */
+  --color-paper: #FBFAF6;
   --color-surface: #FFFFFF;
-  --color-stone: #F8FAFC;
-  --color-stone-bg: #F8FAFC;
-  --color-stone-well: #F1F5F9;
-  --color-stone-deep: #E8EEF5;
-  --color-platinum: #E8EEF5;
-  --surface-warm: #FFFFFF;
+  --color-stone: #F8F5EF;
+  --color-stone-bg: #F5F0E8;
+  --color-stone-well: #EFE8DE;
+  --color-stone-deep: #E5DCCE;
+  --color-platinum: #E9EFEA;
+  --surface-warm: #FBFAF6;
 
-  --color-ink: #0A192F;
-  --color-ink-secondary: #334155;
-  --color-slate: #64748B;
-  --color-muted: #64748B;
+  /* Dark 25%: graphite for reading, forest for brand surfaces */
+  --color-ink: #2B2D31;
+  --color-ink-secondary: #505750;
+  --color-slate: #6B716B;
+  --color-muted: #6B716B;
 
-  --color-line: #E2E8F0;
-  --color-line-dark: #CBD5E1;
-  --color-line-strong: #CBD5E1;
+  --color-line: #E8E1D7;
+  --color-line-dark: #D6CCBF;
+  --color-line-strong: #C9BEAF;
 
-  --color-loupe: #0A192F;
-  --color-loupe-deep: #071426;
-  --color-accent: #0A192F;
-  --color-accent-hover: #071426;
+  --color-loupe: #1F3A32;
+  --color-loupe-deep: #162C26;
+  --color-accent: #1F3A32;
+  --color-accent-hover: #162C26;
 
   --color-ok: #2F6B4F;
   --color-ok-bg: #E7F0EB;
@@ -41,10 +44,10 @@
   --color-out-bg: #F7E9E9;
   --color-whatsapp: #1F7A4D;
 
-  --color-fire-1: #7FD3F2;
-  --color-fire-2: #B3A8F4;
-  --color-fire-3: #F2A9C9;
-  --color-fire-4: #FFD88F;
+  --color-fire-1: #D9E4DC;
+  --color-fire-2: #B6C7BA;
+  --color-fire-3: #C8B38D;
+  --color-fire-4: #F1E4D1;
 
   --font-display: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif;
   --font-editorial: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif;
@@ -61,9 +64,9 @@
 @theme inline {
   /* Warm sand: the site's soft background accent (home sections, header, highlight tiles) */
   --color-sand: #F5F0E8;
-  --color-sand-deep: #EFE5D3;
-  /* Champagne bands (replace the old dark sections) with a bronze accent */
-  --color-champagne: #EADFCB;
+  --color-sand-deep: #EFE8DE;
+  /* Soft warm neutral for alternating editorial surfaces */
+  --color-champagne: #F0E8DC;
   --color-bronze: #6E5230;
   --font-serif: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif;
   --font-sans: "Jost Variable", "Jost", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
@@ -180,8 +183,8 @@
   to   { opacity: 1; transform: translateX(0); }
 }
 @keyframes gold-pulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(10, 25, 47, 0.24); }
-  50%       { box-shadow: 0 0 0 8px rgba(10, 25, 47, 0); }
+  0%, 100% { box-shadow: 0 0 0 0 rgba(110, 82, 48, 0.20); }
+  50%       { box-shadow: 0 0 0 8px rgba(110, 82, 48, 0); }
 }
 @keyframes float {
   0%, 100% { transform: translateY(0px); }
@@ -266,7 +269,7 @@
   }
 
   ::selection {
-    background: rgba(10, 25, 47, 0.12);
+    background: rgba(31, 58, 50, 0.12);
   }
 
   dialog::backdrop {
@@ -355,14 +358,14 @@
     display: flex;
     align-items: center;
     gap: 1rem;
-    color: var(--brand-accent);
+    color: var(--color-bronze);
   }
   .gold-divider::before,
   .gold-divider::after {
     content: "";
     flex: 1;
     height: 1px;
-    background: linear-gradient(90deg, transparent, var(--brand-accent) 40%, var(--brand-accent) 60%, transparent);
+    background: linear-gradient(90deg, transparent, var(--color-bronze) 40%, var(--color-bronze) 60%, transparent);
     opacity: 0.45;
   }
 
@@ -429,13 +432,13 @@
   .btn:active:not(:disabled) { transform: translateY(1px); }
 
   .btn-primary {
-    background: var(--color-ink);
+    background: var(--brand-anchor);
     color: #ffffff;
-    border: 1px solid var(--color-ink);
+    border: 1px solid var(--brand-anchor);
   }
   .btn-primary:hover:not(:disabled) {
-    background: var(--color-loupe);
-    border-color: var(--color-loupe);
+    background: var(--brand-accent-deep);
+    border-color: var(--brand-accent-deep);
   }
 
   .btn-secondary {
@@ -450,14 +453,14 @@
 
   /* Champagne Gold CTA — for hero and editorial sections */
   .btn-gold {
-    background: var(--brand-accent);
+    background: var(--color-bronze);
     color: #ffffff;
-    border: 1px solid var(--brand-accent);
+    border: 1px solid var(--color-bronze);
     font-weight: 600;
   }
   .btn-gold:hover:not(:disabled) {
-    background: var(--brand-accent-deep);
-    border-color: var(--brand-accent-deep);
+    background: #594226;
+    border-color: #594226;
   }
 
   /* Bronze button for champagne sections (white on bronze: contrast 7.9) */
@@ -468,8 +471,8 @@
     font-weight: 600;
   }
   .btn-bronze:hover:not(:disabled) {
-    background: #57401F;
-    border-color: #57401F;
+    background: #594226;
+    border-color: #594226;
   }
 
   /* Ghost button for dark sections */
@@ -484,12 +487,12 @@
   }
 
   .link {
-    color: var(--color-loupe);
+    color: var(--brand-anchor);
     text-decoration: underline;
     text-underline-offset: 3px;
     text-decoration-thickness: 1px;
   }
-  .link:hover { color: var(--color-loupe-deep); }
+  .link:hover { color: var(--brand-accent-deep); }
 
   /* ── Form Field ── */
   .field {
@@ -518,7 +521,7 @@
   }
   .product-card-hover:hover {
     border-color: var(--brand-accent) !important;
-    box-shadow: 0 12px 32px rgba(10, 25, 47, 0.12);
+    box-shadow: 0 12px 32px rgba(43, 45, 49, 0.10);
     transform: translateY(-2px);
   }
 
@@ -531,7 +534,7 @@
   }
   .shape-tile:hover {
     border-color: var(--brand-accent) !important;
-    box-shadow: 0 0 0 2px rgba(10, 25, 47, 0.12);
+    box-shadow: 0 0 0 2px rgba(31, 58, 50, 0.12);
     transform: translateY(-1px);
   }
   .shape-tile.active-shape {
@@ -572,12 +575,12 @@
   --color-low: #8A5A12;
   --color-low-tint: #F8F1E4;
   --color-out-tint: #F7E9E9;
-  --color-brand-anchor: #0A192F;
-  --color-brand-accent: #526D89;
-  --color-brand-accent-deep: #334C67;
-  --color-brand-accent-muted: #DCE6F0;
-  --color-canvas-dark: #0A192F;
-  --color-canvas-light: #FFFFFF;
+  --color-brand-anchor: #1F3A32;
+  --color-brand-accent: #1F3A32;
+  --color-brand-accent-deep: #162C26;
+  --color-brand-accent-muted: #E9EFEA;
+  --color-canvas-dark: #1F3A32;
+  --color-canvas-light: #FBFAF6;
 }
 .bg-ink { background-color: var(--color-ink) !important; }
 .bg-ink-secondary { background-color: var(--color-ink-secondary) !important; }
@@ -597,7 +600,7 @@
   font-weight: 600;
   letter-spacing: 0.18em;
   text-transform: uppercase;
-  color: var(--color-slate, #64748B);
+  color: var(--color-slate, #6B716B);
   display: block;
 }
 .hover\:bg-ink:hover { background-color: var(--color-ink) !important; }

@@ -7,7 +7,7 @@ export function EditorialMarqueeRibbon() {
     { icon: Award, label: "IGI Laboratory Certified" },
     { icon: ShieldCheck, label: "100% Conflict-Free Kimberley Compliant" },
     { icon: Sparkles, label: "40x Macro Video Inspection" },
-    { icon: Truck, label: "Free Delivery Across India" },
+    { icon: Truck, label: "Complimentary India Delivery" },
     { icon: CheckCircle2, label: "30-Day Returns" },
     { icon: ShieldCheck, label: "Baner, Pune Showroom" },
   ];

@@ -17,7 +17,7 @@ export function AnnouncementBar() {
         <div className="flex items-center gap-2 truncate">
           <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-[var(--color-loupe)]" aria-hidden="true" />
           <span className="truncate tracking-[0.03em]">
-            Free Delivery Across India &bull; GIA &amp; IGI Certified Loose Diamonds
+            Complimentary India Delivery &bull; International Enquiries Welcome &bull; GIA &amp; IGI Certified Diamonds
           </span>
         </div>
 

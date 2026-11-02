@@ -10,12 +10,13 @@ import { WhatsAppButton } from "@/components/layout/WhatsAppButton";
 import { CookieNotice } from "@/components/layout/CookieNotice";
 import { ShopSync } from "@/components/layout/ShopSync";
 import { Toaster } from "@/components/ui/Toaster";
+import { MarketProvider } from "@/components/market/MarketProvider";
 
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
-  themeColor: "#0A192F",
+  themeColor: "#1F3A32",
 };
 
 export const metadata: Metadata = {
@@ -34,6 +35,7 @@ export default function RootLayout({
   return (
     <html lang="en" className="overflow-x-clip">
       <body className="min-h-screen min-h-[100dvh] overflow-x-clip flex flex-col bg-paper text-ink font-sans antialiased selection:bg-loupe/15 selection:text-ink">
+        <MarketProvider>
         <a
           href="#main"
           className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:bg-ink focus:text-white focus:px-4 focus:py-2 focus:text-xs focus:uppercase focus:tracking-widest"
@@ -51,6 +53,7 @@ export default function RootLayout({
         <WhatsAppButton />
         <CookieNotice />
         <Toaster />
+        </MarketProvider>
       </body>
     </html>
   );

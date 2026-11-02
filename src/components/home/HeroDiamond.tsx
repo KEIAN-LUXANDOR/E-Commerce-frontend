@@ -23,10 +23,10 @@ export function HeroDiamond({ shape }: { shape: Shape }) {
       <svg key={shape} viewBox="0 0 520 520" className="facet-draw h-auto w-full text-ink" role="img" aria-label={`Facet diagram of a ${shape.toLowerCase()} diamond`}>
         <defs>
           <linearGradient id="fire" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0" stopColor="#7fd3f2" stopOpacity="0.75" />
-            <stop offset="0.35" stopColor="#b3a8f4" stopOpacity="0.65" />
-            <stop offset="0.65" stopColor="#f2a9c9" stopOpacity="0.6" />
-            <stop offset="1" stopColor="#ffd88f" stopOpacity="0.7" />
+            <stop offset="0" stopColor="#D9E4DC" stopOpacity="0.75" />
+            <stop offset="0.35" stopColor="#B6C7BA" stopOpacity="0.65" />
+            <stop offset="0.65" stopColor="#C8B38D" stopOpacity="0.6" />
+            <stop offset="1" stopColor="#F1E4D1" stopOpacity="0.7" />
           </linearGradient>
         </defs>
         {/* Dimension line, as on a grading report */}

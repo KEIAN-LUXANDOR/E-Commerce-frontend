@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Search, Heart, ShoppingBag, Menu, X } from "lucide-react";
 import { AccountLink } from "@/components/layout/AccountLink";
+import { MarketSelector } from "@/components/market/MarketSelector";
 import { useCartCount } from "@/lib/shop/cart";
 import { setMiniCartOpen } from "@/lib/stores";
 
@@ -78,6 +79,9 @@ export function Header() {
 
         {/* Right: Utility Icons */}
         <div className="flex flex-1 items-center justify-end gap-3 sm:gap-5">
+          <div className="hidden lg:block">
+            <MarketSelector compact />
+          </div>
           <Link href="/search" aria-label="Search" className="p-1.5 text-ink hover:text-loupe transition-colors touch-manipulation">
             <Search className="h-5 w-5" strokeWidth={1.5} />
           </Link>
@@ -128,6 +132,10 @@ export function Header() {
               <Link href="/diamonds/lab-grown" onClick={() => setMobileMenuOpen(false)} className="py-1 pl-3 text-xs font-medium uppercase tracking-widest text-slate hover:text-ink">Lab-Grown Diamonds</Link>
               <Link href="/education" onClick={() => setMobileMenuOpen(false)} className="py-1 text-sm font-medium uppercase tracking-widest text-ink">Education</Link>
               <Link href="/about" onClick={() => setMobileMenuOpen(false)} className="py-1 text-sm font-medium uppercase tracking-widest text-ink">Our Story</Link>
+              <div className="h-px w-full bg-line my-1" />
+              <div className="py-1">
+                <MarketSelector />
+              </div>
               <div className="h-px w-full bg-line my-1" />
               <div onClick={() => setMobileMenuOpen(false)} className="py-1">
                 <AccountLink mobile />

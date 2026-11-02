@@ -74,7 +74,7 @@ export default function OrderTrackingPage() {
           Track Your Consignment
         </h1>
         <p className="mt-3 text-sm text-slate leading-relaxed">
-          Enter your order number and the email you used to order. Delivery across India is free.
+          Enter your order number and the email you used to order. Available tracking milestones will reflect the carrier and destination for your shipment.
         </p>
       </div>
 
