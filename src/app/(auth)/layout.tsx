@@ -18,7 +18,7 @@ export default function AuthLayout({ children }: LayoutProps<"/">) {
           href="/"
           className="group inline-flex flex-col items-center rounded-sm focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--color-loupe)] focus-visible:ring-offset-4"
         >
-          <span className="block font-mono text-[10px] uppercase leading-relaxed tracking-[0.2em] text-[var(--color-slate)] transition-colors group-hover:text-[var(--color-ink)]">
+          <span className="block font-mono text-[11px] uppercase leading-relaxed tracking-[0.18em] text-[var(--color-slate)] transition-colors group-hover:text-[var(--color-ink)]">
             Keian Luxandor <span aria-hidden="true">&bull;</span> High Diamond Atelier
           </span>
 
@@ -36,7 +36,7 @@ export default function AuthLayout({ children }: LayoutProps<"/">) {
       {/* Security footer */}
       <footer
         aria-label="Security information"
-        className="mt-6 flex w-full max-w-md flex-wrap items-center justify-center gap-x-4 gap-y-2 text-center font-mono text-[10px] uppercase leading-relaxed tracking-[0.12em] text-[var(--color-muted)] sm:mt-7 sm:text-[11px]"
+        className="mt-6 flex w-full max-w-md flex-wrap items-center justify-center gap-x-4 gap-y-2 text-center font-mono text-[11px] uppercase leading-relaxed tracking-[0.14em] text-[var(--color-muted)] sm:mt-7 sm:text-[11px]"
       >
         <span className="inline-flex items-center gap-1.5">
           <Lock

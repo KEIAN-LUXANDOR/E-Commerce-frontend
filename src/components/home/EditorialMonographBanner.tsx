@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 
 export function EditorialMonographBanner() {
   return (
-    <section aria-labelledby="monograph-heading" className="border-y border-line bg-[#F5F0E8] py-20 lg:py-28 relative overflow-hidden">
+    <section aria-labelledby="monograph-heading" className="border-y border-line bg-sand py-20 lg:py-28 relative overflow-hidden">
       <div className="page relative z-10">
         <div className="grid lg:grid-cols-[1.1fr_1fr] items-center gap-12 xl:gap-20">
           {/* Photoshooted Campaign Asset Area */}
@@ -27,7 +27,7 @@ export function EditorialMonographBanner() {
               {/* Floating editorial caption pill */}
               <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between text-white/90 text-xs backdrop-blur-md bg-ink/40 p-3 rounded-xl border border-white/15">
                 <span className="font-serif italic tracking-wide">Plate No. 04 · The Solitaire Monograph</span>
-                <span className="font-mono text-[10px] tracking-wider uppercase text-white/70">Surat Atelier Vaults</span>
+                <span className="font-mono text-[11px] tracking-wider uppercase text-white/70">Baner, Pune Showroom</span>
               </div>
             </div>
 
@@ -64,25 +64,25 @@ export function EditorialMonographBanner() {
             </h2>
 
             <p className="text-sm sm:text-base text-slate leading-relaxed max-w-xl">
-              Every loose diamond in our private vault is individually curated for optical fire and scintillation. We bypass traditional multi-tiered luxury retail channels to deliver museum-grade GIA and IGI certified solitaires directly to discerning collectors.
+              Every loose diamond in our collection is individually chosen for optical fire and scintillation. We bypass traditional multi-tiered luxury retail channels to deliver museum-grade GIA and IGI certified solitaires directly to discerning collectors.
             </p>
 
             {/* Spec Highlights Grid */}
             <div className="grid grid-cols-3 gap-4 border-y border-line py-5 text-xs">
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-wider text-slate block mb-1">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-slate block mb-1">
                   Optical Cut
                 </span>
                 <span className="font-serif text-base font-medium text-ink">Triple Ideal</span>
               </div>
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-wider text-slate block mb-1">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-slate block mb-1">
                   Clarity Standard
                 </span>
                 <span className="font-serif text-base font-medium text-ink">Eye-Clean VS+</span>
               </div>
               <div>
-                <span className="text-[10px] font-mono uppercase tracking-wider text-slate block mb-1">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-slate block mb-1">
                   Origin Integrity
                 </span>
                 <span className="font-serif text-base font-medium text-ink">100% Conflict-Free</span>
@@ -92,7 +92,7 @@ export function EditorialMonographBanner() {
             <div className="flex flex-wrap items-center gap-4 pt-2">
               <Link href="/shop">
                 <span className="btn btn-primary rounded-sm px-7 py-3.5">
-                  Explore The Curated Vault
+                  Explore The Collection
                   <ArrowRight className="size-3.5" />
                 </span>
               </Link>

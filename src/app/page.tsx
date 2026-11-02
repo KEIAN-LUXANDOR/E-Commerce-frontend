@@ -1,13 +1,10 @@
 import { HeroCarousel } from "@/components/home/HeroCarousel";
 import { EditorialMonographBanner } from "@/components/home/EditorialMonographBanner";
-import { EditorialPhotoshootStrip } from "@/components/home/EditorialPhotoshootStrip";
+import { EditorialMarqueeRibbon } from "@/components/home/EditorialMarqueeRibbon";
+import { FindYourDiamond, Reveal } from "@/components/home/HomeMotion";
 import {
-  StatStrip,
-  ShopByShape,
   OriginCompare,
-  ChooseBySize,
   HowItWorks,
-  GradesMadeSimple,
   ClientReviews,
   GemologistConciergeBand,
   HomeFAQ,
@@ -19,20 +16,9 @@ import { HomeProductCard as ProductCard } from "@/components/home/HomeProductCar
 import { getNewArrivals } from "@/lib/api/products";
 
 /**
- * Modern Human-Centric Diamond Atelier Home Page.
- * Strictly aligned with Stitch Calm Editorial Luxury cadence:
- * 1. Hero with architectural specimen drafting overlay & star facet fire
- * 2. Stat Strip (GIA & IGI, 30-day returns, insured delivery, Surat precision atelier)
- * 3. Choose your shape (10 shape tiles in #F1F5F9 stone band)
- * 4. Natural or Lab-grown (geological origin vs modern science)
- * 5. New this month (clean diamond specimen cards)
- * 6. Choose by size (proportions tier cards: Under 1ct, 1-2ct, 2ct+)
- * 7. How it works (4 numbered steps)
- * 8. Grades made simple (Carat, Colour, Clarity, Cut)
- * 9. Editorial Monograph Photoshoot Banner
- * 10. Surat Precision Atelier & 40x Loupe Video Consultation
- * 11. Client Testimonials
- * 12. Frequently Asked Questions (accordions)
+ * Home page (10 sections): hero · trust ribbon · find your diamond (shape/size/budget) ·
+ * natural vs lab-grown · new this month · how it works + 4 Cs · editorial banner ·
+ * talk to a gemologist · client reviews · FAQ.
  */
 // NOTE: home page content is being redone by hand. Only the data source and links were updated here.
 export default function HomePage() {
@@ -43,7 +29,7 @@ export default function HomePage() {
     {
       id: "b1",
       title: "Every diamond, certified and inspected.",
-      text: "Natural diamonds graded by GIA and lab-grown diamonds graded by IGI. Clear grades, honest prices, insured delivery across India.",
+      text: "Natural diamonds graded by GIA and lab-grown diamonds graded by IGI. Clear grades, honest prices, free delivery across India.",
       ctaLabel: "Shop now",
       ctaHref: "/diamonds",
       shape: "ROUND",
@@ -74,58 +60,58 @@ export default function HomePage() {
 
   return (
     <>
-      {/* 1. Hero */}
+      {/* 1. Hero (with an Aceternity-style spotlight glow) */}
       <HeroCarousel banners={banners} />
 
-      {/* 2. Stat Strip */}
-      <StatStrip />
+      {/* 2. Moving trust ribbon (Magic UI marquee) */}
+      <EditorialMarqueeRibbon />
 
-      {/* 3. Choose Your Shape */}
-      <ShopByShape />
+      {/* 3. Find your diamond: shape, size or budget, in one tabbed section */}
+      <FindYourDiamond />
 
       {/* 4. Natural or Lab-Grown */}
       <OriginCompare naturalHref={naturalHref} labHref={labHref} />
 
       {/* 5. New This Month */}
-      <section className="w-full bg-[#F5F0E8] border-b border-line py-16 lg:py-20" id="new-month">
-        <div className="max-w-7xl mx-auto px-6 lg:px-12">
-          <div className="flex items-end justify-between gap-4">
-            <h2 id="new" className="text-3xl">
-              New this month
-            </h2>
+      <section className="w-full border-b border-line bg-white py-16 lg:py-20" id="new-month">
+        <div className="mx-auto max-w-7xl px-6 lg:px-12">
+          <Reveal className="flex items-end justify-between gap-4">
+            <div>
+              <span className="section-eyebrow mb-2">Fresh arrivals</span>
+              <h2 id="new" className="font-serif text-[32px] font-normal text-ink sm:text-[38px]">
+                New this <span className="italic">month</span>
+              </h2>
+            </div>
             <Link href="/diamonds?sort=newest" className="btn-link">
               View all
             </Link>
-          </div>
+          </Reveal>
           <Suspense fallback={<div className="skeleton mt-6 h-80" />}>
             <NewArrivals />
           </Suspense>
         </div>
       </section>
 
-      {/* 6. Choose by Size */}
-      <ChooseBySize />
-
-      {/* 7. How It Works */}
+      {/* 6. How it works + the 4 Cs */}
       <HowItWorks />
 
-      {/* 8. Grades Made Simple */}
-      <GradesMadeSimple />
+      {/* 7. Editorial photo banner */}
+      <Reveal>
+        <EditorialMonographBanner />
+      </Reveal>
 
-      {/* 9. Atelier editorial photography */}
-      <EditorialPhotoshootStrip />
-
-      {/* 10. Editorial Monograph Banner */}
-      <EditorialMonographBanner />
-
-      {/* 11. Surat Precision Atelier & 40x Loupe Video Consultation */}
+      {/* 8. Talk to a gemologist (with a travelling border beam) */}
       <GemologistConciergeBand />
 
-      {/* 12. Verified Collector Testimonials */}
-      <ClientReviews />
+      {/* 9. Client reviews */}
+      <Reveal>
+        <ClientReviews />
+      </Reveal>
 
-      {/* 13. Frequently Asked Questions */}
-      <HomeFAQ />
+      {/* 10. Frequently asked questions */}
+      <Reveal>
+        <HomeFAQ />
+      </Reveal>
     </>
   );
 }
@@ -135,9 +121,11 @@ async function NewArrivals() {
   const newest = await getNewArrivals(4);
   return (
     <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
-      {newest.map((p) => (
+      {newest.map((p, i) => (
         <li key={p.id}>
-          <ProductCard product={p} compact />
+          <Reveal delay={i * 90} className="h-full">
+            <ProductCard product={p} compact />
+          </Reveal>
         </li>
       ))}
     </ul>

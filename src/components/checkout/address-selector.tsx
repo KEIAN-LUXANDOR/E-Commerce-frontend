@@ -95,7 +95,7 @@ function AddressCard({
               <br />
               {address.city}, {address.state} – {address.pincode}
             </p>
-            <p className="font-mono text-[10px] text-[var(--color-muted)] mt-1">
+            <p className="font-mono text-[11px] text-[var(--color-muted)] mt-1">
               {address.phone}
             </p>
           </div>
@@ -110,7 +110,7 @@ function AddressCard({
 
       {address.defaultAddress && (
         <div className="mt-2 ml-7">
-          <span className="font-mono text-[9px] uppercase tracking-[0.08em] text-[var(--color-slate)] border border-[var(--color-line)] px-1.5 py-0.5">
+          <span className="font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--color-slate)] border border-[var(--color-line)] px-1.5 py-0.5">
             Default
           </span>
         </div>
@@ -136,14 +136,14 @@ function Field({ id, label, required, error, children }: FieldProps) {
     <div className="flex flex-col gap-1">
       <label
         htmlFor={id}
-        className="font-mono text-[10px] uppercase tracking-[0.08em] text-[var(--color-slate)]"
+        className="font-mono text-[11px] uppercase tracking-[0.08em] text-[var(--color-slate)]"
       >
         {label}
         {required && <span className="text-red-500 ml-0.5">*</span>}
       </label>
       {children}
       {error && (
-        <p className="font-mono text-[10px] text-red-600" role="alert">
+        <p className="font-mono text-[11px] text-red-600" role="alert">
           {error}
         </p>
       )}
@@ -327,7 +327,7 @@ function NewAddressForm({ onSubmit, onCancel }: NewAddressFormProps) {
           disabled={submitting}
           className={cn(
             "flex h-12 flex-1 items-center justify-center gap-2",
-            "bg-[var(--color-ink)] text-white font-mono text-[11px] uppercase tracking-[0.1em]",
+            "bg-[var(--color-ink)] text-white font-mono text-[11px] uppercase tracking-[0.14em]",
             "hover:bg-[var(--color-slate)] transition-colors disabled:opacity-60"
           )}
         >

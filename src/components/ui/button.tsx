@@ -36,10 +36,10 @@ export const buttonVariants = cva(
       },
       size: {
         default: "h-11 min-h-[2.75rem] px-5 text-xs rounded-lg",
-        sm: "h-9 min-h-[2.25rem] px-3.5 text-[0.6875rem] rounded-md",
+        sm: "h-9 min-h-[2.25rem] px-3.5 text-[11px] rounded-md",
         md: "h-11 min-h-[2.75rem] px-6 text-xs rounded-lg",
         lg: "h-13 min-h-[3.25rem] px-8 text-sm tracking-[0.08em] rounded-lg",
-        xl: "h-14 min-h-[3.5rem] px-10 text-sm tracking-[0.1em] rounded-xl font-bold",
+        xl: "h-14 min-h-[3.5rem] px-10 text-sm tracking-[0.14em] rounded-xl font-bold",
         icon: "h-10 w-10 min-h-[2.5rem] min-w-[2.5rem] p-0 rounded-lg",
       },
     },

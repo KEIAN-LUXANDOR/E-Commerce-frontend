@@ -14,7 +14,7 @@ export default function RegisterPage() {
     <div className="w-full min-w-0 space-y-6">
       {/* Registration heading */}
       <header className="space-y-3 text-center">
-        <div className="inline-flex items-center gap-2 rounded-full border border-line bg-stone px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate">
+        <div className="inline-flex items-center gap-2 rounded-full border border-line bg-stone px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate">
           <span className="size-1.5 rounded-full bg-loupe" />
           Client Atelier Access
         </div>

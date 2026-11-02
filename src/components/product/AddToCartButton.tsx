@@ -48,7 +48,7 @@ export function AddToCartButton({ product, compact = false }: AddToCartButtonPro
         aria-label="Product currently unavailable"
         className={cn(
           "btn w-full min-h-12 justify-center text-xs uppercase tracking-widest",
-          compact ? "h-9 min-h-9 w-9 px-2 text-[10px]" : "w-full",
+          compact ? "h-9 min-h-9 w-9 px-2 text-[11px]" : "w-full",
           "border border-line bg-surface text-slate opacity-70",
         )}
       >
@@ -63,7 +63,7 @@ export function AddToCartButton({ product, compact = false }: AddToCartButtonPro
         onClick={handleClick}
         disabled={pending}
         className={cn(
-          "flex h-9 w-9 shrink-0 items-center justify-center rounded-[3px] border transition-colors",
+          "flex h-9 w-9 shrink-0 items-center justify-center rounded-sm border transition-colors",
           inCart 
             ? "border-line bg-surface text-ink hover:bg-platinum" 
             : "border-transparent bg-ink text-white hover:bg-loupe-deep",

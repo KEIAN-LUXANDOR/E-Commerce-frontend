@@ -105,7 +105,7 @@ function ChoiceGroup<T extends string>({
 }) {
   return (
     <div className="min-w-0">
-      <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-[0.13em] text-brand-accent">
+      <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-accent">
         {label}
       </p>
 
@@ -313,7 +313,7 @@ function NumberRangeFilter({
       <form onSubmit={handleApply}>
         <div className="grid grid-cols-2 gap-2">
           <label className="min-w-0">
-            <span className="mb-1.5 block text-[10px] text-slate">
+            <span className="mb-1.5 block text-[11px] text-slate">
               Min ({unit})
             </span>
 
@@ -333,7 +333,7 @@ function NumberRangeFilter({
           </label>
 
           <label className="min-w-0">
-            <span className="mb-1.5 block text-[10px] text-slate">
+            <span className="mb-1.5 block text-[11px] text-slate">
               Max ({unit})
             </span>
 
@@ -478,7 +478,7 @@ function FilterControls({ compact = false }: { compact?: boolean }) {
               <h2 className="font-serif text-lg font-medium text-ink">
                 Refine selection
               </h2>
-              <p className="mt-0.5 text-[10px] text-slate">
+              <p className="mt-0.5 text-[11px] text-slate">
                 Find the right diamond.
               </p>
             </div>
@@ -486,7 +486,7 @@ function FilterControls({ compact = false }: { compact?: boolean }) {
         ) : (
           <div>
             <p className="text-xs font-semibold text-ink">Your filters</p>
-            <p className="mt-0.5 text-[10px] text-slate">
+            <p className="mt-0.5 text-[11px] text-slate">
               {activeCount} active
             </p>
           </div>
@@ -496,7 +496,7 @@ function FilterControls({ compact = false }: { compact?: boolean }) {
           <button
             type="button"
             onClick={clearAll}
-            className="inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-lg px-2 text-[10px] font-semibold text-brand-accent transition-colors hover:bg-[var(--brand-accent-muted)] hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
+            className="inline-flex min-h-9 shrink-0 items-center gap-1.5 rounded-lg px-2 text-[11px] font-semibold text-brand-accent transition-colors hover:bg-[var(--brand-accent-muted)] hover:text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]"
           >
             <RotateCcw className="size-3.5" aria-hidden="true" />
             Reset
@@ -507,7 +507,7 @@ function FilterControls({ compact = false }: { compact?: boolean }) {
       {isPending && (
         <p
           role="status"
-          className="border-b border-line px-4 py-2 text-[10px] text-brand-accent"
+          className="border-b border-line px-4 py-2 text-[11px] text-brand-accent"
         >
           Updating diamonds…
         </p>
@@ -519,7 +519,7 @@ function FilterControls({ compact = false }: { compact?: boolean }) {
         className="px-4"
       >
         <AccordionItem value="carat" className="border-line">
-          <AccordionTrigger className="py-4 text-[11px] font-semibold uppercase tracking-[0.12em] text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]">
+          <AccordionTrigger className="py-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]">
             Carat weight
           </AccordionTrigger>
 
@@ -543,7 +543,7 @@ function FilterControls({ compact = false }: { compact?: boolean }) {
         </AccordionItem>
 
         <AccordionItem value="price" className="border-line">
-          <AccordionTrigger className="py-4 text-[11px] font-semibold uppercase tracking-[0.12em] text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]">
+          <AccordionTrigger className="py-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]">
             Price range
           </AccordionTrigger>
 
@@ -568,7 +568,7 @@ function FilterControls({ compact = false }: { compact?: boolean }) {
         </AccordionItem>
 
         <AccordionItem value="colour" className="border-line">
-          <AccordionTrigger className="py-4 text-[11px] font-semibold uppercase tracking-[0.12em] text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]">
+          <AccordionTrigger className="py-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]">
             Colour grade
           </AccordionTrigger>
 
@@ -587,7 +587,7 @@ function FilterControls({ compact = false }: { compact?: boolean }) {
         </AccordionItem>
 
         <AccordionItem value="clarity" className="border-line">
-          <AccordionTrigger className="py-4 text-[11px] font-semibold uppercase tracking-[0.12em] text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]">
+          <AccordionTrigger className="py-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]">
             Clarity grade
           </AccordionTrigger>
 
@@ -606,7 +606,7 @@ function FilterControls({ compact = false }: { compact?: boolean }) {
         </AccordionItem>
 
         <AccordionItem value="advanced" className="border-line">
-          <AccordionTrigger className="py-4 text-[11px] font-semibold uppercase tracking-[0.12em] text-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]">
+          <AccordionTrigger className="py-4 text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-accent focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)]">
             Advanced filters
           </AccordionTrigger>
 
@@ -671,7 +671,7 @@ function FilterControls({ compact = false }: { compact?: boolean }) {
               />
 
               <div>
-                <p className="mb-2.5 text-[10px] font-semibold uppercase tracking-[0.13em] text-brand-accent">
+                <p className="mb-2.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-brand-accent">
                   Availability
                 </p>
 
@@ -739,7 +739,7 @@ export function FilterPanel() {
 
             <span className="inline-flex items-center gap-2">
               {activeCount > 0 && (
-                <span className="grid size-6 place-items-center rounded-full bg-ink text-[10px] font-semibold text-white">
+                <span className="grid size-6 place-items-center rounded-full bg-ink text-[11px] font-semibold text-white">
                   {activeCount}
                 </span>
               )}

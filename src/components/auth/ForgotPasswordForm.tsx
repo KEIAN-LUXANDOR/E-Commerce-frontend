@@ -56,7 +56,7 @@ export function ForgotPasswordForm() {
             <CheckCircle2 className="size-8" strokeWidth={1.5} />
           </div>
 
-          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate">
+          <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate">
             Password recovery
           </p>
 
@@ -113,7 +113,7 @@ export function ForgotPasswordForm() {
             <Mail className="size-5" strokeWidth={1.6} />
           </div>
 
-          <p className="mb-2 text-[10px] font-semibold uppercase tracking-[0.18em] text-slate">
+          <p className="mb-2 text-[11px] font-semibold uppercase tracking-[0.18em] text-slate">
             Account recovery
           </p>
 

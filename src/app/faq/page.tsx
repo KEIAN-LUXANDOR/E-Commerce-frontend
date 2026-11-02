@@ -117,7 +117,7 @@ export default function FaqPage() {
       {/* Header */}
       <section className="border-b border-[var(--color-line)] bg-white py-12">
         <div className="page">
-          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.1em] text-[var(--color-muted)]">
+          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--color-muted)]">
             <Link href="/" className="hover:text-[var(--color-ink)] transition-colors">
               Home
             </Link>
@@ -126,7 +126,7 @@ export default function FaqPage() {
           </nav>
 
           <div className="max-w-2xl">
-            <p className="text-[12px] font-medium uppercase tracking-[0.16em] text-[var(--color-slate)]">
+            <p className="text-[12px] font-medium uppercase tracking-[0.18em] text-[var(--color-slate)]">
               Institutional Reference &amp; Transparency
             </p>
             <h1 className="mt-2 font-serif text-3xl font-medium tracking-tight text-[var(--color-ink)] sm:text-5xl">
@@ -146,7 +146,7 @@ export default function FaqPage() {
                 value={search}
                 onChange={(e) => setSearch(e.target.value)}
                 placeholder="Search certification, delivery, returns, or payment..."
-                className="w-full h-12 border border-[var(--color-line)] bg-[var(--color-stone)] pl-11 pr-4 text-sm text-[var(--color-ink)] placeholder-[var(--color-muted)] focus:border-[var(--color-loupe)] focus:bg-white focus:outline-none rounded-[3px]"
+                className="w-full h-12 border border-[var(--color-line)] bg-[var(--color-stone)] pl-11 pr-4 text-sm text-[var(--color-ink)] placeholder-[var(--color-muted)] focus:border-[var(--color-loupe)] focus:bg-white focus:outline-none rounded-sm"
               />
             </div>
           </div>
@@ -164,7 +164,7 @@ export default function FaqPage() {
                 key={cat.id}
                 type="button"
                 onClick={() => setSelectedCategory(cat.id)}
-                className={`px-4 py-2 text-xs font-medium uppercase tracking-[0.08em] transition-colors rounded-[3px] ${
+                className={`px-4 py-2 text-xs font-medium uppercase tracking-[0.08em] transition-colors rounded-sm ${
                   selectedCategory === cat.id
                     ? "bg-[var(--color-ink)] text-white"
                     : "border border-[var(--color-line)] bg-white text-[var(--color-slate)] hover:bg-[var(--color-stone)]"
@@ -189,7 +189,7 @@ export default function FaqPage() {
               </p>
               <Link
                 href="/contact"
-                className="mt-6 inline-block border border-[var(--color-line)] bg-[var(--color-stone)] px-5 py-2.5 text-xs font-medium uppercase tracking-[0.1em] text-[var(--color-ink)] hover:bg-[var(--color-stone-deep)]"
+                className="mt-6 inline-block border border-[var(--color-line)] bg-[var(--color-stone)] px-5 py-2.5 text-xs font-medium uppercase tracking-[0.14em] text-[var(--color-ink)] hover:bg-[var(--color-stone-deep)]"
               >
                 Contact Concierge
               </Link>
@@ -239,7 +239,7 @@ export default function FaqPage() {
             </div>
             <Link
               href="/contact"
-              className="inline-flex items-center gap-2 rounded-none bg-[var(--color-ink)] px-6 py-3 text-xs font-medium uppercase tracking-[0.12em] text-white hover:bg-[var(--color-loupe)] transition-colors shrink-0"
+              className="inline-flex items-center gap-2 rounded-none bg-[var(--color-ink)] px-6 py-3 text-xs font-medium uppercase tracking-[0.14em] text-white hover:bg-[var(--color-loupe)] transition-colors shrink-0"
             >
               Contact Concierge
               <ArrowRight className="size-3.5" aria-hidden="true" />

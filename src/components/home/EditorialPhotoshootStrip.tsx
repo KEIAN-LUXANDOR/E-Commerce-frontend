@@ -12,7 +12,7 @@ export function EditorialPhotoshootStrip() {
           sizes="100vw"
           className="object-cover"
         />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#0A192F]/75 via-[#0A192F]/25 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-ink/75 via-ink/25 to-transparent" />
         <div className="page relative flex h-full items-center">
           <div className="max-w-md text-white">
             <span className="editorial-eyebrow text-[var(--brand-accent-muted)]">Inside the atelier</span>

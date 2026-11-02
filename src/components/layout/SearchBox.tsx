@@ -106,7 +106,7 @@ export function SearchBox({
           }}
           placeholder={placeholder}
           aria-label="Search diamonds"
-          className="h-9 w-full rounded-[3px] border border-line bg-surface pl-8 pr-7 text-xs text-ink placeholder:text-slate/80 focus:border-loupe focus:outline-none focus:ring-1 focus:ring-loupe transition-colors"
+          className="h-9 w-full rounded-sm border border-line bg-surface pl-8 pr-7 text-xs text-ink placeholder:text-slate/80 focus:border-loupe focus:outline-none focus:ring-1 focus:ring-loupe transition-colors"
         />
         {query && (
           <button

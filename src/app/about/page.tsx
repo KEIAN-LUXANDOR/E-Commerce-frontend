@@ -112,21 +112,21 @@ const PRIMARY_BUTTON = buttonVariants({
   variant: "default",
   size: "lg",
   className:
-    "group h-12 rounded-full bg-[var(--color-ink)] px-6 text-xs font-semibold uppercase tracking-[0.12em] text-white shadow-none transition-all duration-300 hover:-translate-y-0.5 hover:bg-[var(--color-loupe)] hover:shadow-lg",
+    "group h-12 rounded-full bg-[var(--color-ink)] px-6 text-xs font-semibold uppercase tracking-[0.14em] text-white shadow-none transition-all duration-300 hover:-translate-y-0.5 hover:bg-[var(--color-loupe)] hover:shadow-lg",
 });
 
 const OUTLINE_BUTTON = buttonVariants({
   variant: "outline",
   size: "lg",
   className:
-    "group h-12 rounded-full border-[var(--color-line-dark)] bg-white px-6 text-xs font-semibold uppercase tracking-[0.12em] text-[var(--color-ink)] shadow-none transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-ink)] hover:bg-[var(--color-stone)] hover:text-[var(--color-ink)]",
+    "group h-12 rounded-full border-[var(--color-line-dark)] bg-white px-6 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-ink)] shadow-none transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--color-ink)] hover:bg-[var(--color-stone)] hover:text-[var(--color-ink)]",
 });
 
 function SectionEyebrow({ children }: { children: ReactNode }) {
   return (
     <div className="flex items-center gap-3">
       <span className="h-px w-7 rounded-full bg-[var(--color-loupe)]" />
-      <p className="text-[10px] font-semibold uppercase tracking-[0.19em] text-[var(--color-loupe)]">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--color-loupe)]">
         {children}
       </p>
     </div>
@@ -346,7 +346,7 @@ export default function AboutPage() {
                 <p className="font-serif text-lg text-[var(--color-ink)]">
                   Natural
                 </p>
-                <p className="mt-1 text-[9px] font-medium uppercase tracking-[0.13em] text-[var(--color-muted)]">
+                <p className="mt-1 text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--color-muted)]">
                   Diamonds
                 </p>
               </div>
@@ -355,7 +355,7 @@ export default function AboutPage() {
                 <p className="font-serif text-lg text-[var(--color-ink)]">
                   Lab-grown
                 </p>
-                <p className="mt-1 text-[9px] font-medium uppercase tracking-[0.13em] text-[var(--color-muted)]">
+                <p className="mt-1 text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--color-muted)]">
                   Diamonds
                 </p>
               </div>
@@ -364,7 +364,7 @@ export default function AboutPage() {
                 <p className="font-serif text-lg text-[var(--color-ink)]">
                   GIA / IGI
                 </p>
-                <p className="mt-1 text-[9px] font-medium uppercase tracking-[0.13em] text-[var(--color-muted)]">
+                <p className="mt-1 text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--color-muted)]">
                   Certification
                 </p>
               </div>
@@ -410,7 +410,7 @@ export default function AboutPage() {
               <div className="absolute left-[3%] top-[25%] z-20 hidden rounded-r-xl border border-l-0 border-white/15 bg-[var(--color-ink)]/80 px-4 py-3 shadow-xl backdrop-blur-md sm:block">
                 <div className="flex items-center gap-2">
                   <span className="size-1.5 rounded-full bg-[var(--color-loupe)]" />
-                  <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-white/65">
+                  <span className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/65">
                     Examination
                   </span>
                 </div>
@@ -425,7 +425,7 @@ export default function AboutPage() {
                     className="size-3.5 text-[var(--color-loupe)]"
                     aria-hidden="true"
                   />
-                  <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/65">
+                  <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/65">
                     Provenance
                   </span>
                 </div>
@@ -435,7 +435,7 @@ export default function AboutPage() {
               </div>
 
               <div className="absolute bottom-[8%] left-1/2 z-20 -translate-x-1/2 whitespace-nowrap rounded-full border border-white/15 bg-[var(--color-ink)]/75 px-5 py-2.5 backdrop-blur-md">
-                <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-white/75">
+                <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/75">
                   The art of the diamond
                 </p>
               </div>
@@ -448,7 +448,7 @@ export default function AboutPage() {
 
             <div className="absolute -bottom-4 left-7 hidden items-center gap-2 rounded-full border border-[var(--color-line)] bg-white px-4 py-2.5 shadow-sm sm:flex">
               <Gem className="size-3.5 text-[var(--color-loupe)]" />
-              <span className="font-mono text-[9px] uppercase tracking-[0.15em] text-[var(--color-slate)]">
+              <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--color-slate)]">
                 Atelier / Diamond study
               </span>
             </div>
@@ -499,7 +499,7 @@ export default function AboutPage() {
                       <Icon className="size-5" aria-hidden="true" />
                     </div>
 
-                    <span className="font-mono text-[10px] tracking-[0.15em] text-[var(--color-muted)]">
+                    <span className="font-mono text-[11px] tracking-[0.14em] text-[var(--color-muted)]">
                       {tenet.number}
                     </span>
                   </div>
@@ -516,7 +516,7 @@ export default function AboutPage() {
 
                   <div className="mt-auto flex items-center gap-2 border-t border-[var(--color-line)] pt-5">
                     <span className="h-px w-5 rounded-full bg-[var(--color-loupe)] transition-all duration-300 group-hover:w-9" />
-                    <span className="font-mono text-[9px] uppercase tracking-[0.13em] text-[var(--color-muted)]">
+                    <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--color-muted)]">
                       Keian standard
                     </span>
                   </div>
@@ -542,7 +542,7 @@ export default function AboutPage() {
               >
                 <div className="relative z-10 flex items-center justify-between border-b border-white/15 px-5 py-5 sm:px-7">
                   <div>
-                    <p className="font-mono text-[9px] uppercase tracking-[0.17em] text-white/60">
+                    <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/60">
                       Behind every stone
                     </p>
                     <p className="mt-1 font-serif text-xl text-white">
@@ -550,7 +550,7 @@ export default function AboutPage() {
                     </p>
                   </div>
 
-                  <span className="font-mono text-[9px] tracking-[0.14em] text-white/45">
+                  <span className="font-mono text-[11px] tracking-[0.14em] text-white/45">
                     KL / 02
                   </span>
                 </div>
@@ -569,7 +569,7 @@ export default function AboutPage() {
 
                 <div className="relative z-10 rounded-t-[1.5rem] border-t border-white/15 bg-[var(--color-ink)]/70 px-5 py-5 backdrop-blur-sm sm:px-7">
                   <div className="flex flex-wrap items-center justify-between gap-3">
-                    <span className="font-mono text-[9px] uppercase tracking-[0.14em] text-white/60">
+                    <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-white/60">
                       Precision / Inspection / Care
                     </span>
                     <ShieldCheck className="size-4 text-[var(--color-loupe)]" />
@@ -581,7 +581,7 @@ export default function AboutPage() {
                 <p className="text-xs text-[var(--color-slate)]">
                   Every detail has a place.
                 </p>
-                <span className="font-mono text-[9px] uppercase tracking-[0.13em] text-[var(--color-muted)]">
+                <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--color-muted)]">
                   Inspection / 02
                 </span>
               </div>
@@ -615,18 +615,18 @@ export default function AboutPage() {
                   key={step.number}
                   className="group relative border-b border-[var(--color-line)] py-8 pl-16 last:border-b-0 sm:py-10"
                 >
-                  <div className="absolute left-0 top-8 z-10 grid size-10 place-items-center rounded-full border border-[var(--color-line-dark)] bg-white font-mono text-[10px] text-[var(--color-loupe)] transition-all duration-300 group-hover:border-[var(--color-loupe)] group-hover:bg-[var(--color-ink)] group-hover:text-white sm:top-10">
+                  <div className="absolute left-0 top-8 z-10 grid size-10 place-items-center rounded-full border border-[var(--color-line-dark)] bg-white font-mono text-[11px] text-[var(--color-loupe)] transition-all duration-300 group-hover:border-[var(--color-loupe)] group-hover:bg-[var(--color-ink)] group-hover:text-white sm:top-10">
                     {step.number}
                   </div>
 
                   <div className="flex flex-wrap items-center gap-x-3 gap-y-1">
-                    <p className="font-mono text-[9px] font-semibold uppercase tracking-[0.15em] text-[var(--color-loupe)]">
+                    <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.14em] text-[var(--color-loupe)]">
                       {step.subtitle}
                     </p>
 
                     <span className="hidden h-px w-5 bg-[var(--color-line-dark)] sm:block" />
 
-                    <span className="font-mono text-[9px] text-[var(--color-muted)]">
+                    <span className="font-mono text-[11px] text-[var(--color-muted)]">
                       STAGE {index + 1}
                     </span>
                   </div>
@@ -648,7 +648,7 @@ export default function AboutPage() {
       {/* Showroom */}
       <section className="bg-[var(--color-stone)] py-16 sm:py-20 lg:py-24">
         <div className="page">
-          <div className="relative isolate overflow-hidden rounded-[2rem] border border-[var(--color-line)] bg-white px-6 py-8 sm:rounded-[2.5rem] sm:px-10 sm:py-12 lg:px-14">
+          <div className="relative isolate overflow-hidden rounded-3xl border border-[var(--color-line)] bg-white px-6 py-8 sm:rounded-[2.5rem] sm:px-10 sm:py-12 lg:px-14">
             <div
               aria-hidden="true"
               className="pointer-events-none absolute -right-20 -top-28 -z-10 size-[300px] rounded-full border border-[var(--color-line)]"
@@ -744,7 +744,7 @@ export default function AboutPage() {
 
             <div className="mt-9 flex items-center gap-4">
               <span className="h-px w-12 rounded-full bg-white/50" />
-              <p className="font-mono text-[9px] uppercase tracking-[0.18em] text-white/55">
+              <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-white/55">
                 A more considered way to discover diamonds
               </p>
             </div>
@@ -770,7 +770,7 @@ export default function AboutPage() {
 
             <Link
               href="/contact"
-              className="mt-6 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.1em] text-[var(--color-loupe)] transition-colors hover:text-[var(--color-ink)]"
+              className="mt-6 inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-[var(--color-loupe)] transition-colors hover:text-[var(--color-ink)]"
             >
               Ask our team
               <ArrowUpRight className="size-3.5" aria-hidden="true" />
@@ -803,7 +803,7 @@ export default function AboutPage() {
       {/* Closing CTA */}
       <section className="bg-[var(--color-paper)] py-14 sm:py-20">
         <div className="page">
-          <div className="relative isolate overflow-hidden rounded-[2rem] border border-[var(--color-line)] bg-white px-6 py-9 sm:rounded-[2.5rem] sm:px-10 sm:py-12 lg:px-14 lg:py-14">
+          <div className="relative isolate overflow-hidden rounded-3xl border border-[var(--color-line)] bg-white px-6 py-9 sm:rounded-[2.5rem] sm:px-10 sm:py-12 lg:px-14 lg:py-14">
             <div
               aria-hidden="true"
               className="absolute -right-24 -top-32 -z-10 size-[340px] rounded-full border border-[var(--color-line)]"

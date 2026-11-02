@@ -22,7 +22,7 @@ export default function NaturalVsLabPage() {
             <ArrowLeft className="size-3.5" />
             <span>Back to 4Cs Academy</span>
           </Link>
-          <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-slate)]">
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--color-slate)]">
             Scientific & Market Clarity
           </p>
           <h1 className="font-serif text-3xl md:text-5xl text-[var(--color-ink)]">

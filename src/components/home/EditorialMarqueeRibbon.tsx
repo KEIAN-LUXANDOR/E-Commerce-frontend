@@ -4,12 +4,12 @@ import { Marquee } from "@/components/ui/marquee";
 export function EditorialMarqueeRibbon() {
   const credentials = [
     { icon: Award, label: "GIA Graded & Laser-Inscribed" },
-    { icon: Award, label: "IGI Antwerp Laboratory Certified" },
+    { icon: Award, label: "IGI Laboratory Certified" },
     { icon: ShieldCheck, label: "100% Conflict-Free Kimberley Compliant" },
     { icon: Sparkles, label: "40x Macro Video Inspection" },
-    { icon: Truck, label: "Sequel & Malca-Amit Armoured Transit" },
-    { icon: CheckCircle2, label: "14-Day Insured Doorstep Returns" },
-    { icon: ShieldCheck, label: "Surat Vault Direct Atelier Pricing" },
+    { icon: Truck, label: "Free Delivery Across India" },
+    { icon: CheckCircle2, label: "30-Day Returns" },
+    { icon: ShieldCheck, label: "Baner, Pune Showroom" },
   ];
 
   return (

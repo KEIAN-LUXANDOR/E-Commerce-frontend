@@ -22,7 +22,7 @@ export default function ReadingCertificatePage() {
             <ArrowLeft className="size-3.5" />
             <span>Back to 4Cs Academy</span>
           </Link>
-          <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-slate)]">
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--color-slate)]">
             Metrological Verification
           </p>
           <h1 className="font-serif text-3xl md:text-5xl text-[var(--color-ink)]">
@@ -50,7 +50,7 @@ export default function ReadingCertificatePage() {
             The laboratory dossier begins with a distinct serial number (e.g. 10 digits for GIA). This number is micro-lasered directly onto the diamond&rsquo;s girdle using cold laser pulses that do not penetrate the crystal lattice or affect clarity.
           </p>
           <div className="bg-[var(--color-stone)] p-4 border border-[var(--color-line)] font-mono text-xs text-[var(--color-ink)]">
-            <span className="text-[var(--color-slate)] block text-[10px] uppercase">Forensic Check</span>
+            <span className="text-[var(--color-slate)] block text-[11px] uppercase">Forensic Check</span>
             Inspect the girdle under a 20x gemological loupe. The characters etched on the stone must match the laboratory dossier exactly.
           </div>
         </section>

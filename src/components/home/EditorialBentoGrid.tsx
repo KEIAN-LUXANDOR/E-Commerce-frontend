@@ -39,7 +39,7 @@ export function EditorialBentoGrid() {
               <span className="text-xs font-mono uppercase tracking-widest text-slate">
                 Macro Metrology · 0.01% Optical Cut
               </span>
-              <Badge variant="outline" className="text-[10px]">40x Loupe Certified</Badge>
+              <Badge variant="outline" className="text-[11px]">40x Loupe Certified</Badge>
             </div>
             <h3 className="font-serif text-2xl sm:text-3xl font-medium mb-3 text-ink">
               Microscopic Fire & Scintillation Inspection
@@ -61,7 +61,7 @@ export function EditorialBentoGrid() {
             <div className="absolute inset-0 bg-gradient-to-t from-ink/50 via-transparent to-transparent" />
             <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white text-xs backdrop-blur-md bg-ink/30 p-2.5 rounded-xl border border-white/20">
               <span className="font-mono text-[11px]">GIA 2.05ct · Triple Excellent</span>
-              <span className="font-mono text-[10px] text-white/80">Surat Inspection Desk</span>
+              <span className="font-mono text-[11px] text-white/80">Surat Inspection Desk</span>
             </div>
           </div>
         </SpotlightCard>
@@ -73,7 +73,7 @@ export function EditorialBentoGrid() {
               <span className="text-xs font-mono uppercase tracking-widest text-slate">
                 Direct Atelier Advantage
               </span>
-              <Badge variant="cert" className="text-[10px]">Zero Middlemen</Badge>
+              <Badge variant="cert" className="text-[11px]">Zero Middlemen</Badge>
             </div>
             <h3 className="font-serif text-2xl font-medium mb-3 text-ink">
               Surat Diamond Bourse Directly To Your Door

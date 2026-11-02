@@ -74,7 +74,7 @@ export function ProductCard({
 
           {/* Shape label */}
           <div className="pointer-events-none absolute bottom-4 left-4 z-[2]">
-            <span className="inline-flex items-center border border-white/80 bg-white/90 px-3.5 py-1.5 text-[10px] font-semibold uppercase tracking-[0.18em] text-ink shadow-sm backdrop-blur-sm">
+            <span className="inline-flex items-center border border-white/80 bg-white/90 px-3.5 py-1.5 text-[11px] font-semibold uppercase tracking-[0.18em] text-ink shadow-sm backdrop-blur-sm">
               {shape}
             </span>
           </div>
@@ -125,7 +125,7 @@ export function ProductCard({
             {/* Certification: always reserves two lines */}
             <div className="mb-2 h-8 overflow-hidden">
               {certification ? (
-                <p className="line-clamp-2 text-[10px] font-semibold uppercase leading-4 tracking-[0.16em] text-brand-accent">
+                <p className="line-clamp-2 text-[11px] font-semibold uppercase leading-4 tracking-[0.18em] text-brand-accent">
                   {certification}
                 </p>
               ) : (
@@ -162,7 +162,7 @@ export function ProductCard({
 
           {/* Right: price consistently aligned to bottom */}
           <div className="flex min-w-0 flex-col items-end justify-end pb-0.5 text-right">
-            <p className="mb-1.5 text-[10px] font-medium uppercase tracking-[0.16em] text-slate">
+            <p className="mb-1.5 text-[11px] font-medium uppercase tracking-[0.18em] text-slate">
               Price
             </p>
 
@@ -184,7 +184,7 @@ export function ProductCard({
 
         {/* Consistent footer position */}
         <div className="mt-5 flex min-h-[3.25rem] items-center justify-between gap-2 border-t border-line/80 pt-3">
-          <span className="whitespace-nowrap text-[9px] font-medium uppercase tracking-[0.13em] text-slate sm:text-[10px] sm:tracking-[0.16em]">
+          <span className="whitespace-nowrap text-[11px] font-medium uppercase tracking-[0.14em] text-slate sm:text-[11px] sm:tracking-[0.18em]">
             View diamond details
           </span>
 

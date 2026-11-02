@@ -31,7 +31,7 @@ export function Header() {
   className={`sticky top-0 z-40 w-full transition-all duration-300 ${
     isScrolled
       ? "bg-white border-b border-line shadow-sm"
-      : "bg-[#F5F0E8] border-b border-transparent"
+      : "bg-sand border-b border-transparent"
   }`}
 >
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
@@ -98,7 +98,7 @@ export function Header() {
           >
             <ShoppingBag className="h-5 w-5" strokeWidth={1.5} />
             {cartCount > 0 && (
-              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-slate-900 bg-ink text-[9px] font-bold text-white group-hover:bg-loupe transition-colors">
+              <span className="absolute -right-1 -top-1 flex h-4 w-4 items-center justify-center rounded-full bg-slate-900 bg-ink text-[11px] font-bold text-white group-hover:bg-loupe transition-colors">
                 {cartCount}
               </span>
             )}

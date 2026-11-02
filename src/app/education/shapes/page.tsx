@@ -151,7 +151,7 @@ export default function ShapesGuidePage() {
       {/* Top Header */}
       <section className="border-b border-[var(--color-line)] bg-white py-12">
         <div className="page">
-          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.1em] text-[var(--color-muted)]">
+          <nav aria-label="Breadcrumb" className="mb-4 flex items-center gap-2 text-[11px] font-medium uppercase tracking-[0.14em] text-[var(--color-muted)]">
             <Link href="/" className="hover:text-[var(--color-ink)] transition-colors">
               Home
             </Link>
@@ -164,7 +164,7 @@ export default function ShapesGuidePage() {
           </nav>
 
           <div className="max-w-3xl">
-            <p className="text-[12px] font-medium uppercase tracking-[0.16em] text-[var(--color-slate)]">
+            <p className="text-[12px] font-medium uppercase tracking-[0.18em] text-[var(--color-slate)]">
               Gemological Silhouette Compendium
             </p>
             <h1 className="mt-2 font-serif text-3xl font-medium tracking-tight text-[var(--color-ink)] sm:text-5xl">
@@ -204,7 +204,7 @@ export default function ShapesGuidePage() {
 
                     <Link
                       href={`/diamonds?shape=${encodeURIComponent(item.shape)}`}
-                      className="inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.1em] text-[var(--color-loupe)] hover:underline"
+                      className="inline-flex items-center gap-1.5 text-xs font-medium uppercase tracking-[0.14em] text-[var(--color-loupe)] hover:underline"
                     >
                       Browse
                       <ArrowRight className="size-3.5" aria-hidden="true" />
@@ -217,7 +217,7 @@ export default function ShapesGuidePage() {
 
                   <div className="mt-6 grid grid-cols-2 gap-4 border-y border-[var(--color-line)] py-4 text-xs font-mono">
                     <div>
-                      <span className="text-[10px] uppercase tracking-wider text-[var(--color-muted)] block">
+                      <span className="text-[11px] uppercase tracking-wider text-[var(--color-muted)] block">
                         Ideal L/W Ratio
                       </span>
                       <span className="font-semibold text-[var(--color-ink)] mt-0.5 block">
@@ -225,7 +225,7 @@ export default function ShapesGuidePage() {
                       </span>
                     </div>
                     <div>
-                      <span className="text-[10px] uppercase tracking-wider text-[var(--color-muted)] block">
+                      <span className="text-[11px] uppercase tracking-wider text-[var(--color-muted)] block">
                         Scintillation Character
                       </span>
                       <span className="text-[var(--color-ink)] mt-0.5 block font-sans">
@@ -234,8 +234,8 @@ export default function ShapesGuidePage() {
                     </div>
                   </div>
 
-                  <div className="mt-4 rounded-[3px] bg-[var(--color-stone)] p-4 text-xs text-[var(--color-slate)]">
-                    <span className="font-medium text-[var(--color-ink)] uppercase tracking-wider text-[10px] block mb-1">
+                  <div className="mt-4 rounded-sm bg-[var(--color-stone)] p-4 text-xs text-[var(--color-slate)]">
+                    <span className="font-medium text-[var(--color-ink)] uppercase tracking-wider text-[11px] block mb-1">
                       Gemologist Observation Tip:
                     </span>
                     {item.opticalTip}

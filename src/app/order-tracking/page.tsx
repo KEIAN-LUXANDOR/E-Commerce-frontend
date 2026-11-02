@@ -154,15 +154,15 @@ export default function OrderTrackingPage() {
           {/* Courier Milestone Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 text-xs">
             <div className="rounded-xl border border-line bg-stone p-4">
-              <p className="text-slate uppercase tracking-wider text-[10px] font-mono">Secure Carrier</p>
+              <p className="text-slate uppercase tracking-wider text-[11px] font-mono">Secure Carrier</p>
               <p className="font-semibold text-ink mt-1">{result.shipment?.courier || "To be confirmed"}</p>
             </div>
             <div className="rounded-xl border border-line bg-stone p-4">
-              <p className="text-slate uppercase tracking-wider text-[10px] font-mono">Tracking Number / AWB</p>
+              <p className="text-slate uppercase tracking-wider text-[11px] font-mono">Tracking Number / AWB</p>
               <p className="font-mono font-bold text-ink mt-1">{result.shipment?.trackingNumber || "Assigned on Dispatch"}</p>
             </div>
             <div className="rounded-xl border border-line bg-stone p-4">
-              <p className="text-slate uppercase tracking-wider text-[10px] font-mono">Courier tracking</p>
+              <p className="text-slate uppercase tracking-wider text-[11px] font-mono">Courier tracking</p>
               <p className="font-semibold text-ok mt-1">{result.shipment?.trackingUrl ? <a href={result.shipment.trackingUrl} target="_blank" rel="noopener noreferrer" className="underline">Open tracking page</a> : "Shared once dispatched"}</p>
             </div>
           </div>

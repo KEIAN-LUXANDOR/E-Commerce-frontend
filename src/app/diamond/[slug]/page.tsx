@@ -29,7 +29,7 @@ function SectionEyebrow({ children }: { children: ReactNode }) {
   return (
     <div className="flex items-center gap-3">
       <span className="h-px w-7 bg-[var(--color-loupe)]" />
-      <p className="text-[10px] font-semibold uppercase tracking-[0.17em] text-[var(--color-loupe)]">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-[var(--color-loupe)]">
         {children}
       </p>
     </div>
@@ -49,7 +49,7 @@ function DiamondPageSkeleton() {
       <div className="skeleton h-4 w-60 max-w-full rounded-full" />
 
       <div className="mt-6 grid items-start gap-7 lg:grid-cols-[minmax(0,1.08fr)_minmax(390px,.92fr)] lg:gap-9">
-        <div className="rounded-[1.75rem] border border-line bg-stone p-3">
+        <div className="rounded-3xl border border-line bg-stone p-3">
           <div className="skeleton aspect-square rounded-[1.2rem]" />
           <div className="mt-4 flex gap-3">
             <div className="skeleton size-16 rounded-xl" />
@@ -58,7 +58,7 @@ function DiamondPageSkeleton() {
           </div>
         </div>
 
-        <div className="rounded-[1.5rem] border border-line p-6 sm:p-7">
+        <div className="rounded-3xl border border-line p-6 sm:p-7">
           <div className="skeleton h-4 w-32 rounded-full" />
           <div className="skeleton mt-6 h-9 w-4/5 rounded-lg" />
           <div className="skeleton mt-3 h-4 w-2/3 rounded" />
@@ -80,7 +80,7 @@ function ProductLoadError({ message }: { message: string }) {
     <main className="page py-12 sm:py-20">
       <section
         role="alert"
-        className="relative isolate mx-auto max-w-2xl overflow-hidden rounded-[2rem] border border-line bg-paper px-6 py-10 text-center sm:px-10 sm:py-14"
+        className="relative isolate mx-auto max-w-2xl overflow-hidden rounded-3xl border border-line bg-paper px-6 py-10 text-center sm:px-10 sm:py-14"
       >
         <div
           aria-hidden="true"
@@ -92,7 +92,7 @@ function ProductLoadError({ message }: { message: string }) {
             <Gem className="size-6" aria-hidden="true" />
           </div>
 
-          <p className="mt-7 text-[10px] font-semibold uppercase tracking-[0.18em] text-loupe">
+          <p className="mt-7 text-[11px] font-semibold uppercase tracking-[0.18em] text-loupe">
             Catalogue connection
           </p>
 
@@ -300,7 +300,7 @@ async function DiamondDetailContent({
 
           <Link
             href="/diamonds"
-            className="hidden shrink-0 items-center gap-1.5 text-[10px] font-semibold uppercase tracking-[0.12em] text-loupe transition-colors hover:text-ink sm:inline-flex"
+            className="hidden shrink-0 items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-loupe transition-colors hover:text-ink sm:inline-flex"
           >
             <ArrowLeft className="size-3" aria-hidden="true" />
             Collection
@@ -330,7 +330,7 @@ async function DiamondDetailContent({
                   </span>
                 </div>
 
-                <span className="font-mono text-[9px] uppercase tracking-[0.13em] text-muted">
+                <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-muted">
                   Certified loose diamond
                 </span>
               </div>
@@ -426,14 +426,14 @@ async function DiamondDetailContent({
                   className="size-3.5 text-loupe"
                   aria-hidden="true"
                 />
-                <span className="text-[10px] font-semibold uppercase tracking-[0.1em] text-slate">
+                <span className="text-[11px] font-semibold uppercase tracking-[0.14em] text-slate">
                   Laboratory documentation
                 </span>
               </span>
             </div>
 
             <div className="mt-7 grid min-w-0 gap-5 lg:grid-cols-[1.08fr_.92fr] lg:gap-6">
-              <div className="min-w-0 rounded-[1.5rem] border border-line bg-white p-4 sm:rounded-[1.75rem] sm:p-6">
+              <div className="min-w-0 rounded-3xl border border-line bg-white p-4 sm:rounded-3xl sm:p-6">
                 <div className="mb-5 border-b border-line pb-4">
                   <p className="font-serif text-xl font-medium text-ink">
                     Diamond specifications
@@ -446,7 +446,7 @@ async function DiamondDetailContent({
                 <SpecTable product={product} />
               </div>
 
-              <div className="min-w-0 rounded-[1.5rem] border border-line bg-paper/60 p-4 sm:rounded-[1.75rem] sm:p-6">
+              <div className="min-w-0 rounded-3xl border border-line bg-paper/60 p-4 sm:rounded-3xl sm:p-6">
                 <div className="mb-5 border-b border-line pb-4">
                   <p className="font-serif text-xl font-medium text-ink">
                     Understanding the grades
@@ -466,7 +466,7 @@ async function DiamondDetailContent({
         )}
 
         {/* Personal assistance */}
-        <section className="mt-10 flex flex-col justify-between gap-5 rounded-[1.5rem] border border-line bg-paper px-5 py-5 sm:mt-12 sm:flex-row sm:items-center sm:px-7">
+        <section className="mt-10 flex flex-col justify-between gap-5 rounded-3xl border border-line bg-paper px-5 py-5 sm:mt-12 sm:flex-row sm:items-center sm:px-7">
           <div>
             <p className="font-serif text-lg font-medium text-ink">
               Have a question about this diamond?
@@ -494,7 +494,7 @@ async function DiamondDetailContent({
         <div className="mt-10 flex flex-col justify-between gap-4 border-t border-line pt-6 sm:flex-row sm:items-center">
           <Link
             href="/diamonds"
-            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.1em] text-slate transition-colors hover:text-loupe"
+            className="inline-flex items-center gap-2 text-xs font-semibold uppercase tracking-[0.14em] text-slate transition-colors hover:text-loupe"
           >
             <ArrowLeft className="size-3.5" aria-hidden="true" />
             Return to diamond collection

@@ -60,8 +60,8 @@ export function SpecTable({ product }: { product: Product }) {
       {/* 1. At a glance */}
       <dl className="grid grid-cols-2 gap-3 lg:grid-cols-4">
         {glance.map((g) => (
-          <div key={g.label} className="rounded-2xl border border-line bg-[#F5F0E8]/60 px-4 py-4">
-            <dt className="text-[11px] font-semibold uppercase tracking-[0.16em] text-slate">{g.label}</dt>
+          <div key={g.label} className="rounded-2xl border border-line bg-sand/60 px-4 py-4">
+            <dt className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate">{g.label}</dt>
             <dd className="mt-2">
               <span className={cn("font-serif leading-none text-ink", g.value.length > 6 ? "text-2xl" : "text-3xl")}>{g.value}</span>
               {g.unit && <span className="ml-1 text-sm text-slate">{g.unit}</span>}
@@ -133,7 +133,7 @@ function SpecGroup({
   return (
     <section className={cn("rounded-2xl border border-line bg-white p-5", className)} aria-label={title}>
       <header className="flex items-start gap-3">
-        <span className="grid size-8 shrink-0 place-items-center rounded-full bg-[#F5F0E8] text-ink">{icon}</span>
+        <span className="grid size-8 shrink-0 place-items-center rounded-full bg-sand text-ink">{icon}</span>
         <div>
           <h4 className="font-serif text-lg leading-tight text-ink">{title}</h4>
           <p className="text-xs text-slate">{note}</p>

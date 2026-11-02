@@ -59,6 +59,12 @@
 }
 
 @theme inline {
+  /* Warm sand: the site's soft background accent (home sections, header, highlight tiles) */
+  --color-sand: #F5F0E8;
+  --color-sand-deep: #EFE5D3;
+  /* Champagne bands (replace the old dark sections) with a bronze accent */
+  --color-champagne: #EADFCB;
+  --color-bronze: #6E5230;
   --font-serif: "Cormorant Garamond Variable", "Cormorant Garamond", Georgia, serif;
   --font-sans: "Jost Variable", "Jost", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
@@ -298,7 +304,7 @@
     font-family: var(--font-sans);
     font-size: 0.6875rem;
     font-weight: 600;
-    letter-spacing: 0.2em;
+    letter-spacing: 0.18em;
     text-transform: uppercase;
     color: var(--brand-accent);
     display: block;
@@ -454,6 +460,18 @@
     border-color: var(--brand-accent-deep);
   }
 
+  /* Bronze button for champagne sections (white on bronze: contrast 7.9) */
+  .btn-bronze {
+    background: var(--color-bronze);
+    color: #ffffff;
+    border: 1px solid var(--color-bronze);
+    font-weight: 600;
+  }
+  .btn-bronze:hover:not(:disabled) {
+    background: #57401F;
+    border-color: #57401F;
+  }
+
   /* Ghost button for dark sections */
   .btn-ghost-dark {
     background: transparent;
@@ -603,4 +621,65 @@
     forced-color-adjust: none;
     border: 1px solid ButtonText !important;
   }
+}
+
+
+/* ============================================================
+   Home page motion (scroll reveal, border beam, number ticker)
+   All of it switches off for visitors who ask for reduced motion.
+   ============================================================ */
+.reveal {
+  opacity: 0;
+  transform: translateY(18px);
+  filter: blur(4px);
+  transition: opacity 0.7s cubic-bezier(0.16, 1, 0.3, 1), transform 0.7s cubic-bezier(0.16, 1, 0.3, 1), filter 0.7s ease;
+  transition-delay: var(--reveal-delay, 0ms);
+}
+.reveal[data-shown="true"] {
+  opacity: 1;
+  transform: none;
+  filter: none;
+}
+
+/* Magic UI style "border beam": a light travelling around a rounded card */
+@property --beam-angle {
+  syntax: "<angle>";
+  initial-value: 0deg;
+  inherits: false;
+}
+@keyframes beam-spin { to { --beam-angle: 360deg; } }
+.border-beam { position: relative; isolation: isolate; }
+.border-beam::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  padding: 1px;
+  border-radius: inherit;
+  background: conic-gradient(from var(--beam-angle), transparent 0deg, transparent 290deg, rgba(110, 82, 48, 0.85) 330deg, transparent 360deg);
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: beam-spin 6s linear infinite;
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Aceternity style card spotlight that follows the cursor (position set by SpotlightCard) */
+.spotlight-card { position: relative; overflow: hidden; }
+.spotlight-card::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(420px circle at var(--spot-x, 50%) var(--spot-y, 50%), rgba(220, 203, 168, 0.22), transparent 45%);
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
+}
+.spotlight-card:hover::after { opacity: 1; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; filter: none; transition: none; }
+  .border-beam::before { animation: none; }
+  .spotlight-card::after { display: none; }
+  .animate-marquee { animation: none !important; }
 }

@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 import { HeroDiamond } from "@/components/home/HeroDiamond";
+import { Spotlight } from "@/components/ui/spotlight";
 import { Badge } from "@/components/ui/badge";
 import type { Banner } from "@/lib/types/catalog";
 
@@ -18,9 +19,11 @@ export function HeroCarousel({ banners }: { banners: Banner[] }) {
     <section
       aria-roledescription="carousel"
       aria-label="Featured Collection"
-      className="relative overflow-hidden border-b border-line bg-[#F5F0E8]"
+      className="relative overflow-hidden border-b border-line bg-sand"
     >
-      <div className=" bg-[#F5F0E8] page relative z-10 grid items-center gap-10 py-12 md:grid-cols-[1.1fr_1fr] md:py-20 lg:gap-16">
+      {/* Aceternity-style spotlight: a soft sand-coloured glow sweeps in once */}
+      <Spotlight className="-top-40 left-0 md:-top-20 md:left-40" fill="rgba(220, 203, 168, 0.55)" />
+      <div className=" bg-sand page relative z-10 grid items-center gap-10 py-12 md:grid-cols-[1.1fr_1fr] md:py-20 lg:gap-16">
         <div key={b.id} aria-live="polite" aria-atomic="true" className="order-2 animate-fade-up md:order-1">
           <div role="group" aria-roledescription="slide" aria-label={`${index + 1} of ${banners.length}`}>
             <div className="flex items-center gap-2 mb-4">
@@ -96,7 +99,7 @@ export function HeroCarousel({ banners }: { banners: Banner[] }) {
 
         <div className="order-1 md:order-2 flex justify-center">
           {b.imageUrl ? (
-            <div className="relative aspect-square w-full max-w-lg overflow-hidden rounded-none border border-line bg-[#F8FAFC]">
+            <div className="relative aspect-square w-full max-w-lg overflow-hidden rounded-none border border-line bg-stone">
               <Image unoptimized
                 src={b.imageUrl}
                 alt=""
@@ -130,7 +133,7 @@ export function HeroCarousel({ banners }: { banners: Banner[] }) {
               <div className="relative z-10 w-full flex items-center justify-center">
                 <HeroDiamond shape={b.shape ?? "ROUND"} />
               </div>
-              <span className="absolute bottom-4 left-4 z-10 bg-white/85 px-2 py-1 text-[9px] font-mono uppercase tracking-widest text-slate">
+              <span className="absolute bottom-4 left-4 z-10 bg-white/85 px-2 py-1 text-[11px] font-mono uppercase tracking-widest text-slate">
                 Certified diamond imagery
               </span>
             </div>

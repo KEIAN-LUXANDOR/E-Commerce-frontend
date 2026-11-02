@@ -22,7 +22,7 @@ export function AnnouncementBar() {
         </div>
 
         {/* Digital Concierge Action Links */}
-        <div className="hidden items-center gap-5 sm:flex text-[0.6875rem] font-medium uppercase tracking-[0.08em]">
+        <div className="hidden items-center gap-5 sm:flex text-[11px] font-medium uppercase tracking-[0.08em]">
           <a
             href={site.phoneHref}
             className="hover:text-[var(--color-ink)] transition-colors"

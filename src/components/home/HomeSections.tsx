@@ -45,7 +45,7 @@ export function CuratedPills() {
               className="inline-flex items-center gap-1.5 rounded-full border border-line bg-surface px-3 py-1 text-xs font-medium text-ink transition-all hover:border-[var(--brand-accent)] hover:shadow-sm hover:-translate-y-px"
             >
               <span>{c.label}</span>
-              <span className="text-[0.625rem] text-slate font-normal">({c.badge})</span>
+              <span className="text-[11px] text-slate font-normal">({c.badge})</span>
             </Link>
           ))}
         </div>
@@ -61,8 +61,8 @@ export function StatStrip() {
   const stats = [
     { icon: ShieldCheck, label: "GIA & IGI Certified" },
     { icon: CheckCircle2, label: "30-day free returns" },
-    { icon: Truck, label: "Insured doorstep delivery" },
-    { icon: Sparkles, label: "Surat precision atelier" },
+    { icon: Truck, label: "Free delivery across India" },
+    { icon: Sparkles, label: "Baner, Pune showroom" },
   ];
   return (
     <section className="w-full bg-[var(--canvas-dark)] border-b border-[#23344D] py-5">
@@ -209,7 +209,7 @@ export function ShopByShape() {
   return (
     <section
       aria-labelledby="shapes-heading"
-      className="w-full bg-[#F5F0E8] border-b border-line py-16 lg:py-20"
+      className="w-full bg-sand border-b border-line py-16 lg:py-20"
       id="shapes"
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -225,7 +225,7 @@ export function ShopByShape() {
           </div>
           <Link
             href="/shop"
-            className="text-[13px] uppercase font-medium tracking-[0.12em] text-ink hover:text-[var(--brand-accent)] transition-colors flex items-center gap-1.5 group"
+            className="text-[13px] uppercase font-medium tracking-[0.14em] text-ink hover:text-[var(--brand-accent)] transition-colors flex items-center gap-1.5 group"
           >
             View all diamonds
             <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -258,6 +258,13 @@ export function ShopByShape() {
 /* ─────────────────────────────────────────────────────────────
    ORIGIN COMPARE — asymmetric: clean white vs deep navy
    ───────────────────────────────────────────────────────────── */
+/** Moves the card's soft spotlight to follow the cursor (styles: .spotlight-card in globals.css). */
+function trackSpotlight(e: React.MouseEvent<HTMLElement>) {
+  const r = e.currentTarget.getBoundingClientRect();
+  e.currentTarget.style.setProperty("--spot-x", `${e.clientX - r.left}px`);
+  e.currentTarget.style.setProperty("--spot-y", `${e.clientY - r.top}px`);
+}
+
 export function OriginCompare({
   naturalHref = "/shop?q=natural",
   labHref = "/shop?q=lab",
@@ -266,14 +273,14 @@ export function OriginCompare({
   labHref?: string;
 }) {
   return (
-    <section className="w-full bg-[#F5F0E8] border-b border-line py-16 lg:py-20" id="origin">
+    <section className="w-full bg-sand border-b border-line py-16 lg:py-20" id="origin">
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           {/* Natural diamonds — clean white */}
-          <div className="relative bg-[#F8FAFC] p-8 sm:p-12 flex flex-col justify-between min-h-[360px] border border-line overflow-hidden group hover:border-[var(--brand-accent)] transition-colors duration-300">
+          <div onMouseMove={trackSpotlight} className="spotlight-card relative bg-stone p-8 sm:p-12 flex flex-col justify-between min-h-[360px] border border-line overflow-hidden group hover:border-bronze transition-colors duration-300">
             {/* Decorative circle */}
             <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full border border-[var(--color-line-dark)] opacity-20 pointer-events-none" />
-            <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full border border-[var(--brand-accent)] opacity-10 pointer-events-none" />
+            <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full border border-bronze opacity-10 pointer-events-none" />
             <div>
               <span className="section-eyebrow mb-3">Geological origin</span>
               <h3 className="font-serif text-[30px] sm:text-[34px] text-ink font-normal mb-4">
@@ -286,7 +293,7 @@ export function OriginCompare({
               <ul className="mt-5 space-y-2">
                 {["GIA Certified", "Laser inscribed girdle", "Kimberley Process conflict-free"].map((item) => (
                   <li key={item} className="flex items-center gap-2 text-[13px] text-slate">
-                    <span className="size-1.5 rounded-full bg-[var(--brand-accent)] shrink-0" />
+                    <span className="size-1.5 rounded-full bg-bronze shrink-0" />
                     {item}
                   </li>
                 ))}
@@ -295,7 +302,7 @@ export function OriginCompare({
             <div className="pt-8">
               <Link
                 href={naturalHref}
-                className="inline-flex items-center gap-2 text-[13.5px] font-medium tracking-[0.12em] uppercase text-ink hover:text-[var(--brand-accent)] transition-colors group/link"
+                className="inline-flex items-center gap-2 text-[13.5px] font-medium tracking-[0.14em] uppercase text-ink hover:text-bronze transition-colors group/link"
               >
                 Shop Natural
                 <ArrowRight className="size-3.5 transition-transform group-hover/link:translate-x-0.5" />
@@ -304,23 +311,23 @@ export function OriginCompare({
           </div>
 
           {/* Lab-Grown Diamonds — deep navy */}
-          <div className="relative bg-[var(--brand-anchor)] p-8 sm:p-12 flex flex-col justify-between min-h-[360px] overflow-hidden group hover:shadow-lg transition-shadow duration-300">
+          <div onMouseMove={trackSpotlight} className="spotlight-card relative bg-champagne p-8 sm:p-12 flex flex-col justify-between min-h-[360px] overflow-hidden group hover:shadow-lg transition-shadow duration-300">
             {/* Decorative circles on dark bg */}
-            <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full border border-white/10 pointer-events-none" />
-            <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full border border-[var(--brand-accent)]/20 pointer-events-none" />
+            <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full border border-bronze/20 pointer-events-none" />
+            <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full border border-bronze/20 pointer-events-none" />
             <div>
               <span className="editorial-eyebrow mb-3">Modern science</span>
-              <h3 className="font-serif text-[30px] sm:text-[34px] text-white font-normal mb-4">
-                Lab-grown <span className="italic font-normal text-[var(--brand-accent)]">diamonds</span>
+              <h3 className="font-serif text-[30px] sm:text-[34px] text-ink font-normal mb-4">
+                Lab-grown <span className="italic font-normal text-bronze">diamonds</span>
               </h3>
-              <p className="text-[16px] text-white/75 leading-[1.65] max-w-md">
+              <p className="text-[16px] text-ink-secondary leading-[1.65] max-w-md">
                 Grown in a laboratory, the same pure carbon crystal. Graded by IGI with certified
                 growth disclosures and identical optical properties.
               </p>
               <ul className="mt-5 space-y-2">
                 {["IGI Certified", "Identical optical fire", "Up to 70% better value"].map((item) => (
-                  <li key={item} className="flex items-center gap-2 text-[13px] text-white/70">
-                    <span className="size-1.5 rounded-full bg-[var(--brand-accent)] shrink-0" />
+                  <li key={item} className="flex items-center gap-2 text-[13px] text-ink-secondary">
+                    <span className="size-1.5 rounded-full bg-bronze shrink-0" />
                     {item}
                   </li>
                 ))}
@@ -329,7 +336,7 @@ export function OriginCompare({
             <div className="pt-8">
               <Link
                 href={labHref}
-                className="inline-flex items-center gap-2 text-[13.5px] font-medium tracking-[0.12em] uppercase text-[var(--brand-accent)] hover:text-white transition-colors group/link"
+                className="inline-flex items-center gap-2 text-[13.5px] font-medium tracking-[0.14em] uppercase text-bronze hover:text-bronze transition-colors group/link"
               >
                 Shop Lab-Grown
                 <ArrowRight className="size-3.5 transition-transform group-hover/link:translate-x-0.5" />
@@ -341,7 +348,7 @@ export function OriginCompare({
         <div className="text-center pt-2">
           <Link
             href="/education/natural-vs-lab"
-            className="text-[14px] text-ink hover:text-[var(--brand-accent)] transition-colors inline-flex items-center gap-1.5 font-normal group"
+            className="text-[14px] text-ink hover:text-bronze transition-colors inline-flex items-center gap-1.5 font-normal group"
           >
             What&apos;s the difference?
             <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -383,10 +390,10 @@ export function ChooseBySize() {
 
   return (
     <section
-      className="w-full bg-[#F5F0E8]border-b border-line py-16 lg:py-20"
+      className="w-full bg-sand border-b border-line py-16 lg:py-20"
       id="proportions"
     >
-      <div className="max-w-7xl mx-auto px-6 lg:px-12 bg-[#F5F0E8]">
+      <div className="max-w-7xl mx-auto px-6 lg:px-12 bg-sand">
         <div className="text-center max-w-xl mx-auto mb-12 animate-fade-up">
           <span className="section-eyebrow mb-3">Proportions</span>
           <h2 className="font-serif text-[32px] sm:text-[38px] text-ink font-normal">
@@ -417,7 +424,7 @@ export function ChooseBySize() {
                 <h3 className="font-serif text-[22px] text-ink font-normal mb-2">{t.title}</h3>
                 <p className="text-[15px] text-slate leading-relaxed">{t.description}</p>
               </div>
-              <div className="pt-6 text-[12.5px] uppercase font-medium tracking-[0.12em] text-ink group-hover:text-[var(--brand-accent)] transition-colors flex items-center gap-1.5">
+              <div className="pt-6 text-[12.5px] uppercase font-medium tracking-[0.14em] text-ink group-hover:text-[var(--brand-accent)] transition-colors flex items-center gap-1.5">
                 Explore tier
                 <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
               </div>
@@ -432,6 +439,13 @@ export function ChooseBySize() {
 /* ─────────────────────────────────────────────────────────────
    HOW IT WORKS — numbered steps with silver-blue accents
    ───────────────────────────────────────────────────────────── */
+const FOUR_CS = [
+  { title: "Carat", text: "The weight of the diamond, not its size on the hand.", href: "/education/4cs#carat" },
+  { title: "Colour", text: "From D (icy white) to M (a soft warm tint).", href: "/education/4cs#colour" },
+  { title: "Clarity", text: "How few tiny natural marks it has. VS2 and better look clean.", href: "/education/4cs#clarity" },
+  { title: "Cut", text: "How well it returns light. This is where sparkle comes from.", href: "/education/4cs#cut" },
+];
+
 export function HowItWorks() {
   const steps = [
     {
@@ -446,8 +460,8 @@ export function HowItWorks() {
     },
     {
       number: "03",
-      title: "Insured delivery",
-      text: "Fully insured transit across India, delivered directly to your doorstep in sealed tamper-evident packaging.",
+      title: "Free delivery",
+      text: "Sealed and shipped free across India, with tracking details by email. Someone signs for it at your door.",
     },
     {
       number: "04",
@@ -459,16 +473,16 @@ export function HowItWorks() {
   return (
 
     <section
-      className="w-full bg-black border-b border-white/20 py-16 lg:py-20"
+      className="w-full bg-champagne border-b border-bronze/20 py-16 lg:py-20"
       id="process"
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="text-center max-w-xl mx-auto mb-14 animate-fade-up">
-          <span className="section-eyebrow mb-3 text-white">
+          <span className="section-eyebrow mb-3 text-bronze">
             Purchase process
           </span>
 
-          <h2 className="font-serif text-[32px] sm:text-[38px] text-white font-normal">
+          <h2 className="font-serif text-[32px] sm:text-[38px] text-ink font-normal">
             How it <span className="italic font-normal">works</span>
           </h2>
         </div>
@@ -477,22 +491,49 @@ export function HowItWorks() {
           {steps.map((s, i) => (
             <div
               key={s.number}
-              className="border-t-2 border-white/60 pt-6 animate-fade-up"
+              className="border-t-2 border-bronze/40 pt-6 animate-fade-up"
               style={{ animationDelay: `${i * 100}ms` }}
             >
-              <span className="font-serif text-[40px] text-white/70 block mb-3 leading-none">
+              <span className="font-serif text-[40px] text-ink-secondary block mb-3 leading-none">
                 {s.number}
               </span>
 
-              <h3 className="font-serif text-[20px] text-white font-normal mb-2">
+              <h3 className="font-serif text-[20px] text-ink font-normal mb-2">
                 {s.title}
               </h3>
 
-              <p className="text-[15px] text-white/80 leading-[1.65] font-sans">
+              <p className="text-[15px] text-ink-secondary leading-[1.65] font-sans">
                 {s.text}
               </p>
             </div>
           ))}
+        </div>
+
+        {/* The 4 Cs, simply: short guide links (replaces the separate "Grades made simple" section) */}
+        <div className="mt-14 rounded-3xl border border-bronze/20 bg-white/50 p-6 sm:p-8">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
+            <div>
+              <span className="section-eyebrow mb-2 text-bronze">Buying guide</span>
+              <h3 className="font-serif text-[26px] font-normal text-ink">
+                The 4 Cs, <span className="italic">simply</span>
+              </h3>
+            </div>
+            <Link href="/education/4cs" className="inline-flex items-center gap-1.5 text-[12px] font-semibold uppercase tracking-[0.14em] text-ink-secondary hover:text-bronze">
+              Read the guide <ArrowRight className="size-3.5" />
+            </Link>
+          </div>
+          <div className="mt-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
+            {FOUR_CS.map((c) => (
+              <Link
+                key={c.title}
+                href={c.href}
+                className="group rounded-2xl border border-bronze/20 p-5 transition-colors hover:border-bronze/50 hover:bg-white/70"
+              >
+                <span className="block font-serif text-[20px] text-ink">{c.title}</span>
+                <span className="mt-1.5 block text-[14px] leading-relaxed text-ink-secondary">{c.text}</span>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </section>
@@ -506,7 +547,7 @@ export function HowItWorks() {
 export function GradesMadeSimple() {
   return (
     <section
-      className="w-full bg-[#F5F0E8] border-b border-line py-16 lg:py-20"
+      className="w-full bg-sand border-b border-line py-16 lg:py-20"
       id="grades"
     >
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
@@ -519,7 +560,7 @@ export function GradesMadeSimple() {
           </div>
           <Link
             href="/education/4cs"
-            className="text-[13px] uppercase font-medium tracking-[0.12em] text-ink hover:text-[var(--brand-accent)] transition-colors flex items-center gap-1.5 group"
+            className="text-[13px] uppercase font-medium tracking-[0.14em] text-ink hover:text-[var(--brand-accent)] transition-colors flex items-center gap-1.5 group"
           >
             Read the guide
             <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -531,7 +572,7 @@ export function GradesMadeSimple() {
           <div className="bg-white border border-line hover:border-[var(--brand-accent)] hover:shadow-[0_8px_20px_rgba(10,25,47,0.08)] transition-all duration-300 flex flex-col min-h-[280px] group animate-fade-up">
             <div className="h-1 bg-[var(--brand-accent)]" />
             <div className="p-6 flex flex-col flex-1">
-              <div className="w-full h-24 bg-[#E8EEF5] mb-5 flex items-center justify-around px-4">
+              <div className="w-full h-24 bg-platinum mb-5 flex items-center justify-around px-4">
                 <div className="w-2.5 h-2.5 rounded-full bg-ink group-hover:bg-[var(--brand-accent)] transition-colors" />
                 <div className="w-4 h-4 rounded-full bg-ink group-hover:bg-[var(--brand-accent)] transition-colors" />
                 <div className="w-5 h-5 rounded-full bg-ink group-hover:bg-[var(--brand-accent)] transition-colors" />
@@ -551,10 +592,10 @@ export function GradesMadeSimple() {
           <div className="bg-white border border-line hover:border-[var(--brand-accent)] hover:shadow-[0_8px_20px_rgba(10,25,47,0.08)] transition-all duration-300 flex flex-col min-h-[280px] group animate-fade-up delay-100">
             <div className="h-1 bg-[var(--brand-accent)]" />
             <div className="p-6 flex flex-col flex-1">
-              <div className="w-full h-24 bg-[#E8EEF5] mb-5 flex items-center justify-center px-4">
+              <div className="w-full h-24 bg-platinum mb-5 flex items-center justify-center px-4">
                 <div className="w-full flex h-5 border border-line overflow-hidden rounded-sm">
                   <div className="flex-1 bg-white" />
-                  <div className="flex-1 bg-[#F8FAFC]" />
+                  <div className="flex-1 bg-stone" />
                   <div className="flex-1 bg-[#F5F2E6]" />
                   <div className="flex-1 bg-[#EEEAD5]" />
                   <div className="flex-1 bg-[#E8E0C0]" />
@@ -574,7 +615,7 @@ export function GradesMadeSimple() {
           <div className="bg-white border border-line hover:border-[var(--brand-accent)] hover:shadow-[0_8px_20px_rgba(10,25,47,0.08)] transition-all duration-300 flex flex-col min-h-[280px] group animate-fade-up delay-200">
             <div className="h-1 bg-[var(--brand-accent)]" />
             <div className="p-6 flex flex-col flex-1">
-              <div className="w-full h-24 bg-[#E8EEF5] mb-5 flex items-center justify-center px-4">
+              <div className="w-full h-24 bg-platinum mb-5 flex items-center justify-center px-4">
                 <div className="relative w-16 h-16 rounded-full border border-ink/30 flex items-center justify-center">
                   <div className="w-1 h-1 rounded-full bg-ink" />
                   <div className="w-1.5 h-1.5 rounded-full bg-ink/30 absolute top-4 right-4" />
@@ -594,7 +635,7 @@ export function GradesMadeSimple() {
           <div className="bg-white border border-line hover:border-[var(--brand-accent)] hover:shadow-[0_8px_20px_rgba(10,25,47,0.08)] transition-all duration-300 flex flex-col min-h-[280px] group animate-fade-up delay-300">
             <div className="h-1 bg-[var(--brand-accent)]" />
             <div className="p-6 flex flex-col flex-1">
-              <div className="w-full h-24 bg-[#E8EEF5] mb-5 flex items-center justify-center px-4">
+              <div className="w-full h-24 bg-platinum mb-5 flex items-center justify-center px-4">
                 <svg className="h-14 w-24 text-ink" fill="none" stroke="currentColor" viewBox="0 0 100 50">
                   <polygon points="15,15 85,15 92,22 50,45 8,22" strokeWidth="1" />
                   <path d="M30,0 L38,15 L70,36 L80,15 L90,0" stroke="#1E4A6D" strokeWidth="1" />
@@ -629,8 +670,8 @@ export function HomeFAQ() {
       a: "Both are physically, chemically, and optically identical pure crystallised carbon with a Mohs hardness of 10 and identical refractive properties. Natural diamonds formed in the earth over billions of years, while lab-grown diamonds are crystallised in specialised laboratories over several weeks.",
     },
     {
-      q: "How does insured delivery across India work?",
-      a: "All shipments are fully insured during transit and dispatched in tamper-evident sealed packaging. A signature and government identification are required upon doorstep delivery.",
+      q: "How does delivery across India work?",
+      a: "Delivery is free across India. Each diamond is sealed and shipped with tracking, and someone must sign for it at the address.",
     },
     {
       q: "What is your 30-day return policy?",
@@ -642,12 +683,12 @@ export function HomeFAQ() {
     },
     {
       q: "How are your diamond prices calculated?",
-      a: "Our pricing directly reflects the Surat precision cutting bourse index with transparent wholesale margins, eliminating traditional high-street luxury markups.",
+      a: "Each price is set per diamond from its grades and certificate, and is the same online and in our showroom.",
     },
   ];
 
   return (
-    <section className="w-full bg-[#F5F0E8] border-b border-line py-16 lg:py-20" id="faq">
+    <section className="w-full bg-sand border-b border-line py-16 lg:py-20" id="faq">
       <div className="max-w-4xl mx-auto px-6 lg:px-12">
         <div className="text-center mb-12 animate-fade-up">
           <span className="section-eyebrow mb-3">Questions &amp; answers</span>
@@ -677,7 +718,7 @@ export function HomeFAQ() {
         <div className="mt-10 text-center">
           <Link
             href="/faq"
-            className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.12em] font-medium text-ink hover:text-[var(--brand-accent)] transition-colors group"
+            className="inline-flex items-center gap-2 text-[13px] uppercase tracking-[0.14em] font-medium text-ink hover:text-[var(--brand-accent)] transition-colors group"
           >
             View all FAQs
             <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -779,7 +820,7 @@ export function FourCs() {
               {COLOR_TINTS.map(([g, hex]) => (
                 <div key={g} className="flex flex-1 flex-col items-center gap-1.5">
                   <span className="size-5 rounded-full border border-ink/20 shadow-2xs" style={{ background: hex }} />
-                  <span className="text-[0.625rem] tabular-nums text-slate font-medium">{g}</span>
+                  <span className="text-[11px] tabular-nums text-slate font-medium">{g}</span>
                 </div>
               ))}
             </div>
@@ -872,8 +913,8 @@ export function Journey() {
     },
     {
       icon: Truck,
-      title: "Tamper-Proof Armoured Transit",
-      text: "Dispatched in high-security serialised tamper-evident lockboxes with 100% transit insurance.",
+      title: "Checked and sealed",
+      text: "Matched to its grading report and sealed before it ships.",
     },
     {
       icon: CheckCircle2,
@@ -888,7 +929,7 @@ export function Journey() {
         <div className="max-w-2xl mb-12">
           <Badge variant="cert" className="mb-2">Secure Fulfillment</Badge>
           <h2 id="journey" className="text-3xl sm:text-4xl">
-            From Our Vault Directly To Your Hands
+            From Our Showroom To Your Hands
           </h2>
           <p className="mt-2 text-slate text-sm sm:text-base">
             Every step is protected, certified, and handled with institutional care.
@@ -954,25 +995,25 @@ export function ClientReviews() {
   ];
 
   return (
-    <section aria-labelledby="reviews" className="border-t border-[#23344D] bg-[var(--canvas-dark)] py-20">
+    <section aria-labelledby="reviews" className="border-t border-[#23344D] bg-champagne py-20">
       <div className="page">
         <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-12">
           <div>
             <span className="editorial-eyebrow mb-3">Verified clients</span>
-            <h2 id="reviews" className="text-3xl sm:text-4xl text-white">
+            <h2 id="reviews" className="text-3xl sm:text-4xl text-ink">
               Trusted by Discerning Collectors
             </h2>
-            <p className="mt-2 max-w-xl text-white/60 text-sm sm:text-base font-sans">
+            <p className="mt-2 max-w-xl text-ink-secondary text-sm sm:text-base font-sans">
               Real stories from clients across India who built bespoke engagement rings and collector portfolios with us.
             </p>
           </div>
-          <div className="flex items-center gap-1.5 text-xs text-white/50">
-            <div className="flex text-[var(--brand-accent)]">
+          <div className="flex items-center gap-1.5 text-xs text-ink-secondary">
+            <div className="flex text-bronze">
               {[...Array(5)].map((_, i) => (
-                <Star key={i} className="size-4 fill-[var(--brand-accent)] text-[var(--brand-accent)]" />
+                <Star key={i} className="size-4 fill-bronze text-bronze" />
               ))}
             </div>
-            <span className="font-semibold text-white ml-1">4.9 / 5.0</span>
+            <span className="font-semibold text-ink ml-1">4.9 / 5.0</span>
             <span>(350+ diamonds delivered)</span>
           </div>
         </div>
@@ -981,33 +1022,33 @@ export function ClientReviews() {
           {reviews.map((r, i) => (
             <div
               key={r.name}
-              className="bg-white/5 border border-white/10 p-6 hover:border-[var(--brand-accent)]/40 hover:bg-white/8 transition-all duration-300 flex flex-col animate-fade-up"
+              className="bg-white/50 border border-bronze/20 p-6 hover:border-bronze/40 hover:bg-white/70 transition-all duration-300 flex flex-col animate-fade-up"
               style={{ animationDelay: `${i * 100}ms` }}
             >
               {/* Large opening quote */}
-              <div className="text-[56px] leading-none text-[var(--brand-accent)] opacity-40 font-serif mb-2 select-none">&ldquo;</div>
+              <div className="text-[56px] leading-none text-bronze opacity-40 font-serif mb-2 select-none">&ldquo;</div>
 
-              <p className="text-sm text-white/75 italic leading-relaxed mb-5 flex-1 font-sans">
+              <p className="text-sm text-ink-secondary italic leading-relaxed mb-5 flex-1 font-sans">
                 {r.quote}
               </p>
 
-              <div className="flex text-[var(--brand-accent)] mb-4">
+              <div className="flex text-bronze mb-4">
                 {[...Array(r.rating)].map((_, i) => (
-                  <Star key={i} className="size-3.5 fill-[var(--brand-accent)] text-[var(--brand-accent)]" />
+                  <Star key={i} className="size-3.5 fill-bronze text-bronze" />
                 ))}
               </div>
 
-              <div className="border-t border-white/10 pt-4 flex items-center gap-3">
-                <div className="size-9 rounded-full border border-[var(--brand-accent)]/30 bg-[var(--brand-accent)]/10 flex items-center justify-center text-[var(--brand-accent)] font-serif font-medium text-sm">
+              <div className="border-t border-bronze/20 pt-4 flex items-center gap-3">
+                <div className="size-9 rounded-full border border-bronze/30 bg-bronze/10 flex items-center justify-center text-bronze font-serif font-medium text-sm">
                   {r.name.slice(0, 2).toUpperCase()}
                 </div>
                 <div>
-                  <p className="text-sm font-semibold text-white">{r.name}</p>
-                  <p className="text-[0.6875rem] text-white/50 font-sans">{r.city} · Verified Buyer</p>
+                  <p className="text-sm font-semibold text-ink">{r.name}</p>
+                  <p className="text-[11px] text-ink-secondary font-sans">{r.city} · Verified Buyer</p>
                 </div>
               </div>
 
-              <div className="mt-3 pt-3 border-t border-white/10 text-[0.6875rem] text-[var(--brand-accent)]/70 font-sans">
+              <div className="mt-3 pt-3 border-t border-bronze/20 text-[11px] text-bronze/70 font-sans">
                 {r.diamond}
               </div>
             </div>
@@ -1023,21 +1064,21 @@ export function ClientReviews() {
    ───────────────────────────────────────────────────────────── */
 export function GemologistConciergeBand() {
   return (
-    <section aria-labelledby="concierge" className="bg-[var(--brand-anchor)] text-white py-16 relative overflow-hidden">
+    <section aria-labelledby="concierge" className="bg-champagne text-ink py-16 relative overflow-hidden">
       {/* Subtle decorative arc */}
-      <div className="absolute -right-32 -bottom-32 w-96 h-96 rounded-full border border-white/5 pointer-events-none" />
-      <div className="absolute -right-16 -bottom-16 w-56 h-56 rounded-full border border-[var(--brand-accent)]/10 pointer-events-none" />
+      <div className="absolute -right-32 -bottom-32 w-96 h-96 rounded-full border border-bronze/20 pointer-events-none" />
+      <div className="absolute -right-16 -bottom-16 w-56 h-56 rounded-full border border-bronze/10 pointer-events-none" />
 
       <div className="page grid gap-10 md:grid-cols-[1.4fr_1fr] md:items-center relative z-10">
         <div>
-          <div className="inline-flex items-center gap-2 bg-white/10 border border-white/15 px-3 py-1.5 text-xs text-white/90 mb-5 rounded-sm">
-            <Headphones className="size-3.5 text-[var(--brand-accent)]" />
+          <div className="inline-flex items-center gap-2 bg-white/50 border border-bronze/20 px-3 py-1.5 text-xs text-ink-secondary mb-5 rounded-sm">
+            <Headphones className="size-3.5 text-bronze" />
             <span>Personal Gemologist Assistance</span>
           </div>
-          <h2 id="concierge" className="text-3xl sm:text-4xl text-white">
+          <h2 id="concierge" className="text-3xl sm:text-4xl text-ink">
             Need Expert Guidance Choosing Your Diamond?
           </h2>
-          <p className="mt-3 max-w-lg text-white/70 text-sm sm:text-base leading-relaxed font-sans">
+          <p className="mt-3 max-w-lg text-ink-secondary text-sm sm:text-base leading-relaxed font-sans">
             Every diamond in our collection is loose and held under laboratory condition. Speak directly with our
             certified graduate gemologist to review 40x magnified videos, compare proportions, and confirm
             eye-cleanliness before purchase.
@@ -1047,44 +1088,44 @@ export function GemologistConciergeBand() {
               href={whatsappLink("Hello Keian Luxandor, I would like expert advice on selecting a diamond from your collection.")}
               target="_blank"
               rel="noopener noreferrer"
-              className="btn btn-gold rounded-sm px-6"
+              className="btn btn-bronze rounded-sm px-6"
             >
               Consult On WhatsApp
             </a>
             <a
               href={site.phoneHref}
-              className="btn btn-ghost-dark rounded-sm px-6"
+              className="btn btn-secondary rounded-sm px-6"
             >
               Call {site.phone}
             </a>
           </div>
         </div>
 
-        <div className="border border-white/10 bg-white/5 p-6 space-y-5">
+        <div className="border-beam rounded-2xl border border-bronze/20 bg-white/50 p-6 space-y-5">
           {[
             {
               icon: ShieldCheck,
-              title: "100% Online Precision Atelier",
-              text: "Zero brick-and-mortar retail markups. Direct vault-to-doorstep pricing.",
+              title: "Online and in Baner, Pune",
+              text: "Buy online, or see the diamond in person at our showroom by appointment.",
             },
             {
               icon: Truck,
-              title: "Complimentary Armoured Delivery",
-              text: "Fully insured transit across all Indian pin codes via Sequel & Malca-Amit.",
+              title: "Free Delivery",
+              text: "Free delivery across India, with tracking details by email.",
             },
             {
               icon: CheckCircle2,
-              title: "30-Day Insured Return Guarantee",
+              title: "30-Day Returns",
               text: "Return in original tamper seal for 100% refund. Zero restocking fees.",
             },
           ].map((item) => {
             const Icon = item.icon;
             return (
               <div key={item.title} className="flex items-start gap-3">
-                <Icon className="size-5 text-[var(--brand-accent)] shrink-0 mt-0.5" />
+                <Icon className="size-5 text-bronze shrink-0 mt-0.5" />
                 <div>
-                  <strong className="text-white block text-sm font-semibold">{item.title}</strong>
-                  <span className="text-xs text-white/65 font-sans">{item.text}</span>
+                  <strong className="text-ink block text-sm font-semibold">{item.title}</strong>
+                  <span className="text-xs text-ink-secondary font-sans">{item.text}</span>
                 </div>
               </div>
             );

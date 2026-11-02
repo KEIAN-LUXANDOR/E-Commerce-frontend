@@ -44,7 +44,7 @@ export default function EducationHubPage() {
       {/* Editorial Hero */}
       <div className="border-b border-[var(--color-line)] bg-[var(--color-stone)] py-16 md:py-24">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 text-center space-y-4">
-          <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-slate)]">
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--color-slate)]">
             Keian Luxandor &bull; Gemological Academy
           </p>
           <h1 className="font-serif text-4xl md:text-6xl text-[var(--color-ink)]">
@@ -97,7 +97,7 @@ export default function EducationHubPage() {
                 )}
               >
                 <div className="flex items-center justify-between mb-3">
-                  <span className="font-mono text-xs uppercase tracking-[0.1em]">
+                  <span className="font-mono text-xs uppercase tracking-[0.14em]">
                     {tab.label}
                   </span>
                   <Icon className="size-4 shrink-0 opacity-70" />
@@ -113,7 +113,7 @@ export default function EducationHubPage() {
           {activeTab === "cut" && (
             <div className="space-y-6">
               <div className="border-b border-[var(--color-line)] pb-4">
-                <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-muted)]">
+                <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--color-muted)]">
                   Primary Optical Driver
                 </span>
                 <h2 className="font-serif text-3xl text-[var(--color-ink)] mt-1">
@@ -159,7 +159,7 @@ export default function EducationHubPage() {
           {activeTab === "color" && (
             <div className="space-y-6">
               <div className="border-b border-[var(--color-line)] pb-4">
-                <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-muted)]">
+                <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--color-muted)]">
                   GIA D-Z Scale
                 </span>
                 <h2 className="font-serif text-3xl text-[var(--color-ink)] mt-1">
@@ -199,7 +199,7 @@ export default function EducationHubPage() {
           {activeTab === "clarity" && (
             <div className="space-y-6">
               <div className="border-b border-[var(--color-line)] pb-4">
-                <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-muted)]">
+                <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--color-muted)]">
                   Forensic Microscopic Purity
                 </span>
                 <h2 className="font-serif text-3xl text-[var(--color-ink)] mt-1">
@@ -216,28 +216,28 @@ export default function EducationHubPage() {
                     <span className="font-mono text-sm font-semibold text-[var(--color-ink)]">FL / IF (Flawless / Internally Flawless)</span>
                     <p className="font-sans text-xs text-[var(--color-slate)]">Zero internal inclusions visible under 10x loupe. Extremely rare.</p>
                   </div>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.08em] px-2 py-1 bg-white border border-[var(--color-line)]">Top 0.5%</span>
+                  <span className="font-mono text-[11px] uppercase tracking-[0.08em] px-2 py-1 bg-white border border-[var(--color-line)]">Top 0.5%</span>
                 </div>
                 <div className="p-4 flex items-center justify-between bg-white">
                   <div>
                     <span className="font-mono text-sm font-semibold text-[var(--color-ink)]">VVS1 / VVS2 (Very Very Slightly Included)</span>
                     <p className="font-sans text-xs text-[var(--color-slate)]">Inclusions extremely difficult for expert gemologists to locate under 10x magnification.</p>
                   </div>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.08em] px-2 py-1 bg-[var(--color-stone)] border border-[var(--color-line)]">Collector Standard</span>
+                  <span className="font-mono text-[11px] uppercase tracking-[0.08em] px-2 py-1 bg-[var(--color-stone)] border border-[var(--color-line)]">Collector Standard</span>
                 </div>
                 <div className="p-4 flex items-center justify-between bg-white">
                   <div>
                     <span className="font-mono text-sm font-semibold text-[var(--color-ink)]">VS1 / VS2 (Very Slightly Included)</span>
                     <p className="font-sans text-xs text-[var(--color-slate)]">Minor internal characteristics invisible to the unassisted eye. The sweet spot of value.</p>
                   </div>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.08em] px-2 py-1 bg-[var(--color-stone)] border border-[var(--color-line)]">Eye-Clean</span>
+                  <span className="font-mono text-[11px] uppercase tracking-[0.08em] px-2 py-1 bg-[var(--color-stone)] border border-[var(--color-line)]">Eye-Clean</span>
                 </div>
                 <div className="p-4 flex items-center justify-between bg-white">
                   <div>
                     <span className="font-mono text-sm font-semibold text-[var(--color-ink)]">SI1 / SI2 (Slightly Included)</span>
                     <p className="font-sans text-xs text-[var(--color-slate)]">Inclusions noticeable under 10x magnification; SI1 is typically eye-clean when viewed from 20cm.</p>
                   </div>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.08em] px-2 py-1 bg-[var(--color-stone)] border border-[var(--color-line)]">Inspect Loupe</span>
+                  <span className="font-mono text-[11px] uppercase tracking-[0.08em] px-2 py-1 bg-[var(--color-stone)] border border-[var(--color-line)]">Inspect Loupe</span>
                 </div>
               </div>
             </div>
@@ -246,7 +246,7 @@ export default function EducationHubPage() {
           {activeTab === "carat" && (
             <div className="space-y-6">
               <div className="border-b border-[var(--color-line)] pb-4">
-                <span className="font-mono text-[10px] uppercase tracking-[0.1em] text-[var(--color-muted)]">
+                <span className="font-mono text-[11px] uppercase tracking-[0.14em] text-[var(--color-muted)]">
                   Physical Metric Unit
                 </span>
                 <h2 className="font-serif text-3xl text-[var(--color-ink)] mt-1">

@@ -75,7 +75,7 @@ export function ListingToolbar({
 
       <div className="flex flex-wrap items-center gap-3">
         <label className="flex min-w-0 items-center gap-2">
-          <span className="shrink-0 text-[10px] font-semibold uppercase tracking-[0.12em] text-slate">
+          <span className="shrink-0 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate">
             Sort by
           </span>
 

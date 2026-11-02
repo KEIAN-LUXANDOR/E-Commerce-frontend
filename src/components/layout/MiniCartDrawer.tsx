@@ -150,7 +150,7 @@ export function MiniCartDrawer() {
                         </div>
 
                         <div className="flex items-center justify-between pt-2">
-                          <span className="text-[10px] font-mono text-muted uppercase">1 Piece</span>
+                          <span className="text-[11px] font-mono text-muted uppercase">1 Piece</span>
                           <button
                             type="button"
                             onClick={() => removeFromCart(item.variantId)}

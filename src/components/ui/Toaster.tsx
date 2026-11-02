@@ -17,7 +17,7 @@ export function Toaster() {
       role="status"
       aria-live="polite"
       className={cn(
-        "fixed bottom-4 left-4 right-4 z-[100] mx-auto flex w-full max-w-sm items-center justify-between gap-3 rounded-[3px] border p-4 shadow-xl sm:left-auto sm:right-6 sm:mx-0 transition-all",
+        "fixed bottom-4 left-4 right-4 z-[100] mx-auto flex w-full max-w-sm items-center justify-between gap-3 rounded-sm border p-4 shadow-xl sm:left-auto sm:right-6 sm:mx-0 transition-all",
         tone === "error"
           ? "border-out bg-out text-white"
           : tone === "success"

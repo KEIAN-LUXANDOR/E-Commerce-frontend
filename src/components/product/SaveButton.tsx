@@ -20,7 +20,7 @@ export function SaveButton({ productId, variant = "icon", className }: SaveButto
         type="button"
         onClick={() => toggle(productId)}
         className={cn(
-          "flex h-11 items-center justify-center gap-2 rounded-[3px] border px-6 text-xs font-medium uppercase tracking-widest transition-colors",
+          "flex h-11 items-center justify-center gap-2 rounded-sm border px-6 text-xs font-medium uppercase tracking-widest transition-colors",
           "border-line bg-surface text-ink hover:bg-platinum",
           className
         )}

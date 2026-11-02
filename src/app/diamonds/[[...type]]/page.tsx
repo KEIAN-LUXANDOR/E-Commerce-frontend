@@ -247,7 +247,7 @@ function ShapeNavigation({
           </p>
         </div>
 
-        <span className="hidden font-mono text-[9px] uppercase tracking-[0.14em] text-muted sm:block">
+        <span className="hidden font-mono text-[11px] uppercase tracking-[0.14em] text-muted sm:block">
           Diamond shapes
         </span>
       </div>
@@ -265,7 +265,7 @@ function ShapeNavigation({
           })}
           aria-current={allSelected ? "true" : undefined}
           className={cn(
-            "flex min-w-[76px] shrink-0 flex-col items-center gap-2 rounded-xl border px-3 py-3 text-[10px] font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] focus-visible:ring-offset-2",
+            "flex min-w-[76px] shrink-0 flex-col items-center gap-2 rounded-xl border px-3 py-3 text-[11px] font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] focus-visible:ring-offset-2",
             allSelected
               ? "border-brand-accent bg-[var(--brand-accent-muted)] text-ink"
               : "border-line bg-white text-slate hover:border-brand-accent hover:bg-stone hover:text-ink",
@@ -300,7 +300,7 @@ function ShapeNavigation({
               })}
               aria-current={active ? "true" : undefined}
               className={cn(
-                "flex min-w-[76px] shrink-0 flex-col items-center gap-2 rounded-xl border px-3 py-3 text-[10px] font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] focus-visible:ring-offset-2",
+                "flex min-w-[76px] shrink-0 flex-col items-center gap-2 rounded-xl border px-3 py-3 text-[11px] font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--brand-accent)] focus-visible:ring-offset-2",
                 active
                   ? "border-brand-accent bg-[var(--brand-accent-muted)] text-ink"
                   : "border-line bg-white text-slate hover:border-brand-accent hover:bg-stone hover:text-ink",
@@ -529,7 +529,7 @@ async function DiamondsCatalogPage({
               <div className="flex items-center gap-2">
                 <span className="h-px w-7 bg-brand-accent" />
 
-                <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-brand-accent">
+                <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-brand-accent">
                   {collection.eyebrow}
                 </p>
               </div>

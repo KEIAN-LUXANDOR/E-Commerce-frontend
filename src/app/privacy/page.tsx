@@ -12,7 +12,7 @@ export default function PrivacyPage() {
     <div className="min-h-screen bg-white">
       <div className="border-b border-[var(--color-line)] bg-[var(--color-stone)] py-12 md:py-16">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 space-y-3">
-          <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-[var(--color-slate)]">
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--color-slate)]">
             Legal Transparency
           </p>
           <h1 className="font-serif text-3xl md:text-5xl text-[var(--color-ink)]">

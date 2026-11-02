@@ -23,7 +23,7 @@ export default function VerifyEmailPage({ searchParams }: Props) {
   return (
     <div className="w-full min-w-0 space-y-7 text-center">
       <header className="space-y-3">
-        <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-line bg-stone px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-slate">
+        <div className="mx-auto inline-flex items-center gap-2 rounded-full border border-line bg-stone px-3 py-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate">
           <ShieldCheck className="size-3.5 text-loupe" />
           Account Security
         </div>
@@ -54,7 +54,7 @@ export default function VerifyEmailPage({ searchParams }: Props) {
       <div className="space-y-4">
         <Link
           href="/login"
-          className="btn btn-primary group inline-flex w-full items-center justify-center gap-2 py-3 text-xs font-semibold uppercase tracking-[0.12em]"
+          className="btn btn-primary group inline-flex w-full items-center justify-center gap-2 py-3 text-xs font-semibold uppercase tracking-[0.14em]"
         >
           Proceed to Sign In
           <ArrowRight className="size-3.5 transition-transform group-hover:translate-x-0.5" />
@@ -135,7 +135,7 @@ async function VerifyEmailContent({
 
       {verified && (
         <div className="border-t border-ok/15 pt-3">
-          <p className="font-mono text-[10px] font-medium uppercase tracking-[0.14em] text-ok">
+          <p className="font-mono text-[11px] font-medium uppercase tracking-[0.14em] text-ok">
             Client Account Authentication Confirmed
           </p>
         </div>
