@@ -1,207 +1,143 @@
 "use client";
 
-import { useState } from "react";
+import { ChevronLeft, ChevronRight, Sparkles, ArrowRight } from "lucide-react";
+import Image from "next/image";
 import Link from "next/link";
-import {
-  ArrowRight,
-  ArrowUpRight,
-  ChevronLeft,
-  ChevronRight,
-} from "lucide-react";
+import { useState } from "react";
+import { HeroDiamond } from "@/components/home/HeroDiamond";
 import { Spotlight } from "@/components/ui/spotlight";
+import { Badge } from "@/components/ui/badge";
 import type { Banner } from "@/lib/types/catalog";
-
-/**
- * Locally hosted hero films. Keep these files in the frontend's public directory;
- * Next.js serves them from the site root (for example, /D-55973.mp4).
- */
-
-
-
-const HERO_VISUALS = [
-  {
-    src: "/D-55973.mp4",
-    label: "The loose stone",
-    caption: "Every cut has its own character.",
-    position: "center 80%",
-  },
-  {
-    src: "/SDS-35.mp4",
-    label: "The solitaire",
-    caption: "Made to feel like it was always yours.",
-    position: "center 50%",
-  },
-  {
-    src: "/SG-1.mov",
-    label: "Under the loupe",
-    caption: "Step cuts reward a closer look.",
-    position: "center 50%",
-  },
-];
 
 export function HeroCarousel({ banners }: { banners: Banner[] }) {
   const [index, setIndex] = useState(0);
   if (!banners.length) return null;
-
-  const banner = banners[index];
-  const visual = HERO_VISUALS[index % HERO_VISUALS.length];
-
-  const go = (direction: number) => {
-    setIndex((current) => (current + direction + banners.length) % banners.length);
-  };
+  const b = banners[index];
+  const go = (d: number) => setIndex((i) => (i + d + banners.length) % banners.length);
 
   return (
     <section
       aria-roledescription="carousel"
-      aria-label="Featured diamond collections"
-      className="relative isolate overflow-hidden border-b border-line bg-sand"
+      aria-label="Featured Collection"
+      className="relative overflow-hidden border-b border-line bg-sand"
     >
-      <Spotlight
-        className="-top-48 left-0 opacity-60 md:-top-36 md:left-40"
-        fill="rgba(220, 203, 168, 0.42)"
-      />
-
-      <div className="page relative z-10 grid items-center gap-9 py-9 sm:gap-11 sm:py-12 md:grid-cols-[0.94fr_1.06fr] md:gap-12 md:py-14 lg:gap-16 lg:py-[4.5rem]">
-        <div
-          key={banner.id}
-          aria-live="polite"
-          aria-atomic="true"
-          className="order-2 animate-fade-up md:order-1"
-        >
-          <div
-            role="group"
-            aria-roledescription="slide"
-            aria-label={`${index + 1} of ${banners.length}`}
-          >
-            <div className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-2">
-              <span className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-anchor">
-                <span className="size-1.5 rounded-full bg-bronze" aria-hidden="true" />
-                Keian Luxandor · Diamond atelier
-              </span>
-              <span className="hidden h-3.5 w-px bg-line-dark sm:block" aria-hidden="true" />
-              <span className="text-[10px] uppercase tracking-[0.16em] text-slate">
-                GIA &amp; IGI certified
+      {/* Aceternity-style spotlight: a soft sand-coloured glow sweeps in once */}
+      <Spotlight className="-top-40 left-0 md:-top-20 md:left-40" fill="rgba(220, 203, 168, 0.55)" />
+      <div className=" bg-sand page relative z-10 grid items-center gap-10 py-12 md:grid-cols-[1.1fr_1fr] md:py-20 lg:gap-16">
+        <div key={b.id} aria-live="polite" aria-atomic="true" className="order-2 animate-fade-up md:order-1">
+          <div role="group" aria-roledescription="slide" aria-label={`${index + 1} of ${banners.length}`}>
+            <div className="flex items-center gap-2 mb-4">
+              <Badge variant="cert" className="text-[11px] px-3 py-1 shadow-2xs">
+                <Sparkles className="size-3 mr-1 text-loupe" />
+                Pure Loose Solitaires
+              </Badge>
+              <span className="text-[11px] font-mono uppercase tracking-widest text-slate">
+                GIA &amp; IGI Inscribed
               </span>
             </div>
 
-            <h1 className="max-w-[12ch] font-editorial text-[clamp(2.8rem,5.5vw,5rem)] font-normal leading-[0.96] tracking-[-0.035em] text-ink text-balance">
-              {banner.title}
+            <h1 className="font-editorial text-[2.75rem] sm:text-5xl lg:text-6xl font-medium tracking-tight text-ink leading-[1.05] text-balance">
+              {b.title}
             </h1>
 
-            <p className="mt-5 max-w-[47ch] text-[15px] leading-[1.85] text-ink/70 sm:text-base">
-              {banner.text}
+            <p className="mt-5 max-w-[48ch] text-base sm:text-lg text-slate leading-relaxed">
+              {b.text}
             </p>
 
-            <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-4">
-              <Link
-                href={banner.ctaHref}
-                className="btn btn-primary inline-flex min-h-12 items-center gap-3 rounded-full px-7 py-3.5 text-[11px] tracking-[0.14em] shadow-[0_12px_24px_-18px_rgba(31,58,50,0.8)] transition-all hover:-translate-y-0.5 hover:shadow-[0_16px_30px_-18px_rgba(31,58,50,0.75)]"
-              >
-                {banner.ctaLabel}
-                <ArrowUpRight className="size-4" strokeWidth={1.6} aria-hidden="true" />
+            <div className="mt-8 flex flex-wrap items-center gap-4">
+              <Link href={b.ctaHref}>
+                <span className="btn btn-primary rounded-sm px-7 py-3.5">
+                  {b.ctaLabel}
+                  <ArrowRight className="size-3.5" />
+                </span>
               </Link>
-
               <Link
                 href="/education/shapes"
-                className="group inline-flex items-center gap-2 py-2 text-[11px] font-medium uppercase tracking-[0.12em] text-ink/75 transition-colors hover:text-brand-anchor"
+                className="inline-flex items-center justify-center rounded-sm border border-line-dark bg-white px-6 py-3 text-xs font-medium uppercase tracking-[0.08em] text-ink transition-colors hover:border-ink"
               >
-                Find your shape
-                <ArrowRight
-                  className="size-3.5 transition-transform group-hover:translate-x-1"
-                  strokeWidth={1.6}
-                  aria-hidden="true"
-                />
+                Shape Metrology Guide
               </Link>
-            </div>
-
-            <div className="mt-8 flex items-center gap-2 text-[10px] uppercase tracking-[0.13em] text-slate">
-              <span className="font-medium text-ink/75">Natural &amp; lab-grown</span>
-              <span className="size-1 rounded-full bg-bronze/70" aria-hidden="true" />
-              <span>Selected with care</span>
             </div>
           </div>
 
           {banners.length > 1 && (
-            <div className="mt-9 flex items-center gap-4 border-t border-line-dark/70 pt-5">
+            <div className="mt-12 flex items-center gap-4">
               <button
                 type="button"
                 onClick={() => go(-1)}
-                className="grid size-9 shrink-0 place-items-center rounded-full border border-line-dark bg-white/70 text-ink transition-all hover:border-brand-anchor/50 hover:bg-white hover:text-brand-anchor focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-anchor/30"
-                aria-label="Previous featured collection"
+                className="grid size-10 place-items-center rounded-full border border-line bg-surface hover:border-ink hover:shadow-xs transition-all"
+                aria-label="Previous slide"
               >
-                <ChevronLeft className="size-4" strokeWidth={1.6} aria-hidden="true" />
+                <ChevronLeft className="size-4 text-ink" aria-hidden />
               </button>
-
-              <ol className="flex items-center gap-1.5" aria-label="Choose a featured collection">
-                {banners.map((item, itemIndex) => (
-                  <li key={item.id}>
+              <ol className="flex items-center gap-2">
+                {banners.map((x, i) => (
+                  <li key={x.id}>
                     <button
                       type="button"
-                      onClick={() => setIndex(itemIndex)}
-                      aria-label={`Show collection ${itemIndex + 1}: ${item.title}`}
-                      aria-current={itemIndex === index ? "true" : undefined}
-                      className={`h-1.5 rounded-full transition-all duration-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-anchor/35 focus-visible:ring-offset-2 ${
-                        itemIndex === index
-                          ? "w-8 bg-brand-anchor"
-                          : "w-3 bg-line-dark hover:bg-brand-anchor/55"
+                      onClick={() => setIndex(i)}
+                      aria-label={`Show slide ${i + 1}: ${x.title}`}
+                      aria-current={i === index}
+                      className={`block rounded-full transition-all duration-300 ${
+                        i === index ? "size-3 bg-[var(--brand-accent)] ring-2 ring-[var(--brand-accent)]/25" : "size-2 bg-line-dark hover:bg-[var(--brand-accent)]"
                       }`}
                     />
                   </li>
                 ))}
               </ol>
-
-              <span className="ml-1 whitespace-nowrap font-mono text-[10px] tracking-[0.12em] text-slate">
-                {String(index + 1).padStart(2, "0")}
-                <span className="px-1.5 text-line-strong">/</span>
-                {String(banners.length).padStart(2, "0")}
-              </span>
-
               <button
                 type="button"
                 onClick={() => go(1)}
-                className="grid size-9 shrink-0 place-items-center rounded-full border border-line-dark bg-white/70 text-ink transition-all hover:border-brand-anchor/50 hover:bg-white hover:text-brand-anchor focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-anchor/30"
-                aria-label="Next featured collection"
+                className="grid size-10 place-items-center rounded-full border border-line bg-surface hover:border-ink hover:shadow-xs transition-all"
+                aria-label="Next slide"
               >
-                <ChevronRight className="size-4" strokeWidth={1.6} aria-hidden="true" />
+                <ChevronRight className="size-4 text-ink" aria-hidden />
               </button>
             </div>
           )}
         </div>
 
-        <div className="order-1 flex justify-center md:order-2 md:justify-end">
-          <figure className="relative w-full max-w-[35rem]">
-            <div
-              key={`${banner.id}-film`}
-              className="relative aspect-[5/4] overflow-hidden rounded-[1.65rem] border border-white/80 bg-[#202722] shadow-[0_28px_72px_-35px_rgba(31,45,37,0.5)] sm:rounded-[2rem]"
-            >
-              <video
-                key={visual.src}
-                src={visual.src}
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="auto"
-                aria-hidden="true"
-                className="absolute inset-0 size-full object-cover"
-                style={{ objectPosition: visual.position }}
+        <div className="order-1 md:order-2 flex justify-center">
+          {b.imageUrl ? (
+            <div className="relative aspect-square w-full max-w-lg overflow-hidden rounded-none border border-line bg-stone">
+              <Image unoptimized
+                src={b.imageUrl}
+                alt=""
+                fill
+                priority
+                sizes="(min-width: 768px) 50vw, 100vw"
+                className="object-cover"
               />
-              <div
-                aria-hidden="true"
-                className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(13,20,16,0.10)_0%,rgba(13,20,16,0.02)_42%,rgba(13,20,16,0.72)_100%)]"
-              />
-              <div className="pointer-events-none absolute inset-3 rounded-[1.25rem] border border-white/20 sm:inset-4 sm:rounded-[1.5rem]" />
-
-              <figcaption className="absolute inset-x-0 bottom-0 px-7 pb-7 pt-20 text-white sm:px-9 sm:pb-9">
-                <span className="mb-2 block text-[9px] font-medium uppercase tracking-[0.2em] text-white/70">
-                  {visual.label}
-                </span>
-                <p className="max-w-[18ch] font-editorial text-[1.8rem] leading-[1.05] sm:text-[2.15rem]">
-                  {visual.caption}
-                </p>
-              </figcaption>
             </div>
-          </figure>
+          ) : (
+            <div className="banner-slot relative aspect-square w-full max-w-[480px] border border-line p-8 flex items-center justify-center select-none">
+              {/* Subtle architectural specimen drafting overlay */}
+              <div className="absolute top-4 left-4 text-[11px] font-mono tracking-wider text-slate uppercase">
+                SPECIMEN REF. KL-9041 · 1.51 CT
+              </div>
+              <div className="absolute bottom-4 right-4 text-[11px] font-mono tracking-wider text-slate uppercase">
+                TRIPLE EXCELLENT · GIA
+              </div>
+
+              {/* Star facet fire sparkles */}
+              <svg className="absolute top-1/4 right-1/4 w-5 h-5 text-[#6E5230] opacity-80" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 0L14 9L23 12L14 15L12 24L10 15L1 12L10 9Z" />
+              </svg>
+              <svg className="absolute bottom-1/4 left-1/4 w-4 h-4 text-[#A9BDB0] opacity-80" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 0L14 9L23 12L14 15L12 24L10 15L1 12L10 9Z" />
+              </svg>
+              <svg className="absolute top-1/3 left-1/3 w-3.5 h-3.5 text-[#C6B38D] opacity-75" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M12 0L14 9L23 12L14 15L12 24L10 15L1 12L10 9Z" />
+              </svg>
+
+              <div className="relative z-10 w-full flex items-center justify-center">
+                <HeroDiamond shape={b.shape ?? "ROUND"} />
+              </div>
+              <span className="absolute bottom-4 left-4 z-10 bg-white/85 px-2 py-1 text-[11px] font-mono uppercase tracking-widest text-slate">
+                Certified diamond imagery
+              </span>
+            </div>
+          )}
         </div>
       </div>
     </section>
