@@ -69,8 +69,8 @@ export function Header() {
             <Image
               src="/Keian_Luxandor_logo2.png"
               alt="KEIAN Luxandor"
-              width={200}
-              height={100}
+              width={150}
+              height={80}
               priority
               unoptimized
             />
