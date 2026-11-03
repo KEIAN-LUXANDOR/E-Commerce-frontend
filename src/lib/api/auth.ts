@@ -25,8 +25,8 @@ export async function logout(): Promise<void> {
   clearCsrfToken();
 }
 
-export async function getMe(): Promise<User> {
-  return apiFetch<User>("/auth/me");
+export async function getMe(): Promise<User | null> {
+  return apiFetch<User | null>("/auth/me");
 }
 
 export async function verifyEmail(token: string): Promise<MessageResponse> {

@@ -11,6 +11,7 @@ import {
 } from "@/components/home/HomeSections";
 import Link from "next/link";
 import { Suspense } from "react";
+import { connection } from "next/server";
 import type { Banner } from "@/lib/types/catalog";
 import { HomeProductCard as ProductCard } from "@/components/home/HomeProductCard";
 import { getNewArrivals } from "@/lib/api/products";
@@ -73,7 +74,7 @@ export default function HomePage() {
       <OriginCompare naturalHref={naturalHref} labHref={labHref} />
 
       {/* 5. New This Month */}
-      <section className="w-full border-b border-line bg-white py-16 lg:py-20" id="new-month">
+      <section className="home-deferred home-deferred--arrivals w-full border-b border-line bg-white py-16 lg:py-20" id="new-month">
         <div className="mx-auto max-w-7xl px-6 lg:px-12">
           <Reveal className="flex items-end justify-between gap-4">
             <div>
@@ -93,23 +94,27 @@ export default function HomePage() {
       </section>
 
       {/* 6. How it works + the 4 Cs */}
-      <HowItWorks />
+      <div className="home-deferred home-deferred--how-it-works">
+        <HowItWorks />
+      </div>
 
       {/* 7. Editorial photo banner */}
-      <Reveal>
+      <Reveal className="home-deferred home-deferred--editorial">
         <EditorialMonographBanner />
       </Reveal>
 
       {/* 8. Talk to a gemologist (with a travelling border beam) */}
-      <GemologistConciergeBand />
+      <div className="home-deferred home-deferred--concierge">
+        <GemologistConciergeBand />
+      </div>
 
       {/* 9. Client reviews */}
-      <Reveal>
+      <Reveal className="home-deferred home-deferred--reviews">
         <ClientReviews />
       </Reveal>
 
       {/* 10. Frequently asked questions */}
-      <Reveal>
+      <Reveal className="home-deferred home-deferred--faq">
         <HomeFAQ />
       </Reveal>
     </>
@@ -118,6 +123,7 @@ export default function HomePage() {
 
 /** Newest diamonds from the live catalogue (streams in, so the page never waits for the API). */
 async function NewArrivals() {
+  await connection();
   const newest = await getNewArrivals(4);
   return (
     <ul className="mt-6 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">

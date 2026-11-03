@@ -24,8 +24,8 @@
   /* Dark 25%: graphite for reading, forest for brand surfaces */
   --color-ink: #2B2D31;
   --color-ink-secondary: #505750;
-  --color-slate: #6B716B;
-  --color-muted: #6B716B;
+  --color-slate: #696F69;
+  --color-muted: #696F69;
 
   --color-line: #E8E1D7;
   --color-line-dark: #D6CCBF;
@@ -642,6 +642,26 @@
   opacity: 1;
   transform: none;
   filter: none;
+}
+
+.home-deferred {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 1000px;
+}
+.home-deferred--arrivals { contain-intrinsic-size: auto 1372px; }
+.home-deferred--how-it-works { contain-intrinsic-size: auto 1072px; }
+.home-deferred--editorial { contain-intrinsic-size: auto 1220px; }
+.home-deferred--concierge { contain-intrinsic-size: auto 450px; }
+.home-deferred--reviews { contain-intrinsic-size: auto 754px; }
+.home-deferred--faq { contain-intrinsic-size: auto 730px; }
+
+@media (max-width: 639px) {
+  .home-deferred--arrivals { contain-intrinsic-size: auto 2186px; }
+  .home-deferred--how-it-works { contain-intrinsic-size: auto 1625px; }
+  .home-deferred--editorial { contain-intrinsic-size: auto 1010px; }
+  .home-deferred--concierge { contain-intrinsic-size: auto 795px; }
+  .home-deferred--reviews { contain-intrinsic-size: auto 1538px; }
+  .home-deferred--faq { contain-intrinsic-size: auto 826px; }
 }
 
 /* Magic UI style "border beam": a light travelling around a rounded card */

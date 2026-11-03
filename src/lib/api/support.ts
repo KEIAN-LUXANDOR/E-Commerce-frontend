@@ -19,6 +19,21 @@ export interface EnquiryRequest {
   preferredTime?: "MORNING" | "AFTERNOON" | "EVENING";
 }
 
+export interface ContactMessageRequest {
+  name: string;
+  email: string;
+  phone: string;
+  subject: string;
+  orderNumber: string;
+  message: string;
+  website: string;
+}
+
+/** Public contact form. This endpoint does not require a session or CSRF token. */
+export async function sendContactMessage(body: ContactMessageRequest): Promise<MessageResponse> {
+  return apiFetch<MessageResponse>("/contact", { method: "POST", body });
+}
+
 /** 201 { message }. 400 field errors. 429 too many messages. */
 export async function sendEnquiry(body: EnquiryRequest): Promise<MessageResponse> {
   requireFeature("enquiries");

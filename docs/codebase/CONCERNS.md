@@ -5,8 +5,7 @@
 | Severity | Concern | Impact | Suggested action |
 |---|---|---|---|
 | High | Old and current storefront implementations coexist. `src/components/store/` and `src/components/shop/` include legacy modules excluded by `tsconfig.json`. | Future imports can reintroduce incompatible product models or missing exports. | `[ASK USER]` Decide whether to archive/remove the old implementation or retain it as a supported compatibility surface. |
-| Medium | `npm run lint` remains red (109 errors, 108 warnings in the observed run), while tests, typecheck, and production build pass. | Unrelated lint debt obscures future regressions. | Triage lint errors in a separate, scoped cleanup. |
-| High | Many frontend API contracts have no matching backend controller: planned admin, invoice, returns, tracking, newsletter, enquiry, banners, featured products, and delivery PIN APIs. A Razorpay contract is now supplied, but its backend implementation is not independently verified. | Unsupported operations may fail against the configured backend. | Verify each route against the running backend before relying on it. |
+| High | Many frontend API contracts have no matching backend controller in the reviewed inventory. Feature switches currently default on. | Unsupported storefront or admin operations may fail against the configured backend. | Verify each enabled route against the deployed backend before go-live; disable unsupported features. |
 | Medium | Public `GET /actuator/health` is configured with `management.endpoint.health.show-details=always`. | Health responses expose component details to unauthenticated callers. | Hide details on the public endpoint or protect a separate detailed health endpoint. |
 | Medium | Payment is enabled by default and has a supplied frontend contract; tracking, invoice, return, coupon, and admin APIs may not match backend implementations. | Optional workflows may fail against the configured backend. | Verify backend implementation and response schemas before production use. |
 | High | Backend did not respond on port 8080 during the current check; PostgreSQL accepted connections on port 5433. | Frontend API calls fail until Spring Boot is running. | Start the backend and inspect its startup logs; the port probe alone cannot establish why it stopped. |
@@ -18,7 +17,6 @@
 |---|---|---|---|
 | Legacy store and shop components use removed store exports and old product types | `src/components/store/`, `src/components/shop/`, `src/lib/stores.ts`, `tsconfig.json` | Reintroducing files into current routes causes type/build failures | Consolidate around `src/lib/shop/` and current `Product` type, or explicitly archive the old modules |
 | Optional API work is planned and feature-gated | `src/config/features.ts`, `src/lib/api/orders.ts` | Optional UI may be unavailable until backend contracts exist | Track endpoint readiness and test each enabled feature |
-| Setup route descriptions are stale | `SETUP.md`, current `src/app/` | Incorrect onboarding and route assumptions | Keep setup docs aligned with the active route graph |
 
 ## Security and Performance Notes
 
@@ -57,7 +55,8 @@ account, and admin-shell paths among the most changed files.
 - `../backend/backend/src/main/java/com/keianluxandor/backend`
 - `../backend/backend/src/main/resources/application.properties`
 - `src/lib/site.ts`
-- `SETUP.md`
+- `README.md`
+- `.env.example`
 - `src/app/(shop)/shop/[[...category]]/page.tsx`
 - `src/app/(shop)/product/[slug]/page.tsx`
 - `package.json`

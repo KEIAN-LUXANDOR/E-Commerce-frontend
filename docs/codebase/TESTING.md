@@ -22,7 +22,8 @@ folders, including:
 - `src/components/admin/__tests__/`
 - `src/components/checkout/__tests__/`
 - `src/components/layout/__tests__/`
-- `src/components/store/__tests__/`
+- `src/components/ui/primitives.test.tsx`
+- `src/lib/catalog/__tests__/`
 
 ## Scope and Isolation
 
@@ -38,18 +39,14 @@ the TypeScript typecheck; Vitest executes them separately.
 
 ## Current Validation Snapshot
 
-Observed during this repair:
+The latest production-readiness pass observed:
 
 - `npm run typecheck`: passed.
-- `npm test`: 14 test files and 40 tests passed.
-- `npm run build`: passed and generated the current route graph. The home
-  page's new-arrivals fetch logs a prerender-cancellation warning; this does not
-  establish whether the backend is unavailable.
-- Focused ESLint on repaired route/search/API and admin action files: passed.
-- `npm run lint`: still fails repository-wide (109 errors, 108 warnings in
-  the observed run); these include existing issues outside the repaired scope.
+- `npm test`: 13 test files and 31 tests passed.
+- `npm run lint`: passed.
+- `npm run build`: passed and generated the current route graph.
 
-The test snapshot is time-specific; rerun the commands before relying on it.
+Rerun these commands after changes; this snapshot is not a continuous CI check.
 
 ## Evidence
 

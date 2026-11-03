@@ -177,3 +177,22 @@ export interface AdminEnquiry {
   preferredTime: string | null;
   createdAt: string;
 }
+
+export interface ContactMessageStats {
+  newMessages: number;
+  totalMessages: number;
+}
+
+export interface AdminContactMessage {
+  id: string | number;
+  name: string;
+  email: string;
+  phone: string | null;
+  subject: string;
+  orderNumber: string | null;
+  message: string;
+  website?: string;
+  status: "NEW" | "HANDLED";
+  createdAt: string;
+  handledAt?: string | null;
+}

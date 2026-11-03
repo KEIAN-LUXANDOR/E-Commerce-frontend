@@ -82,7 +82,7 @@ export function Footer() {
             <NewsletterForm />
           </div>
           <div className="max-w-sm pt-2">
-            <MarketSelector />
+            <MarketSelector labelClassName="text-white/80" />
           </div>
         </div>
 

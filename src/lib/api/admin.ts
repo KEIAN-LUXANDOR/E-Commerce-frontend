@@ -3,6 +3,8 @@ import { requireFeature } from "@/config/features";
 import type {
   AdminCustomer,
   AdminCustomerSummary,
+  AdminContactMessage,
+  ContactMessageStats,
   AdminEnquiry,
   AdminImage,
   AdminOrder,
@@ -215,4 +217,33 @@ export async function listEnquiries(f: { status?: EnquiryStatus; type?: AdminEnq
 export async function setEnquiryStatus(id: string, status: EnquiryStatus) {
   requireFeature("adminEnquiries");
   return apiFetch<AdminEnquiry>(`/admin/enquiries/${encodeURIComponent(id)}/status`, { method: "PUT", body: { status } });
+}
+
+export const CONTACT_MESSAGES_UPDATED_EVENT = "admin-contact-messages-updated";
+
+export async function getContactMessageStats() {
+  requireFeature("adminEnquiries");
+  return apiFetch<ContactMessageStats>("/admin/contact-messages/stats", { cache: "no-store" });
+}
+
+export async function listContactMessages(f: {
+  status?: AdminContactMessage["status"];
+  page?: number;
+  size?: number;
+} = {}) {
+  requireFeature("adminEnquiries");
+  return apiFetch<Paged<AdminContactMessage>>(
+    `/admin/contact-messages${qs({ status: f.status, page: f.page ?? 0, size: f.size ?? 20 })}`,
+    { cache: "no-store" },
+  );
+}
+
+export async function getContactMessage(id: string | number) {
+  requireFeature("adminEnquiries");
+  return apiFetch<AdminContactMessage>(`/admin/contact-messages/${encodeURIComponent(id)}`, { cache: "no-store" });
+}
+
+export async function markContactMessageHandled(id: string | number) {
+  requireFeature("adminEnquiries");
+  return apiFetch<void>(`/admin/contact-messages/${encodeURIComponent(id)}/handled`, { method: "PUT" });
 }

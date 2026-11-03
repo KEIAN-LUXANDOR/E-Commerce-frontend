@@ -18,5 +18,6 @@ stop it before reinstalling dependencies or running a production build.
 Other root commands: `npm run lint`, `npm run typecheck`, `npm test`, and
 `npm run build`.
 
-For backend startup, environment configuration, and the supported API routes, see
-[`SETUP.md`](SETUP.md) and [`../docs/api.md`](../docs/api.md).
+For frontend setup and environment configuration, see
+[`docs/FRONTEND_GUIDE.md`](docs/FRONTEND_GUIDE.md). For the API route inventory,
+see [`docs/API-ROUTES.md`](docs/API-ROUTES.md).

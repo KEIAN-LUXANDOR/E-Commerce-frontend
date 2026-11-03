@@ -1,9 +1,13 @@
-import { dirname } from "node:path";
+import { existsSync } from "node:fs";
+import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import type { NextConfig } from "next";
 
 const apiUrl = (process.env.API_URL ?? "http://localhost:8080").replace(/\/+$/, "");
 const frontendRoot = dirname(fileURLToPath(import.meta.url));
+const turbopackRoot = existsSync(join(frontendRoot, "node_modules", "next", "package.json"))
+  ? frontendRoot
+  : dirname(frontendRoot);
 
 const nextConfig: NextConfig = {
   cacheComponents: true,
@@ -26,7 +30,7 @@ const nextConfig: NextConfig = {
     ];
   },
   turbopack: {
-    root: dirname(frontendRoot),
+    root: turbopackRoot,
     rules: {
       "*.css": {
         loaders: ["@tailwindcss/turbopack"],

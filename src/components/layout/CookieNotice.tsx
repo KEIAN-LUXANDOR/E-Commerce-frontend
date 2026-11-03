@@ -17,7 +17,7 @@ export function CookieNotice() {
       <div className="page flex flex-col gap-3 py-4 sm:flex-row sm:items-center sm:justify-between">
         <p className="text-sm text-slate">
           We use essential cookies to keep you signed in and remember your cart. With your permission we also measure visits to
-          improve the site. <Link href="/policies/privacy" className="link">Privacy policy</Link>
+          improve the site. <Link href="/privacy" className="link">Privacy policy</Link>
         </p>
         <div className="flex shrink-0 gap-2">
           <button type="button" className="btn btn-secondary" onClick={() => consentStore.set("essential")}>

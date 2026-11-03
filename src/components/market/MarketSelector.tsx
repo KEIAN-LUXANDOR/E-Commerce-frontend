@@ -7,18 +7,20 @@ import { useMarket } from "@/components/market/MarketProvider";
 interface MarketSelectorProps {
   compact?: boolean;
   className?: string;
+  labelClassName?: string;
 }
 
 export function MarketSelector({
   compact = false,
   className = "",
+  labelClassName = "text-slate",
 }: MarketSelectorProps) {
   const { countryCode, country, currency, setCountryCode } = useMarket();
 
   return (
     <div className={`${compact ? "inline-flex" : "flex w-full flex-col gap-2"} ${className}`}>
       {!compact && (
-        <span className="text-[10px] font-semibold uppercase tracking-[0.16em] text-slate">
+        <span className={`text-[10px] font-semibold uppercase tracking-[0.16em] ${labelClassName}`}>
           Shopping region · prices in USD
         </span>
       )}

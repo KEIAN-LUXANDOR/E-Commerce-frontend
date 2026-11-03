@@ -41,7 +41,7 @@ export function AnnouncementBar() {
           </a>
 
           <Link
-            href="/legal/shipping"
+            href="/shipping"
             className="text-[var(--color-slate)] hover:text-[var(--color-ink)] transition-colors"
           >
             Delivery

@@ -1,5 +1,5 @@
 /**
- * Feature switches. Turn one on only when its backend endpoint exists (see docs/api.md).
+ * Feature switches. Turn one on only when its backend endpoint exists (see docs/API-ROUTES.md).
  * Live on the backend (29 Oct 2026): orders + Razorpay payments. Everything else is planned,
  * and its page shows a friendly "coming soon" fallback while switched off.
  * For local testing with the stand-in API: NEXT_PUBLIC_FEATURES=all
@@ -35,7 +35,7 @@ const defaults = {
   adminReturns: true,
   /** Admin: coupons. /admin/coupons/** */
   adminCoupons: true,
-  /** Admin: contact messages and viewing requests. /admin/enquiries/** */
+  /** Admin: contact messages and consultations. /admin/contact-messages/** and /admin/enquiries/** */
   adminEnquiries: true,
 };
 

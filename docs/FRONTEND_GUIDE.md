@@ -8,8 +8,8 @@ the API contract as authoritative when they differ from older setup notes.
 - Next.js 16.4.2 App Router, React 19, TypeScript strict mode, Tailwind CSS 4.
 - The frontend talks to a Spring Boot REST backend; it does not connect directly
   to PostgreSQL.
-- API contracts and local startup instructions are in [`api.md`](./api.md) and
-  [`../SETUP.md`](../SETUP.md).
+- API route inventory: [`API-ROUTES.md`](./API-ROUTES.md). Local startup
+  instructions are in [`../README.md`](../README.md).
 - Architecture, integrations, testing, and concerns are described in
   [`codebase/`](./codebase/).
 
@@ -27,8 +27,7 @@ npm run start
 ```
 
 Do not run a second development server on the same project while one is already
-using its `.next` directory. For backend-backed pages, configure `API_URL` and
-`NEXT_PUBLIC_USE_MOCK_API=false`; see `SETUP.md`.
+using its `.next` directory. For backend-backed pages, configure the variables in [`../.env.example`](../.env.example).
 
 ## Active Route Map
 
@@ -40,7 +39,6 @@ using its `.next` directory. For backend-backed pages, configure `API_URL` and
 | Search | `src/app/search/page.tsx` |
 | Cart | `src/app/cart/page.tsx` → `src/components/checkout/CartView.tsx` |
 | Checkout | `src/app/checkout/page.tsx` → `src/components/checkout/CheckoutFlow.tsx` |
-| Compare | `src/app/compare/page.tsx` → `src/components/catalog/CompareView.tsx` |
 | Wishlist | `src/app/wishlist/page.tsx` → `src/components/catalog/WishlistView.tsx` |
 | Account and auth | `src/app/account/`, `src/app/(auth)/` |
 | Admin | `src/app/admin/` |
@@ -111,7 +109,7 @@ Do not treat browser snapshots as authoritative.
   by `src/config/features.ts` and default off.
 - WhatsApp destination comes from `NEXT_PUBLIC_WHATSAPP_NUMBER`; if unset, the
   generated link is empty.
-- Full endpoint contract: [`api.md`](./api.md).
+- API route inventory: [`API-ROUTES.md`](./API-ROUTES.md).
 
 ## Build and Test Notes
 
@@ -129,13 +127,12 @@ the current product/store contracts. Vitest still discovers tests under
 
 ## Intent Versus Current Implementation
 
-- `SETUP.md` describes `/shop` and `/product` as main routes; they are now
-  compatibility redirects to `/diamonds` and `/diamond`.
-- `README.md` describes a generic product/category storefront, while the current
-  UI and product type include certified diamond-specific details.
-- `prompt.md` names `components/store` as a preferred organization, while the
-  current active UI is organized mainly under `components/catalog`,
-  `components/diamond`, `components/checkout`, and related feature folders.
+- `/shop/*` and `/product/{slug}` are compatibility redirects to the current
+  `/diamonds` and `/diamond/{slug}` routes.
+- The current UI and product type include certified diamond-specific details.
+- Older `components/store` and `components/shop` modules remain in the source
+  tree; the active UI is organized around catalog, diamond, checkout, and
+  related feature folders.
 - The user confirmed that the old `/shop` and `/product` URLs should remain
   redirects. Whether to archive the old component modules remains
   `[ASK USER]`/undecided.
@@ -147,4 +144,4 @@ the current product/store contracts. Vitest still discovers tests under
 - `src/lib/api/client.ts`, `src/lib/api/products.ts`
 - `src/lib/shop/cart.ts`, `src/lib/shop/wishlist.ts`
 - `src/config/features.ts`
-- `README.md`, `SETUP.md`, `prompt.md`, `docs/api.md`
+- `README.md`, `.env.example`, `docs/API-ROUTES.md`

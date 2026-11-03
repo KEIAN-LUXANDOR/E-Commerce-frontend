@@ -64,6 +64,7 @@ const NO_CSRF_PATHS = [
   "/auth/resend-verification",
   "/auth/forgot-password",
   "/auth/reset-password",
+  "/contact",
 ];
 
 function isBodyInit(body: unknown): body is BodyInit {
@@ -129,7 +130,7 @@ export async function apiFetch<T>(path: string, options: ApiRequestOptions = {})
     headers.set("Content-Type", "application/json");
   }
 
-  const isNoCsrfPath = NO_CSRF_PATHS.some((p) => path.includes(p));
+  const isNoCsrfPath = NO_CSRF_PATHS.some((p) => path === p || path.startsWith(`${p}/`));
 
   if (method !== "GET" && !isNoCsrfPath) {
     if (!csrfToken) {

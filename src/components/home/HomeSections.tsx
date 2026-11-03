@@ -1,5 +1,3 @@
-"use client";
-
 import Link from "next/link";
 import {
   Sparkles,
@@ -10,13 +8,13 @@ import {
   CheckCircle2,
   HelpCircle,
   ArrowRight,
+  ChevronDown,
 } from "lucide-react";
 import { DiamondProfile } from "@/components/art/FacetDiagram";
 import { site, whatsappLink } from "@/lib/site";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip";
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from "@/components/ui/accordion";
 
 /** Quick curation pills for human buyers */
 export const POPULAR_CURATIONS = [
@@ -258,13 +256,6 @@ export function ShopByShape() {
 /* ─────────────────────────────────────────────────────────────
    ORIGIN COMPARE — asymmetric: clean white vs deep navy
    ───────────────────────────────────────────────────────────── */
-/** Moves the card's soft spotlight to follow the cursor (styles: .spotlight-card in globals.css). */
-function trackSpotlight(e: React.MouseEvent<HTMLElement>) {
-  const r = e.currentTarget.getBoundingClientRect();
-  e.currentTarget.style.setProperty("--spot-x", `${e.clientX - r.left}px`);
-  e.currentTarget.style.setProperty("--spot-y", `${e.clientY - r.top}px`);
-}
-
 export function OriginCompare({
   naturalHref = "/shop?q=natural",
   labHref = "/shop?q=lab",
@@ -277,7 +268,7 @@ export function OriginCompare({
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           {/* Natural diamonds — clean white */}
-          <div onMouseMove={trackSpotlight} className="spotlight-card relative bg-stone p-8 sm:p-12 flex flex-col justify-between min-h-[360px] border border-line overflow-hidden group hover:border-bronze transition-colors duration-300">
+          <div className="spotlight-card relative bg-stone p-8 sm:p-12 flex flex-col justify-between min-h-[360px] border border-line overflow-hidden group hover:border-bronze transition-colors duration-300">
             {/* Decorative circle */}
             <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full border border-[var(--color-line-dark)] opacity-20 pointer-events-none" />
             <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full border border-bronze opacity-10 pointer-events-none" />
@@ -311,7 +302,7 @@ export function OriginCompare({
           </div>
 
           {/* Lab-Grown Diamonds — deep navy */}
-          <div onMouseMove={trackSpotlight} className="spotlight-card relative bg-champagne p-8 sm:p-12 flex flex-col justify-between min-h-[360px] overflow-hidden group hover:shadow-lg transition-shadow duration-300">
+          <div className="spotlight-card relative bg-champagne p-8 sm:p-12 flex flex-col justify-between min-h-[360px] overflow-hidden group hover:shadow-lg transition-shadow duration-300">
             {/* Decorative circles on dark bg */}
             <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full border border-bronze/20 pointer-events-none" />
             <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full border border-bronze/20 pointer-events-none" />
@@ -697,23 +688,24 @@ export function HomeFAQ() {
           </h2>
         </div>
 
-        <Accordion type="single" collapsible className="space-y-2">
+        <div className="space-y-2">
           {faqs.map((f, i) => (
-            <AccordionItem
+            <details
               key={f.q}
-              value={`faq-${i}`}
-              className="border border-line bg-white px-5 transition-colors duration-200 hover:border-[var(--brand-accent)] data-[state=open]:border-l-2 data-[state=open]:border-l-[var(--brand-accent)] animate-fade-up"
+              name="home-faq"
+              className="group border border-line bg-white px-5 transition-colors duration-200 hover:border-[var(--brand-accent)] open:border-l-2 open:border-l-[var(--brand-accent)] animate-fade-up"
               style={{ animationDelay: `${i * 60}ms` }}
             >
-              <AccordionTrigger className="py-5 text-left font-serif text-[18px] font-normal hover:no-underline">
+              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-left font-serif text-[18px] font-normal [&::-webkit-details-marker]:hidden">
                 {f.q}
-              </AccordionTrigger>
-              <AccordionContent className="border-t border-line/60 pt-4 text-[15px] font-sans">
+                <ChevronDown className="size-4 shrink-0 text-slate transition-transform duration-200 group-open:rotate-180" aria-hidden="true" />
+              </summary>
+              <div className="border-t border-line/60 pb-4 pt-4 text-[15px] font-sans text-slate leading-relaxed">
                 {f.a}
-              </AccordionContent>
-            </AccordionItem>
+              </div>
+            </details>
           ))}
-        </Accordion>
+        </div>
 
         <div className="mt-10 text-center">
           <Link

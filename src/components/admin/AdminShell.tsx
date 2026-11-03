@@ -16,6 +16,7 @@ import {
   MessageSquare
 } from "lucide-react";
 import { sessionStore } from "@/lib/session";
+import { CONTACT_MESSAGES_UPDATED_EVENT, getContactMessageStats } from "@/lib/api/admin";
 
 const NAV = [
   { label: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -32,6 +33,7 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const session = sessionStore.useSession();
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [newContactMessages, setNewContactMessages] = useState<number>();
 
   const role = session?.user?.role?.toUpperCase();
   const isAuthorized = role === "ADMIN" || role === "OWNER";
@@ -45,6 +47,29 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
       router.push(`/admin/login?next=${encodeURIComponent(pathname ?? "/admin")}`);
     }
   }, [session.status, isAuthorized, router, isPublicAdminPage, pathname]);
+
+  useEffect(() => {
+    if (!isAuthorized || isPublicAdminPage) return;
+    let active = true;
+    const refreshContactMessageCount = () => {
+      getContactMessageStats()
+        .then((stats) => {
+          if (active) setNewContactMessages(stats.newMessages);
+        })
+        .catch((error: unknown) => {
+          if (!active) return;
+          console.error("Could not load the new contact message count.", error);
+          setNewContactMessages(undefined);
+        });
+    };
+
+    refreshContactMessageCount();
+    window.addEventListener(CONTACT_MESSAGES_UPDATED_EVENT, refreshContactMessageCount);
+    return () => {
+      active = false;
+      window.removeEventListener(CONTACT_MESSAGES_UPDATED_EVENT, refreshContactMessageCount);
+    };
+  }, [isAuthorized, isPublicAdminPage]);
 
   async function handleLogout() {
     await sessionStore.logout();
@@ -102,6 +127,14 @@ export function AdminShell({ children }: { children: React.ReactNode }) {
                 >
                   <Icon className="h-4 w-4" />
                   {item.label}
+                  {item.href === "/admin/enquiries" && newContactMessages !== undefined && newContactMessages > 0 && (
+                    <span
+                      aria-label={`${newContactMessages} new contact messages`}
+                      className={`ml-auto inline-flex min-w-5 items-center justify-center rounded-full px-1.5 py-0.5 text-xs font-semibold ${isActive ? "bg-white text-ink" : "bg-out text-white"}`}
+                    >
+                      {newContactMessages > 99 ? "99+" : newContactMessages}
+                    </span>
+                  )}
                 </Link>
               );
             })}

@@ -79,10 +79,10 @@ and planned calls. It does not imply that every route exists on the backend.
 | Method | Endpoint | Source file |
 |---|---|---|
 | POST | `/enquiries` | `src/lib/api/support.ts` (planned) |
+| POST | `/contact` (no login or CSRF token) | `src/lib/api/support.ts` |
 | POST | `/newsletter` | `src/lib/api/support.ts` (planned) |
 | GET | `/delivery/pincode/{pincode}` | `src/lib/api/support.ts` (planned) |
 | GET | `/pincodes/{pincode}` | `src/lib/api/support.ts` fallback; also `src/lib/api/catalog-browser.ts` (legacy/planned) |
-| POST | `/contact` | `src/components/contact/ContactForm.tsx` (legacy direct call) |
 
 ## Admin
 
@@ -110,6 +110,10 @@ They are feature-gated and require backend support.
 | PUT, DELETE | `/admin/coupons/{id}` |
 | GET | `/admin/enquiries` |
 | PUT | `/admin/enquiries/{id}/status` |
+| GET | `/admin/contact-messages/stats` |
+| GET | `/admin/contact-messages?status=NEW&page=0&size=20` |
+| GET | `/admin/contact-messages/{id}` |
+| PUT | `/admin/contact-messages/{id}/handled` (CSRF required) |
 | GET | `/banners/active` (`src/app/admin/banners/page.tsx`; planned) |
 
 ## Legacy direct calls to review
@@ -120,7 +124,6 @@ backend contract:
 | Method | Endpoint | Source file |
 |---|---|---|
 | PUT | `/account/password` | `src/components/account/ChangePasswordForm.tsx` (current helper uses `POST /account/change-password`) |
-| POST | `/contact` | `src/components/contact/ContactForm.tsx` (current support helper uses `POST /enquiries`) |
 | GET | `/pincodes/{pincode}` | `src/lib/api/catalog-browser.ts` and fallback in `src/lib/api/support.ts` |
 
 The health endpoint `/actuator/health` is a backend/operations endpoint; no

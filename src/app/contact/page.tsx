@@ -5,20 +5,20 @@ import { Button } from "@/components/ui/button";
 import { useState } from "react";
 import { Mail, Phone, MapPin, Clock, MessageCircle, Send, CheckCircle2 } from "lucide-react";
 import { site, whatsappUrl, telUrl, mailtoUrl } from "@/lib/site";
-import { isEnabled } from "@/config/features";
-import { sendEnquiry, type EnquiryType } from "@/lib/api/support";
+import { sendContactMessage } from "@/lib/api/support";
 import { showToast } from "@/lib/stores";
 
 export default function ContactPage() {
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [inquiryType, setInquiryType] = useState<EnquiryType>("CONTACT");
+  const [subject, setSubject] = useState("");
+  const [orderNumber, setOrderNumber] = useState("");
+  const [website, setWebsite] = useState("");
   const [message, setMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const [submitted, setSubmitted] = useState(false);
 
-  const enquiriesEnabled = isEnabled("enquiries");
   const whatsappLink = whatsappUrl(
     message
       ? `Hello Keian Luxandor, my name is ${fullName || "a client"}. Inquiry: ${message}`
@@ -36,31 +36,23 @@ export default function ContactPage() {
 
     setLoading(true);
 
-    if (enquiriesEnabled) {
-      try {
-        await sendEnquiry({
-          type: inquiryType,
-          fullName: fullName.trim(),
-          email: email.trim(),
-          phone: phone.trim(),
-          message: message.trim(),
-        });
-        setSubmitted(true);
-        showToast("Your inquiry has been received. Our gemologist will contact you shortly.", { tone: "success" });
-      } catch (error) {
-        showToast(error instanceof Error ? error.message : "Unable to send inquiry. Please reach out via WhatsApp.", { tone: "error" });
-      } finally {
-        setLoading(false);
-      }
-      return;
-    }
-
-    // Graceful offline fallback while backend endpoint is pending
-    setTimeout(() => {
-      setLoading(false);
+    try {
+      await sendContactMessage({
+        name: fullName.trim(),
+        email: email.trim(),
+        phone: phone.trim(),
+        subject: subject.trim(),
+        orderNumber: orderNumber.trim(),
+        message: message.trim(),
+        website,
+      });
       setSubmitted(true);
-      showToast("Message recorded. You can also connect directly via WhatsApp.", { tone: "success" });
-    }, 600);
+      showToast("Your inquiry has been received. Our gemologist will contact you shortly.", { tone: "success" });
+    } catch (error) {
+      showToast(error instanceof Error ? error.message : "Unable to send inquiry. Please reach out via WhatsApp.", { tone: "error" });
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -177,18 +169,32 @@ export default function ContactPage() {
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
+                <div className="sr-only" aria-hidden="true">
+                  <label htmlFor="page-website">Website</label>
+                  <input
+                    id="page-website"
+                    name="website"
+                    type="text"
+                    tabIndex={-1}
+                    autoComplete="off"
+                    value={website}
+                    onChange={(e) => setWebsite(e.target.value)}
+                  />
+                </div>
                 <div>
-                  <label htmlFor="page-f1" className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5">
-                    Inquiry Type
+                  <label htmlFor="page-subject" className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5">
+                    Subject *
                   </label>
-                  <select id="page-f1"
-                    value={inquiryType}
-                    onChange={(e) => setInquiryType(e.target.value as EnquiryType)}
+                  <select id="page-subject"
+                    required
+                    value={subject}
+                    onChange={(e) => setSubject(e.target.value)}
                     className="w-full h-11 border border-line bg-surface px-3 text-xs text-ink focus:border-ink focus:outline-none"
                   >
-                    <option value="CONTACT">General Gemological Consultation</option>
-                    <option value="VIEWING">Schedule Baner Showroom Appointment</option>
-                    <option value="DIAMOND_QUESTION">Specific Stone Certification Query</option>
+                    <option value="" disabled>Select a subject</option>
+                    <option value="General gemological consultation">General Gemological Consultation</option>
+                    <option value="Schedule Baner showroom appointment">Schedule Baner Showroom Appointment</option>
+                    <option value="Question about a diamond">Question About a Diamond</option>
                   </select>
                 </div>
 
@@ -198,6 +204,7 @@ export default function ContactPage() {
                       Full Name *
                     </label>
                     <input id="page-f2"
+                      name="name"
                       type="text"
                       required
                       placeholder="e.g. Priya Sharma"
@@ -211,6 +218,7 @@ export default function ContactPage() {
                       Email Address *
                     </label>
                     <input id="page-f3"
+                      name="email"
                       type="email"
                       required
                       placeholder="e.g. priya@example.com"
@@ -226,10 +234,25 @@ export default function ContactPage() {
                     Mobile Number (Optional)
                   </label>
                   <input id="page-f4"
+                    name="phone"
                     type="tel"
-                    placeholder="10-digit Indian mobile (e.g. 9876543210)"
+                    placeholder="Include country code if outside India"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
+                    className="w-full h-11 border border-line bg-surface px-3 text-xs text-ink focus:border-ink focus:outline-none"
+                  />
+                </div>
+
+                <div>
+                  <label htmlFor="page-order-number" className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5">
+                    Order Number (Optional)
+                  </label>
+                  <input id="page-order-number"
+                    name="orderNumber"
+                    type="text"
+                    placeholder="e.g. KL100019"
+                    value={orderNumber}
+                    onChange={(e) => setOrderNumber(e.target.value)}
                     className="w-full h-11 border border-line bg-surface px-3 text-xs text-ink focus:border-ink focus:outline-none"
                   />
                 </div>
@@ -239,6 +262,7 @@ export default function ContactPage() {
                     Inquiry or Viewing Notes *
                   </label>
                   <textarea id="page-f5"
+                    name="message"
                     required
                     rows={4}
                     placeholder="Please specify carat weight, cut preferences, or preferred viewing dates..."

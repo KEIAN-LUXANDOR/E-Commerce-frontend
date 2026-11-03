@@ -14,11 +14,10 @@ export function EditorialMonographBanner() {
               className="relative aspect-[16/10] sm:aspect-[16/11] w-full overflow-hidden rounded-3xl border border-line-dark/30 shadow-xl bg-stone"
               style={{ position: "relative" }}
             >
-              <Image unoptimized
+              <Image
                 src="/editorial/atelier-dossier.jpg"
                 alt="Keian Luxandor editorial photoshoot showcasing loose certified diamonds, evaluation dossier, and brass loupe on warm travertine"
                 fill
-                priority
                 sizes="(max-width: 1024px) 100vw, 50vw"
                 className="object-cover transition-transform duration-700 group-hover:scale-105"
               />

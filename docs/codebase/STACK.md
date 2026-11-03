@@ -5,7 +5,7 @@
 | Area | Value | Evidence |
 |---|---|---|
 | Primary language | TypeScript and TSX | `tsconfig.json`, `src/` |
-| Runtime | Node.js 24.21.0 in the validation environment; repository does not pin a version. `[TODO]` Choose and document the supported Node.js version. | `package.json`, `SETUP.md`, validation terminal |
+| Runtime | Node.js 20.9.0 or newer (validated with 24.21.0) | `package.json`, validation terminal |
 | Package manager | npm 11.19.0 in the validation environment; lockfile version 3. The lockfile records an `e-commerce` root and `diamond-frontend` workspace. | `package.json`, `package-lock.json`, validation terminal |
 | Framework | Next.js 16.4.2 App Router, React 19.3.0 | `package.json`, `next.config.ts` |
 | Styling | Tailwind CSS 4 with the Next Turbopack loader | `package.json`, `next.config.ts` |
@@ -62,11 +62,11 @@ These scripts are defined in `package.json`. Run them from the frontend workspac
 | `NEXT_PUBLIC_USE_MOCK_API` | Controls the API/image rewrites; rewrites are enabled only when exactly `"false"` | Set to `false` to route requests to the backend; the default does not provide a complete mock API |
 | `NEXT_PUBLIC_SITE_URL` | Canonical metadata base URL | Defaults to `http://localhost:3000` |
 | `NEXT_PUBLIC_WHATSAPP_NUMBER` | WhatsApp link destination, digits with country code | Optional; empty hides the destination |
-| `NEXT_PUBLIC_FEATURES` | Enables named planned features, or `all` | Empty means all feature switches remain off |
+| `NEXT_PUBLIC_FEATURES` | Enables named features, or `all` | Optional overrides; see defaults in `src/config/features.ts` |
 
 Sources: `next.config.ts`, `src/lib/api/config.ts`, `src/lib/site.ts`,
-`src/config/features.ts`, `SETUP.md`. No `.env.example` or `.env.template` is
-present. Do not copy values from local environment files into documentation.
+`src/config/features.ts`, `.env.example`. Do not copy values from local
+environment files into documentation.
 
 Browser API calls use same-origin `/api`; server-side calls use `API_URL`.
 `next.config.ts` rewrites `/api/*` to backend `/api/v1/*` only when
@@ -79,4 +79,4 @@ Browser API calls use same-origin `/api`; server-side calls use `API_URL`.
 - `tsconfig.json`
 - `next.config.ts`
 - `compose.yaml`
-- `SETUP.md`
+- `.env.example`

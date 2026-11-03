@@ -9,7 +9,8 @@ describe("UI Primitives - Spec v3", () => {
   describe("Button Primitive", () => {
     it("generates correct classes for primary square luxury button", () => {
       const classes = buttonVariants({ variant: "primary", size: "md" });
-      expect(classes).toContain("bg-[var(--color-ink)]");
+      expect(classes).toContain("bg-[var(--brand-anchor)]");
+      expect(classes).toContain("hover:bg-[var(--brand-accent-deep)]");
       expect(classes).toContain("tracking-[0.08em]");
       expect(classes).toContain("uppercase");
     });
