@@ -71,6 +71,8 @@ export function Header() {
               alt="KEIAN Luxandor"
               width={200}
               height={100}
+              sizes="200px"
+              priority
               fetchPriority="high"
             />
           </Link>

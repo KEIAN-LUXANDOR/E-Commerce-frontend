@@ -1,5 +1,3 @@
-"use client";
-
 /** Product card in the home page style (used by "New this month" only; shop pages use catalog/ProductCard). */
 
 import Link from "next/link";

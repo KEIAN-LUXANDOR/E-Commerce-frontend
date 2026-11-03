@@ -1,6 +1,4 @@
 
-"use client";
-
 import Link from "next/link";
 import Image from "next/image";
 import { ArrowUpRight } from "lucide-react";
@@ -21,11 +19,13 @@ import type { Product } from "@/lib/types/product";
 interface ProductCardProps {
   product: Product;
   compact?: boolean;
+  priority?: boolean;
 }
 
 export function ProductCard({
   product,
   compact = false,
+  priority = false,
 }: ProductCardProps) {
   const variant = mainVariant(product);
   const image = product.images[0];
@@ -61,6 +61,8 @@ export function ProductCard({
               alt={image.altText || title}
               fill
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+              loading={priority ? "eager" : "lazy"}
+              fetchPriority={priority ? "high" : "auto"}
               className="object-contain transition-transform duration-700 ease-out group-hover:scale-[1.035]"
               unoptimized
             />

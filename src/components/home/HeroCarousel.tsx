@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import {
   ArrowRight,
   ArrowUpRight,
@@ -13,39 +14,89 @@ import type { Banner } from "@/lib/types/catalog";
 
 /**
  * Locally hosted hero films. Keep these files in the frontend's public directory;
- * Next.js serves them from the site root (for example, /D-55973.mp4).
+ * Next.js serves them from the site root (for example, /hero/loose-stone.mp4).
  */
-
-
 
 const HERO_VISUALS = [
   {
-    src: "/D-55973.mp4",
+    src: "/hero/loose-stone.mp4",
+    poster: "/hero/loose-stone.webp",
     label: "The loose stone",
     caption: "Every cut has its own character.",
     position: "center 80%",
   },
   {
-    src: "/SDS-35.mp4",
+    src: "/hero/solitaire.mp4",
+    poster: "/hero/solitaire.webp",
     label: "The solitaire",
     caption: "Made to feel like it was always yours.",
     position: "center 50%",
   },
   {
-    src: "/IMG_0374.MOV",
+    src: "/hero/under-the-loupe.mp4",
+    poster: "/hero/under-the-loupe.webp",
     label: "Under the loupe",
     caption: "Step cuts reward a closer look.",
     position: "center 50%",
   },
 ];
 
+type HeroVisual = (typeof HERO_VISUALS)[number];
+
+function HeroFilm({
+  visual,
+  videoSrc,
+}: {
+  visual: HeroVisual;
+  videoSrc?: string;
+}) {
+  const [videoReady, setVideoReady] = useState(false);
+
+  return (
+    <>
+      <video
+        key={visual.src}
+        src={videoSrc}
+        autoPlay
+        muted
+        loop
+        playsInline
+        preload="none"
+        aria-hidden="true"
+        className="absolute inset-0 size-full object-cover"
+        style={{ objectPosition: visual.position }}
+        onPlaying={() => setVideoReady(true)}
+      />
+      <Image
+        src={visual.poster}
+        alt=""
+        fill
+        loading="eager"
+        unoptimized
+        sizes="(max-width: 640px) calc(100vw - 2rem), (max-width: 768px) calc(100vw - 3rem), 35rem"
+        aria-hidden="true"
+        className={`absolute inset-0 size-full object-cover transition-opacity duration-300 ${
+          videoReady ? "opacity-0" : "opacity-100"
+        }`}
+        style={{ objectPosition: visual.position }}
+      />
+    </>
+  );
+}
+
 export function HeroCarousel({ banners }: { banners: Banner[] }) {
   const [index, setIndex] = useState(0);
+  const [videoSrc, setVideoSrc] = useState<string | null>(null);
+  const visual = HERO_VISUALS[index % HERO_VISUALS.length];
+
+  useEffect(() => {
+    const timer = window.setTimeout(() => setVideoSrc(visual.src), 1200);
+    return () => window.clearTimeout(timer);
+  }, [visual.src]);
+
   if (!banners.length) return null;
 
   const banner = banners[index];
-  const visual = HERO_VISUALS[index % HERO_VISUALS.length];
-
   const go = (direction: number) => {
     setIndex((current) => (current + direction + banners.length) % banners.length);
   };
@@ -174,17 +225,10 @@ export function HeroCarousel({ banners }: { banners: Banner[] }) {
               key={`${banner.id}-film`}
               className="relative aspect-[5/4] overflow-hidden rounded-[1.65rem] border border-white/80 bg-[#202722] shadow-[0_28px_72px_-35px_rgba(31,45,37,0.5)] sm:rounded-[2rem]"
             >
-              <video
+              <HeroFilm
                 key={visual.src}
-                src={visual.src}
-                autoPlay
-                muted
-                loop
-                playsInline
-                preload="auto"
-                aria-hidden="true"
-                className="absolute inset-0 size-full object-cover"
-                style={{ objectPosition: visual.position }}
+                visual={visual}
+                videoSrc={videoSrc === visual.src ? visual.src : undefined}
               />
               <div
                 aria-hidden="true"

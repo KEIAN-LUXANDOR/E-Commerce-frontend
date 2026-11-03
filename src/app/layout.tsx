@@ -2,7 +2,6 @@ import type { Metadata, Viewport } from "next";
 import "@fontsource-variable/jost";
 import "./globals.css";
 import { site } from "@/lib/site";
-import { AnnouncementBar } from "@/components/layout/AnnouncementBar";
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { MiniCartDrawer } from "@/components/layout/MiniCartDrawer";
@@ -43,7 +42,6 @@ export default function RootLayout({
           Skip to content
         </a>
         <ShopSync />
-        <AnnouncementBar />
         <Header />
         <main id="main" className="flex-1 w-full max-w-full">
           {children}

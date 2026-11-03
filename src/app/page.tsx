@@ -61,6 +61,13 @@ export default function HomePage() {
 
   return (
     <>
+      <link
+        rel="preload"
+        as="image"
+        href="/hero/loose-stone.webp"
+        fetchPriority="high"
+      />
+
       {/* 1. Hero (with an Aceternity-style spotlight glow) */}
       <HeroCarousel banners={banners} />
 
