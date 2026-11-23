@@ -1,0 +1,37 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800">
+  <defs>
+    <radialGradient id="bg">
+      <stop stop-color="#fff"/>
+      <stop offset="1" stop-color="#eef0f4"/>
+    </radialGradient>
+    <linearGradient id="facet" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#fff"/>
+      <stop offset=".52" stop-color="#e5e9f2"/>
+      <stop offset="1" stop-color="#cbd3e3"/>
+    </linearGradient>
+    <linearGradient id="fire" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#e5d9ff"/>
+      <stop offset=".5" stop-color="#fff"/>
+      <stop offset="1" stop-color="#c8e8ef"/>
+    </linearGradient>
+  </defs>
+  <rect width="800" height="800" fill="url(#bg)"/>
+  <g stroke="#78849a" stroke-width="3" stroke-linejoin="round">
+    <polygon points="400,110 575,155 680,285 690,455 590,605 400,690 210,605 110,455 120,285 225,155" fill="url(#facet)"/>
+    <polygon points="400,110 490,220 575,155" fill="#fff"/>
+    <polygon points="575,155 560,300 680,285" fill="url(#fire)"/>
+    <polygon points="680,285 560,300 690,455" fill="#e7eaf2"/>
+    <polygon points="690,455 560,400 590,605" fill="url(#fire)"/>
+    <polygon points="590,605 500,480 400,690" fill="#e2e7f0"/>
+    <polygon points="400,690 300,480 210,605" fill="url(#fire)"/>
+    <polygon points="210,605 240,400 110,455" fill="#e7eaf2"/>
+    <polygon points="110,455 240,300 120,285" fill="url(#fire)"/>
+    <polygon points="120,285 240,300 225,155" fill="#e2e7f0"/>
+    <polygon points="225,155 310,220 400,110" fill="url(#fire)"/>
+    <polygon points="310,220 490,220 560,300 560,400 500,480 400,540 300,480 240,400 240,300" fill="#f9fbff"/>
+    <polygon points="310,220 400,330 490,220 560,300 450,350 560,400 450,450 500,480 400,540 300,480 350,450 240,400 350,350 240,300" fill="none"/>
+    <polygon points="350,350 450,350 450,450 350,450" fill="url(#fire)"/>
+    <path d="M400 110 400 330M575 155 450 350M680 285 450 350M690 455 450 450M590 605 400 540M400 690 400 540M210 605 350 450M110 455 350 450M120 285 350 350M225 155 350 350M400 110 350 350M400 110 450 350M400 690 350 450M400 690 450 450"/>
+  </g>
+  <text x="400" y="755" fill="#687386" font-family="Arial,sans-serif" font-size="20" letter-spacing="5" text-anchor="middle">ROUND BRILLIANT · FACE VIEW</text>
+</svg>

@@ -1,0 +1,3 @@
+sku,name,origin,shape,carat,color,clarity,cut,polish,symmetry,fluorescence,lab,quick_ship,price_rupees,mrp_rupees,stock,status,description,certificate_number
+KL-2001,1.02 ct Oval Lab-grown Diamond,LAB_GROWN,OVAL,1.02,F,VS1,,EXCELLENT,EXCELLENT,NONE,IGI,true,185000,,1,DRAFT,,LG612345678
+KL-2002,1.50 ct Round Natural Diamond,NATURAL,ROUND,1.50,G,VS2,EXCELLENT,EXCELLENT,EXCELLENT,FAINT,GIA,false,920000,,1,DRAFT,,2141234501

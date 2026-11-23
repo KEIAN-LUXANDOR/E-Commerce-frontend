@@ -1,0 +1,11 @@
+{
+  "ralphLoop.taskFile": "PRD.md",
+  "ralphLoop.testCommand": "npm run test",
+  "ralphLoop.lintCommand": "npm run lint",
+  "ralphLoop.buildCommand": "npm run build",
+  "ralphLoop.enabledBackpressure": [
+    "test",
+    "lint",
+    "build"
+  ]
+}
