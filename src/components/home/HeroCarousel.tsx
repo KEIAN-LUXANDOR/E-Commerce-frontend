@@ -1,0 +1,315 @@
+"use client";
+
+import { memo, useEffect, useRef, useState } from "react";
+import Link from "next/link";
+import Image from "next/image";
+import {
+  ArrowRight,
+  ArrowUpRight,
+  ChevronLeft,
+  ChevronRight,
+} from "lucide-react";
+import { Spotlight } from "@/components/ui/spotlight";
+import type { Banner } from "@/lib/types/catalog";
+
+/**
+ * Locally hosted hero films. Keep these files in the frontend's public directory;
+ * Next.js serves them from the site root (for example, /hero/loose-stone.mp4).
+ */
+const HERO_VISUALS = [
+  {
+    src: "/hero/loose-stone.mp4",
+    poster: "/hero/loose-stone.webp",
+    label: "The loose stone",
+    caption: "Every cut has its own character.",
+    position: "center 80%",
+  },
+  {
+    src: "/hero/solitaire.mp4",
+    poster: "/hero/solitaire.webp",
+    label: "The solitaire",
+    caption: "Made to feel like it was always yours.",
+    position: "center 50%",
+  },
+  {
+    src: "/hero/under-the-loupe.mp4",
+    poster: "/hero/under-the-loupe.webp",
+    label: "Under the loupe",
+    caption: "Step cuts reward a closer look.",
+    position: "center 50%",
+  },
+] as const;
+
+type HeroVisual = (typeof HERO_VISUALS)[number];
+
+/** Wait before fetching a film so it never competes with the poster (the LCP image). */
+const VIDEO_DELAY_MS = 1200;
+
+const POSTER_SIZES =
+  "(max-width: 640px) calc(100vw - 2rem), (max-width: 768px) calc(100vw - 3rem), 35rem";
+
+const NAV_BUTTON_CLASS =
+  "grid size-9 shrink-0 place-items-center rounded-full border border-line-dark bg-white/70 text-ink transition-[color,background-color,border-color] hover:border-brand-anchor/50 hover:bg-white hover:text-brand-anchor focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-anchor/30";
+
+type NetworkInformationLike = { saveData?: boolean; effectiveType?: string };
+
+/** Skip the film for visitors who asked for less motion, less data, or are on a 2G link. */
+function prefersStillImage(): boolean {
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return true;
+  const connection = (navigator as Navigator & { connection?: NetworkInformationLike })
+    .connection;
+  return Boolean(connection?.saveData || connection?.effectiveType?.endsWith("2g"));
+}
+
+/**
+ * Keyed by film src in the parent, so each slide gets fresh state.
+ * The delayed-load state lives here, so the timer only re-renders the film,
+ * not the whole hero.
+ */
+const HeroFilm = memo(function HeroFilm({
+  visual,
+  priority,
+}: {
+  visual: HeroVisual;
+  priority: boolean;
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+  const [videoReady, setVideoReady] = useState(false);
+
+  useEffect(() => {
+    if (prefersStillImage()) return;
+    const timer = window.setTimeout(() => setShouldLoad(true), VIDEO_DELAY_MS);
+    return () => window.clearTimeout(timer);
+  }, []);
+
+  // Play only while the hero is on screen and the tab is visible (saves CPU, GPU and battery).
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!shouldLoad || !video) return;
+
+    let inView = false;
+    const sync = () => {
+      if (inView && document.visibilityState === "visible") {
+        video.play().catch(() => {
+          /* Autoplay blocked: the poster stays visible. */
+        });
+      } else {
+        video.pause();
+      }
+    };
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting;
+        sync();
+      },
+      { threshold: 0.15 },
+    );
+    observer.observe(video);
+    document.addEventListener("visibilitychange", sync);
+
+    return () => {
+      observer.disconnect();
+      document.removeEventListener("visibilitychange", sync);
+    };
+  }, [shouldLoad]);
+
+  return (
+    <>
+      <video
+        ref={videoRef}
+        src={shouldLoad ? visual.src : undefined}
+        muted
+        loop
+        playsInline
+        preload="none"
+        aria-hidden="true"
+        tabIndex={-1}
+        className="absolute inset-0 size-full object-cover"
+        style={{ objectPosition: visual.position }}
+        onPlaying={() => setVideoReady(true)}
+      />
+      <Image
+        src={visual.poster}
+        alt=""
+        fill
+        sizes={POSTER_SIZES}
+        loading={priority ? "eager" : "lazy"}
+        fetchPriority={priority ? "high" : "auto"}
+        className={`object-cover transition-opacity duration-300 ${videoReady ? "opacity-0" : "opacity-100"
+          }`}
+        style={{ objectPosition: visual.position }}
+      />
+    </>
+  );
+});
+
+export function HeroCarousel({ banners }: { banners: Banner[] }) {
+  const [index, setIndex] = useState(0);
+  const count = banners.length;
+
+  if (!count) return null;
+
+  // Guard against the banners list shrinking between renders.
+  const activeIndex = Math.min(index, count - 1);
+  const banner = banners[activeIndex];
+  const visual = HERO_VISUALS[activeIndex % HERO_VISUALS.length];
+
+  const go = (direction: number) => {
+    setIndex((current) => (Math.min(current, count - 1) + direction + count) % count);
+  };
+
+  return (
+    <section
+      aria-roledescription="carousel"
+      aria-label="Featured diamond collections"
+      className="relative isolate overflow-hidden border-b border-line bg-sand font-sans"
+    >
+      <Spotlight
+        className="-top-48 left-0 opacity-60 md:-top-36 md:left-40"
+        fill="rgba(220, 203, 168, 0.42)"
+      />
+
+      <div className="page relative z-10 grid items-center gap-9 py-9 sm:gap-11 sm:py-12 md:grid-cols-[0.94fr_1.06fr] md:gap-12 md:py-14 lg:gap-16 lg:py-[4.5rem]">
+        <div className="order-2 md:order-1">
+          {/* Stable live region: the keyed slide inside it remounts, the region does not. */}
+          <div aria-live="polite" aria-atomic="true">
+            <div
+              key={banner.id}
+              role="group"
+              aria-roledescription="slide"
+              aria-label={`${activeIndex + 1} of ${count}`}
+              className="animate-fade-up"
+            >
+              <div className="mb-5 flex flex-wrap items-center gap-x-3 gap-y-2">
+                <span className="inline-flex items-center gap-2 text-[10px] font-semibold uppercase tracking-[0.2em] text-brand-anchor">
+                  <span className="size-1.5 rounded-full bg-bronze" aria-hidden="true" />
+                  Keian Luxandor · Diamond atelier
+                </span>
+                <span className="hidden h-3.5 w-px bg-line-dark sm:block" aria-hidden="true" />
+                <span className="text-[10px] uppercase tracking-[0.16em] text-slate">
+                  GIA &amp; IGI certified
+                </span>
+              </div>
+
+              <h1 className="max-w-2xl font-sans text-3xl font-stretch-50% leading-[1.15] tracking-tight text-ink text-balance sm:text-4xl lg:text-5xl">
+                {banner.title}
+              </h1>
+
+              <p className="mt-5 max-w-lg text-[15px] leading-relaxed text-ink/70 sm:text-base">
+                {banner.text}
+              </p>
+              <div className="mt-7 flex flex-wrap items-center gap-x-5 gap-y-4">
+                <Link
+                  href={banner.ctaHref}
+                  className="btn btn-primary inline-flex min-h-12 items-center gap-3 rounded-full px-7 py-3.5 text-[11px] font-semibold tracking-[0.14em] shadow-[0_12px_24px_-18px_rgba(31,58,50,0.8)] transition-[transform,box-shadow] hover:-translate-y-0.5 hover:shadow-[0_16px_30px_-18px_rgba(31,58,50,0.75)]"
+                >
+                  {banner.ctaLabel}
+                  <ArrowUpRight className="size-4" strokeWidth={1.6} aria-hidden="true" />
+                </Link>
+
+                <Link
+                  href="/education/shapes"
+                  className="group inline-flex items-center gap-2 py-2 text-[11px] font-medium uppercase tracking-[0.12em] text-ink/75 transition-colors hover:text-brand-anchor"
+                >
+                  Find your shape
+                  <ArrowRight
+                    className="size-3.5 transition-transform group-hover:translate-x-1"
+                    strokeWidth={1.6}
+                    aria-hidden="true"
+                  />
+                </Link>
+              </div>
+
+              <div className="mt-8 flex items-center gap-2 text-[10px] uppercase tracking-[0.13em] text-slate">
+                <span className="font-medium text-ink/75">Natural &amp; lab-grown</span>
+                <span className="size-1 rounded-full bg-bronze/70" aria-hidden="true" />
+                <span>Selected with care</span>
+              </div>
+            </div>
+          </div>
+
+          {count > 1 && (
+            <div className="mt-9 flex items-center gap-4 border-t border-line-dark/70 pt-5">
+              <button
+                type="button"
+                onClick={() => go(-1)}
+                className={NAV_BUTTON_CLASS}
+                aria-label="Previous featured collection"
+              >
+                <ChevronLeft className="size-4" strokeWidth={1.6} aria-hidden="true" />
+              </button>
+
+              <ol className="flex items-center gap-1.5" aria-label="Choose a featured collection">
+                {banners.map((item, itemIndex) => {
+                  const isActive = itemIndex === activeIndex;
+                  return (
+                    <li key={item.id}>
+                      <button
+                        type="button"
+                        onClick={() => setIndex(itemIndex)}
+                        aria-label={`Show collection ${itemIndex + 1}: ${item.title}`}
+                        aria-current={isActive ? "true" : undefined}
+                        className="group flex h-6 min-w-6 items-center justify-center rounded-full focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-anchor/35 focus-visible:ring-offset-2"
+                      >
+                        {/* Visible bar stays slim; the button itself is a 24px touch target */}
+                        <span
+                          aria-hidden="true"
+                          className={`block h-1.5 rounded-full transition-[width,background-color] duration-300 ${isActive
+                            ? "w-8 bg-brand-anchor"
+                            : "w-3 bg-line-dark group-hover:bg-brand-anchor/55"
+                            }`}
+                        />
+                      </button>
+                    </li>
+                  );
+                })}
+              </ol>
+
+              <span className="ml-1 whitespace-nowrap text-[10px] font-medium tabular-nums tracking-[0.12em] text-slate">
+                {String(activeIndex + 1).padStart(2, "0")}
+                <span className="px-1.5 text-line-strong">/</span>
+                {String(count).padStart(2, "0")}
+              </span>
+
+              <button
+                type="button"
+                onClick={() => go(1)}
+                className={NAV_BUTTON_CLASS}
+                aria-label="Next featured collection"
+              >
+                <ChevronRight className="size-4" strokeWidth={1.6} aria-hidden="true" />
+              </button>
+            </div>
+          )}
+        </div>
+
+        <div className="order-1 flex justify-center md:order-2 md:justify-end">
+          <figure className="relative w-full max-w-[35rem]">
+            <div className="relative aspect-[5/4] overflow-hidden rounded-[1.65rem] border border-white/80 bg-[#202722] shadow-[0_28px_72px_-35px_rgba(31,45,37,0.5)] sm:rounded-[2rem]">
+              <HeroFilm key={visual.src} visual={visual} priority={activeIndex === 0} />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-0 bg-[linear-gradient(180deg,rgba(13,20,16,0.10)_0%,rgba(13,20,16,0.02)_42%,rgba(13,20,16,0.72)_100%)]"
+              />
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute inset-3 rounded-[1.25rem] border border-white/20 sm:inset-4 sm:rounded-[1.5rem]"
+              />
+
+              <figcaption className="absolute inset-x-0 bottom-0 px-7 pb-7 pt-20 text-white sm:px-9 sm:pb-9">
+                <span className="mb-2 block text-[9px] font-medium uppercase tracking-[0.2em] text-white/70">
+                  {visual.label}
+                </span>
+                <p className="max-w-[18ch] font-sans text-[1.6rem] font-semibold leading-[1.1] tracking-[-0.025em] sm:text-[1.95rem]">
+                  {visual.caption}
+                </p>
+              </figcaption>
+            </div>
+          </figure>
+        </div>
+      </div>
+    </section>
+  );
+}

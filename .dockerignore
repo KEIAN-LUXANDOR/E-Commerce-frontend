@@ -1,0 +1,15 @@
+node_modules
+.next
+.git
+out
+coverage
+build-arm64
+*.tar
+*.tgz
+*.zip
+*.tsbuildinfo
+npm-debug.log*
+.env
+.env.local
+.env.development
+.env.development.local

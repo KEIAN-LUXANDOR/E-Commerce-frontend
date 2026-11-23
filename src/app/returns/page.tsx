@@ -1,0 +1,92 @@
+import * as React from "react";
+import type { Metadata } from "next";
+import { RotateCcw,   CheckCircle } from "lucide-react";
+
+export const metadata: Metadata = {
+  title: "30-Day Return Guarantee & Laboratory Re-Inspection | Keian Luxandor",
+  description:
+    "Review our 30-day return policy, tamper-evident security seal requirements, and gemological verification process.",
+};
+
+export default function ReturnsPage() {
+  return (
+    <div className="min-h-screen bg-white">
+      <div className="border-b border-[var(--color-line)] bg-[var(--color-stone)] py-12 md:py-16">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 space-y-3 text-center">
+          <p className="font-mono text-[11px] uppercase tracking-[0.18em] text-[var(--color-slate)]">
+            Keian Luxandor &bull; Collector Protection
+          </p>
+          <h1 className="font-serif text-3xl md:text-5xl text-[var(--color-ink)]">
+            30-Day Return Policy
+          </h1>
+          <p className="font-sans text-sm md:text-base text-[var(--color-slate)] max-w-xl mx-auto">
+            We offer a full 100% refund on unmounted loose diamonds returned within 30 days of delivery, subject to intact security packaging.
+          </p>
+        </div>
+      </div>
+
+      <div className="max-w-4xl mx-auto px-4 sm:px-6 py-12 md:py-16 space-y-10">
+        {/* Conditions */}
+        <div className="border border-[var(--color-line)] bg-white p-6 md:p-8 space-y-6">
+          <h2 className="font-serif text-2xl text-[var(--color-ink)]">Mandatory Return Requirements</h2>
+
+          <div className="space-y-4">
+            <div className="flex items-start gap-3">
+              <CheckCircle className="size-5 text-emerald-700 shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-sans text-xs font-semibold uppercase tracking-wider text-[var(--color-ink)]">
+                  1. Intact Tamper-Evident Security Loop
+                </h3>
+                <p className="font-sans text-xs text-[var(--color-slate)] mt-0.5 leading-relaxed">
+                  Every diamond is dispatched inside a sealed security cassette with a numbered tamper tag. Once cut or peeled, the stone cannot be returned as provenance cannot be guaranteed.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <CheckCircle className="size-5 text-emerald-700 shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-sans text-xs font-semibold uppercase tracking-wider text-[var(--color-ink)]">
+                  2. Original Laboratory Dossier Included
+                </h3>
+                <p className="font-sans text-xs text-[var(--color-slate)] mt-0.5 leading-relaxed">
+                  The original physical GIA or IGI laminated grading report must be returned. If missing or damaged, the laboratory’s fee for re-issuing the report will be deducted from your refund.
+                </p>
+              </div>
+            </div>
+
+            <div className="flex items-start gap-3">
+              <CheckCircle className="size-5 text-emerald-700 shrink-0 mt-0.5" />
+              <div>
+                <h3 className="font-sans text-xs font-semibold uppercase tracking-wider text-[var(--color-ink)]">
+                  3. Inbound Forensic Loupe Re-Inspection
+                </h3>
+                <p className="font-sans text-xs text-[var(--color-slate)] mt-0.5 leading-relaxed">
+                  Upon arrival at our vault, our senior gemologists examine the girdle laser inscription under 20x magnification to confirm exact diamond identity prior to refund release.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Return process */}
+        <div className="border border-[var(--color-line)] bg-[var(--color-stone)] p-6 md:p-8 space-y-4">
+          <div className="flex items-center gap-2">
+            <RotateCcw className="size-4 text-[var(--color-ink)]" />
+            <h3 className="font-serif text-lg text-[var(--color-ink)]">How to send a diamond back</h3>
+          </div>
+          <p className="font-sans text-xs text-[var(--color-slate)] leading-relaxed">
+            Please don’t post a diamond back yourself. Email <strong>info@keianluxandor.com</strong> or message us on WhatsApp with your order number, and we’ll arrange the collection with you.
+          </p>
+        </div>
+
+        <section className="border border-[var(--color-line)] bg-white p-6 md:p-8 space-y-3">
+          <h2 className="font-serif text-xl text-[var(--color-ink)]">International orders</h2>
+          <p className="font-sans text-xs text-[var(--color-slate)] leading-relaxed">
+            International return eligibility, collection arrangements, insurance, customs documentation and return-shipping costs must be confirmed in writing before an international order is accepted. The domestic return process above should not be treated as confirmation of an international return arrangement.
+          </p>
+        </section>
+      </div>
+    </div>
+  );
+}
