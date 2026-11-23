@@ -65,3 +65,10 @@ The `azure-deployment` and `vercel-deployment` directories were not changed.
 - `npm ci --dry-run` passes once lockfile synchronization is completed.
 - `npm run dev` starts successfully on port 3000.
 - The home page responds with HTTP 200. With no backend process on port 8080, server-side catalogue requests log `ECONNREFUSED` but degrade without stopping Next.js.
+
+## CI Follow-up
+
+- The GitHub Actions run for commit `41edb37` failed because the workflow called
+  `npm run lint` but the root package manifest had no `lint` script.
+- Added the lint script and the ESLint 9 / matching Next.js ESLint configuration
+  dependencies already referenced by `eslint.config.mjs`.
