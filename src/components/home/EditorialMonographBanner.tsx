@@ -26,7 +26,7 @@ export function EditorialMonographBanner() {
               {/* Floating editorial caption pill */}
               <div className="absolute bottom-5 left-5 right-5 flex items-center justify-between text-white/90 text-xs backdrop-blur-md bg-ink/40 p-3 rounded-xl border border-white/15">
                 <span className="font-serif italic tracking-wide">Plate No. 04 · The Solitaire Monograph</span>
-                <span className="font-mono text-[11px] tracking-wider uppercase text-white/70">Baner, Pune Showroom</span>
+                <span className="font-mono text-[11px] tracking-wider uppercase text-white/70">Surat Showroom</span>
               </div>
             </div>
 

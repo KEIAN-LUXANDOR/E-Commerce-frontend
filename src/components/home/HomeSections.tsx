@@ -60,7 +60,7 @@ export function StatStrip() {
     { icon: ShieldCheck, label: "GIA & IGI Certified" },
     { icon: CheckCircle2, label: "30-day free returns" },
     { icon: Truck, label: "Complimentary India delivery" },
-    { icon: Sparkles, label: "Baner, Pune showroom" },
+    { icon: Sparkles, label: "Surat showroom" },
   ];
   return (
     <section className="w-full bg-[var(--canvas-dark)] border-b border-[#23344D] py-5">
@@ -1109,7 +1109,7 @@ export function GemologistConciergeBand() {
           {[
             {
               icon: ShieldCheck,
-              title: "Online and in Baner, Pune",
+              title: "Online and in Surat",
               text: "Buy online, or see the diamond in person at our showroom by appointment.",
             },
             {

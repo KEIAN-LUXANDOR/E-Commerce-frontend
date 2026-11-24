@@ -67,7 +67,7 @@ const INSPECTION_STEPS = [
     title: "A considered selection",
     subtitle: "Natural & lab-grown diamonds",
     description:
-      "Explore certified loose diamonds online or arrange a private viewing at our Baner, Pune showroom. Compare grades, characteristics and pricing before making your selection.",
+      "Explore certified loose diamonds online or arrange a private viewing at our Surat showroom. Compare grades, characteristics and pricing before making your selection.",
   },
   {
     number: "02",
@@ -94,7 +94,7 @@ const FAQS = [
   {
     question: "Can I view a diamond before purchasing?",
     answer:
-      "Yes. You can arrange a private viewing of selected diamonds at our Baner, Pune showroom. Please contact our team to arrange an appointment.",
+      "Yes. You can arrange a private viewing of selected diamonds at our Surat showroom. Please contact our team to arrange an appointment.",
   },
   {
     question: "What currency are prices shown in?",
@@ -672,7 +672,7 @@ export default function AboutPage() {
 
                 <p className="mt-5 max-w-xl text-sm leading-7 text-[var(--color-slate)] sm:text-base">
                   You can arrange a private viewing of selected diamonds at
-                  our Baner, Pune showroom. See the stones up close, compare
+                  our Surat showroom. See the stones up close, compare
                   your options and speak with our team. There is no need to
                   rush a decision.
                 </p>
@@ -686,7 +686,7 @@ export default function AboutPage() {
 
                   <div>
                     <p className="text-sm font-semibold text-[var(--color-ink)]">
-                      Baner, Pune
+                      Surat, Gujarat
                     </p>
                     <p className="mt-1 text-xs text-[var(--color-muted)]">
                       Private viewings by appointment

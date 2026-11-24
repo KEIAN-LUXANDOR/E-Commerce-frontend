@@ -26,7 +26,7 @@ export function Footer() {
             <div>
               <p className="text-sm font-medium text-ink">Checked Before Dispatch</p>
               <p className="text-xs text-slate mt-0.5">
-                Laser inscription and grades verified in our Pune showroom.
+                Laser inscription and grades verified in our Surat showroom.
               </p>
             </div>
           </div>

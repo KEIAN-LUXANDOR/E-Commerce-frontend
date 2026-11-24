@@ -47,9 +47,9 @@ export const photos = {
   },
   homeShowroom: {
     src: null,
-    alt: "The viewing table at the Keian Luxandor showroom in Baner, Pune",
+    alt: "The viewing table at the Keian Luxandor showroom in Surat",
     ratio: "3/2",
-    brief: "Visit us section. The viewing desk in the Baner showroom: loupe, tray, daylight lamp. 1800×1200.",
+    brief: "Visit us section. The viewing desk in the Surat showroom: loupe, tray, daylight lamp. 1800×1200.",
   },
   homeDelivery: {
     src: null,
@@ -65,13 +65,13 @@ export const photos = {
   },
   aboutTeam: {
     src: null,
-    alt: "The Keian Luxandor team at the Baner showroom",
+    alt: "The Keian Luxandor team at the Surat showroom",
     ratio: "3/2",
     brief: "About page. Natural team photo (2–5 people) in the showroom. 1800×1200.",
   },
   contactShowroom: {
     src: null,
-    alt: "Entrance of the Keian Luxandor showroom in Baner, Pune",
+    alt: "Entrance of the Keian Luxandor showroom in Surat",
     ratio: "4/3",
     brief: "Contact page. The showroom entrance or building, so visitors recognise it. 1600×1200.",
   },

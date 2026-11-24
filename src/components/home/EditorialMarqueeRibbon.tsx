@@ -9,7 +9,7 @@ export function EditorialMarqueeRibbon() {
     { icon: Sparkles, label: "40x Macro Video Inspection" },
     { icon: Truck, label: "Complimentary India Delivery" },
     { icon: CheckCircle2, label: "30-Day Returns" },
-    { icon: ShieldCheck, label: "Baner, Pune Showroom" },
+    { icon: ShieldCheck, label: "Surat Showroom" },
   ];
 
   return (

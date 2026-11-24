@@ -1,9 +1,8 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-
 import { useState } from "react";
 import { Mail, Phone, MapPin, Clock, MessageCircle, Send, CheckCircle2 } from "lucide-react";
+import { Button } from "@/components/ui/button";
 import { site, whatsappUrl, telUrl, mailtoUrl } from "@/lib/site";
 import { sendContactMessage } from "@/lib/api/support";
 import { showToast } from "@/lib/stores";
@@ -20,8 +19,8 @@ export default function ContactPage() {
   const [submitted, setSubmitted] = useState(false);
 
   const whatsappLink = whatsappUrl(
-    message
-      ? `Hello Keian Luxandor, my name is ${fullName || "a client"}. Inquiry: ${message}`
+    message.trim()
+      ? `Hello Keian Luxandor, my name is ${fullName.trim() || "a client"}. Inquiry: ${message.trim()}`
       : "Hello Keian Luxandor, I would like to consult with a gemologist regarding certified loose diamonds."
   );
   const phoneLink = telUrl();
@@ -29,8 +28,11 @@ export default function ContactPage() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!message.trim() || !fullName.trim() || !email.trim()) {
-      showToast("Please provide your name, email, and message.", { tone: "error" });
+
+    if (!subject.trim() || !fullName.trim() || !email.trim() || !message.trim()) {
+      showToast("Please select a subject and provide your name, email, and message.", {
+        tone: "error",
+      });
       return;
     }
 
@@ -47,24 +49,38 @@ export default function ContactPage() {
         website,
       });
       setSubmitted(true);
-      showToast("Your inquiry has been received. Our gemologist will contact you shortly.", { tone: "success" });
+      showToast("Your inquiry has been received. Our gemologist will contact you shortly.", {
+        tone: "success",
+      });
     } catch (error) {
-      showToast(error instanceof Error ? error.message : "Unable to send inquiry. Please reach out via WhatsApp.", { tone: "error" });
+      showToast(
+        error instanceof Error
+          ? error.message
+          : "Unable to send inquiry. Please reach out via WhatsApp.",
+        { tone: "error" }
+      );
     } finally {
       setLoading(false);
     }
+  };
+
+  const handleReset = () => {
+    setSubmitted(false);
+    setSubject("");
+    setOrderNumber("");
+    setMessage("");
   };
 
   return (
     <div className="page py-12 sm:py-16">
       {/* Editorial Header */}
       <div className="max-w-2xl">
-        <p className="eyebrow">Client Services &amp; Advisory</p>
+        <p className="eyebrow">Client Services & Advisory</p>
         <h1 className="mt-2 font-serif text-3xl sm:text-4xl font-medium tracking-tight text-ink">
-          Private Consultation &amp; Atelier
+          Private Consultation & Atelier
         </h1>
         <p className="mt-3 text-sm text-slate leading-relaxed">
-          Speak with our certified gemologists regarding diamond metrology, custom sourcing, or schedule a private inspection at our Baner, Pune showroom.
+          Speak with our certified gemologists regarding diamond metrology, custom sourcing, or schedule a private inspection at our Surat showroom.
         </p>
       </div>
 
@@ -73,7 +89,7 @@ export default function ContactPage() {
         <div className="lg:col-span-5 space-y-8">
           <div className="border border-line bg-surface p-6 sm:p-8 space-y-6">
             <h2 className="text-sm font-semibold uppercase tracking-wider text-ink border-b border-line pb-3">
-              Pune Showroom &amp; Office
+              Surat Showroom & Office
             </h2>
 
             <div className="space-y-4 text-xs">
@@ -82,8 +98,12 @@ export default function ContactPage() {
                 <div>
                   <p className="font-medium text-ink">{site.name} Showroom</p>
                   <p className="text-slate mt-0.5">{site.addressLine}</p>
-                  <p className="text-slate">{site.city}, {site.state} — {site.pincode}</p>
-                  <p className="text-[11px] text-muted mt-1 italic">Private viewings by prior appointment</p>
+                  <p className="text-slate">
+                    {site.city}, {site.state} — {site.pincode}
+                  </p>
+                  <p className="text-[11px] text-muted mt-1 italic">
+                    Private viewings by prior appointment
+                  </p>
                 </div>
               </div>
 
@@ -100,7 +120,10 @@ export default function ContactPage() {
                   <Phone className="size-4 text-ink shrink-0 mt-0.5" />
                   <div>
                     <p className="font-medium text-ink">Direct Telephone</p>
-                    <a href={phoneLink} className="text-slate hover:text-ink underline mt-0.5 inline-block font-mono">
+                    <a
+                      href={phoneLink}
+                      className="text-slate hover:text-ink underline mt-0.5 inline-block font-mono"
+                    >
                       {site.phone}
                     </a>
                   </div>
@@ -112,7 +135,10 @@ export default function ContactPage() {
                   <Mail className="size-4 text-ink shrink-0 mt-0.5" />
                   <div>
                     <p className="font-medium text-ink">Electronic Correspondence</p>
-                    <a href={mailLink} className="text-slate hover:text-ink underline mt-0.5 inline-block">
+                    <a
+                      href={mailLink}
+                      className="text-slate hover:text-ink underline mt-0.5 inline-block"
+                    >
                       {site.email}
                     </a>
                   </div>
@@ -152,23 +178,24 @@ export default function ContactPage() {
                 <CheckCircle2 className="size-12 text-ok mx-auto" />
                 <h3 className="font-serif text-2xl font-medium text-ink">Inquiry Received</h3>
                 <p className="text-xs text-slate max-w-md mx-auto leading-relaxed">
-                  Thank you, <span className="font-medium text-ink">{fullName}</span>. An appraisal specialist has been assigned to your request and will respond to <span className="font-medium text-ink">{email}</span> within 2 business hours.
+                  Thank you, <span className="font-medium text-ink">{fullName}</span>. An appraisal
+                  specialist has been assigned to your request and will respond to{" "}
+                  <span className="font-medium text-ink">{email}</span> within 2 business hours.
                 </p>
                 <div className="pt-4">
-                  <button
+                  <Button
                     type="button"
-                    onClick={() => {
-                      setSubmitted(false);
-                      setMessage("");
-                    }}
-                    className="btn btn-secondary text-xs uppercase tracking-widest px-6 py-2.5"
+                    variant="secondary"
+                    onClick={handleReset}
+                    className="text-xs uppercase tracking-widest px-6 py-2.5"
                   >
                     Send Another Message
-                  </button>
+                  </Button>
                 </div>
               </div>
             ) : (
               <form onSubmit={handleSubmit} className="space-y-5">
+                {/* Honeypot field */}
                 <div className="sr-only" aria-hidden="true">
                   <label htmlFor="page-website">Website</label>
                   <input
@@ -181,29 +208,65 @@ export default function ContactPage() {
                     onChange={(e) => setWebsite(e.target.value)}
                   />
                 </div>
+
                 <div>
-                  <label htmlFor="page-subject" className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5">
+                  <label
+                    htmlFor="page-subject"
+                    className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5"
+                  >
                     Subject *
                   </label>
-                  <select id="page-subject"
+                  <select
+                    id="page-subject"
+                    name="subject"
                     required
                     value={subject}
                     onChange={(e) => setSubject(e.target.value)}
                     className="w-full h-11 border border-line bg-surface px-3 text-xs text-ink focus:border-ink focus:outline-none"
                   >
-                    <option value="" disabled>Select a subject</option>
-                    <option value="General gemological consultation">General Gemological Consultation</option>
-                    <option value="Schedule Baner showroom appointment">Schedule Baner Showroom Appointment</option>
-                    <option value="Question about a diamond">Question About a Diamond</option>
+                    <option value="" disabled>
+                      Select a subject
+                    </option>
+                    <option value="General gemological consultation">
+                      General Gemological Consultation
+                    </option>
+                    <option value="How can I verify if a diamond is real?">
+                      How can I verify if a diamond is real?
+                    </option>
+                    <option value="How do I choose the right diamond for my budget?">
+                      How do I choose the right diamond for my budget?
+                    </option>
+                    <option value="What is the difference between natural and lab-grown diamonds?">
+                      What is the difference between natural and lab-grown diamonds?
+                    </option>
+                    <option value="Which diamond certification is best?">
+                      Which diamond certification is best?
+                    </option>
+                    <option value="Why do diamond prices vary?">
+                      Why do diamond prices vary?
+                    </option>
+                    <option value="What is the return, exchange, or buyback policy?">
+                      What is the return, exchange, or buyback policy?
+                    </option>
+                    <option value="Are you available for B2B?">
+                      Are you available for B2B?
+                    </option>
+                    <option value="Question about a diamond">
+                      Question About a Diamond
+                    </option>
                   </select>
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="page-f2" className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5">
+                    <label
+                      htmlFor="page-f2"
+                      className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5"
+                    >
                       Full Name *
                     </label>
-                    <input id="page-f2"
+                    <input
+                      id="page-f2"
                       name="name"
                       type="text"
                       required
@@ -214,10 +277,14 @@ export default function ContactPage() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="page-f3" className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5">
+                    <label
+                      htmlFor="page-f3"
+                      className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5"
+                    >
                       Email Address *
                     </label>
-                    <input id="page-f3"
+                    <input
+                      id="page-f3"
                       name="email"
                       type="email"
                       required
@@ -230,10 +297,14 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="page-f4" className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5">
+                  <label
+                    htmlFor="page-f4"
+                    className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5"
+                  >
                     Mobile Number (Optional)
                   </label>
-                  <input id="page-f4"
+                  <input
+                    id="page-f4"
                     name="phone"
                     type="tel"
                     placeholder="Include country code if outside India"
@@ -244,10 +315,14 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="page-order-number" className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5">
+                  <label
+                    htmlFor="page-order-number"
+                    className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5"
+                  >
                     Order Number (Optional)
                   </label>
-                  <input id="page-order-number"
+                  <input
+                    id="page-order-number"
                     name="orderNumber"
                     type="text"
                     placeholder="e.g. KL100019"
@@ -258,10 +333,14 @@ export default function ContactPage() {
                 </div>
 
                 <div>
-                  <label htmlFor="page-f5" className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5">
+                  <label
+                    htmlFor="page-f5"
+                    className="block text-xs font-medium uppercase tracking-wider text-slate mb-1.5"
+                  >
                     Inquiry or Viewing Notes *
                   </label>
-                  <textarea id="page-f5"
+                  <textarea
+                    id="page-f5"
                     name="message"
                     required
                     rows={4}

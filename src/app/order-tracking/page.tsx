@@ -177,7 +177,7 @@ export default function OrderTrackingPage() {
               <li className="ml-6">
                 <span className="absolute -left-1.5 mt-1.5 size-3 rounded-full border border-ink bg-ink" />
                 <p className="text-xs font-semibold text-ink">Order Confirmed &amp; Payment Cleared</p>
-                <p className="text-[11px] text-slate mt-0.5">Diamond held exclusively in Pune vaults.</p>
+                <p className="text-[11px] text-slate mt-0.5">Diamond held exclusively in Surat vaults.</p>
               </li>
               <li className="ml-6">
                 <span className="absolute -left-1.5 mt-1.5 size-3 rounded-full border border-line bg-surface" />

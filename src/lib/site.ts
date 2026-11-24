@@ -31,7 +31,7 @@ export const site: SiteConfig = {
   legalName: "Keian Luxandor Private Limited",
   tagline: "Certified Loose Diamonds",
   description:
-    "Discover GIA and IGI certified natural and lab-grown loose diamonds, carefully selected and inspected in our Pune atelier. International delivery enquiries are welcome.",
+    "Discover GIA and IGI certified natural and lab-grown loose diamonds, carefully selected and inspected in our Surat atelier. International delivery enquiries are welcome.",
   url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
   phone: "",
   get phoneHref() {
@@ -40,10 +40,10 @@ export const site: SiteConfig = {
   },
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP_NUMBER || "",
   email: "info@keianluxandor.com",
-  addressLine: "Baner, Pune, Maharashtra",
-  city: "Pune",
-  state: "Maharashtra",
-  pincode: "411045",
+  addressLine: "8th Floor, Building/Flat No. 802, Armida, Varchha Main Road, Mini Bazar Crossroads",
+  city: "Surat",
+  state: "Gujarat",
+  pincode: "395006",
   hours: "Mon–Sat, 11:00 am – 7:30 pm IST",
   gstin: "",
   cin: "",
