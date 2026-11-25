@@ -5,6 +5,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { connection } from "next/server";
 import {
   ArrowLeft,
   ArrowUpRight,
@@ -39,6 +40,7 @@ function absoluteImageUrl(url: string): string {
 }
 
 export async function generateMetadata({ params }: DiamondDetailPageProps): Promise<Metadata> {
+  await connection();
   const { slug } = await params;
   try {
     const product = await getCachedProduct(slug);
@@ -204,6 +206,7 @@ async function SimilarDiamondsSection({
 }: {
   product: Product;
 }) {
+  await connection();
   const diamond = product.diamond;
 
   if (!diamond) {
@@ -291,6 +294,7 @@ export default function DiamondDetailPage({
 async function DiamondDetailContent({
   params,
 }: DiamondDetailPageProps) {
+  await connection();
   const { slug } = await params;
 
   let product: Product | null;

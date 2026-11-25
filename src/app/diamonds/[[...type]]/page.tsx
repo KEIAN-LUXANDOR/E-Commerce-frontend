@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { ArrowUpRight, Gem } from "lucide-react";
@@ -428,6 +429,7 @@ async function DiamondsCatalogPage({
   params,
   searchParams,
 }: DiamondsPageProps) {
+  await connection();
   const { type } = await params;
   const rawSearch = await searchParams;
 
