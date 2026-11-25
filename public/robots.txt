@@ -1,0 +1,24 @@
+# robots.txt for https://keianluxandor.in
+User-agent: *
+Allow: /
+
+# Private, account and checkout pages
+Disallow: /admin
+Disallow: /account
+Disallow: /cart
+Disallow: /checkout
+Disallow: /wishlist
+Disallow: /login
+Disallow: /register
+Disallow: /forgot-password
+Disallow: /reset-password
+Disallow: /verify-email
+Disallow: /order-tracking
+
+# Backend API responses (product photos under /images/ stay crawlable)
+Disallow: /api/
+
+# Internal search results
+Disallow: /search
+
+Sitemap: https://keianluxandor.in/sitemap.xml
