@@ -9,7 +9,13 @@ import { createOrder } from "@/lib/api/orders";
 import { createAddress, getAddresses } from "@/lib/api/addresses";
 import { ApiError } from "@/lib/api/client";
 import { sessionStore } from "@/lib/session";
-import { syncGuestCartToServer, useCart, fetchServerCart } from "@/lib/shop/cart";
+import {
+  syncGuestCartToServer,
+  useCart,
+  fetchServerCart,
+  getUnresolvedGuestCartIds,
+  removeUnresolvedGuestCartItem,
+} from "@/lib/shop/cart";
 import { AddressSelector } from "./address-selector";
 import { CartView } from "./CartView";
 import { usePayment } from "@/components/orders/PayNow";
@@ -32,13 +38,43 @@ export function CheckoutFlow() {
   const [placingOrder, setPlacingOrder] = useState(false);
   const [verifyingStatus, setVerifyingStatus] = useState<"idle" | "sending" | "sent">("idle");
   const [migrationWarning, setMigrationWarning] = useState<string | null>(null);
+  const [failedGuestIds, setFailedGuestIds] = useState<string[]>([]);
+  const [retryingMigration, setRetryingMigration] = useState(false);
   const { pay, busy: paying, error: paymentError, mockDialog } = usePayment();
+
+  async function retryGuestCartMigration() {
+    if (retryingMigration) return;
+    setRetryingMigration(true);
+    try {
+      const migration = await syncGuestCartToServer();
+      setFailedGuestIds(migration.failedIds);
+      setMigrationWarning(
+        migration.failed > 0
+          ? `${migration.failed} item${migration.failed === 1 ? "" : "s"} could still not be moved into your account cart.`
+          : null,
+      );
+    } finally {
+      setRetryingMigration(false);
+    }
+  }
+
+  function removeFailedGuestItem(variantId: string) {
+    removeUnresolvedGuestCartItem(variantId);
+    const remaining = getUnresolvedGuestCartIds();
+    setFailedGuestIds(remaining);
+    setMigrationWarning(
+      remaining.length > 0
+        ? `${remaining.length} unresolved cart item${remaining.length === 1 ? "" : "s"} remain.`
+        : null,
+    );
+  }
 
   const loadCheckout = useCallback(async () => {
     setLoading(true);
     setCheckoutError(null);
     try {
       const migration = await syncGuestCartToServer();
+      setFailedGuestIds(migration.failedIds);
       if (migration.failed > 0) {
         setMigrationWarning(
           `${migration.failed} item${migration.failed === 1 ? "" : "s"} could not be moved into your account cart because they may have sold out or become unavailable.`,
@@ -266,9 +302,33 @@ export function CheckoutFlow() {
           </div>
         )}
         {migrationWarning && (
-          <p role="status" className="rounded-xl border border-low/30 bg-low-tint p-4 text-sm text-low font-medium">
-            {migrationWarning}
-          </p>
+          <div role="status" className="rounded-xl border border-low/30 bg-low-tint p-4 text-sm text-low">
+            <p className="font-medium">{migrationWarning}</p>
+            {failedGuestIds.length > 0 && (
+              <div className="mt-3 space-y-2">
+                {failedGuestIds.map((variantId) => (
+                  <div key={variantId} className="flex items-center justify-between gap-3 text-xs">
+                    <span className="break-all">Unresolved diamond: {variantId}</span>
+                    <button
+                      type="button"
+                      onClick={() => removeFailedGuestItem(variantId)}
+                      className="shrink-0 font-semibold underline"
+                    >
+                      Remove
+                    </button>
+                  </div>
+                ))}
+                <button
+                  type="button"
+                  disabled={retryingMigration}
+                  onClick={() => void retryGuestCartMigration()}
+                  className="mt-2 inline-flex h-9 items-center rounded-lg border border-low/40 px-3 font-semibold"
+                >
+                  {retryingMigration ? "Retrying..." : "Retry"}
+                </button>
+              </div>
+            )}
+          </div>
         )}
 
         {/* Step 1: Client Verification */}

@@ -26,13 +26,23 @@ export interface SiteConfig {
   };
 }
 
+const configuredSiteUrl = process.env.NEXT_PUBLIC_SITE_URL?.trim();
+const canonicalSiteUrl = "https://keianluxandor.in";
+const siteUrl =
+  configuredSiteUrl === canonicalSiteUrl ||
+  configuredSiteUrl === "http://localhost:3000"
+    ? configuredSiteUrl.replace(/\/+$/, "")
+    : process.env.NODE_ENV === "development"
+      ? "http://localhost:3000"
+      : canonicalSiteUrl;
+
 export const site: SiteConfig = {
   name: "Keian Luxandor",
   legalName: "Keian Luxandor Private Limited",
   tagline: "Certified Loose Diamonds",
   description:
     "Discover GIA and IGI certified natural and lab-grown loose diamonds, carefully selected and inspected in our Surat atelier. International delivery enquiries are welcome.",
-  url: process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000",
+  url: siteUrl,
   phone: "",
   get phoneHref() {
     const cleaned = this.phone.trim();

@@ -13,15 +13,15 @@ In **App Service → Settings → Environment variables → App settings**, add:
 
 | Name | Value |
 | --- | --- |
-| `API_URL` | `https://api.keianluxlandor.in` |
+| `API_URL` | Verified backend origin; do not set an unverified hostname |
 | `NEXT_PUBLIC_USE_MOCK_API` | `false` |
-| `NEXT_PUBLIC_SITE_URL` | `https://keianluxlandor.in` |
+| `NEXT_PUBLIC_SITE_URL` | `https://keianluxandor.in` |
 | `SCM_DO_BUILD_DURING_DEPLOYMENT` | `true` |
 
-Add both `keianluxlandor.in` and `www.keianluxlandor.in` as custom hostnames
+Add both `keianluxandor.in` and `www.keianluxandor.in` as custom hostnames
 on the Azure Web App and configure their DNS records as Azure directs. Bind
 valid TLS certificates for both names. The app permanently redirects
-`www.keianluxlandor.in` requests to `https://keianluxlandor.in`, preserving
+`www.keianluxandor.in` requests to `https://keianluxandor.in`, preserving
 the requested path and query.
 
 Set these settings before deployment because `NEXT_PUBLIC_SITE_URL` is
@@ -50,7 +50,7 @@ In **App Service → Settings → Configuration → General settings**, set the
 startup command to `npm run start`. Next.js uses the `PORT` provided by App
 Service.
 
-After deployment, browse to `https://keianluxlandor.in` and test catalog
+After deployment, browse to `https://keianluxandor.in` and test catalog
 loading, sign-in/session cookies, contact form, checkout, and admin
 authorization. Backend availability and production behavior have not been
 verified by this source package alone.

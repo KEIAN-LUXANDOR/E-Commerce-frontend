@@ -1,5 +1,7 @@
 
 import type { ReactNode } from "react";
+import { cache } from "react";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
@@ -20,9 +22,60 @@ import { ProductCard } from "@/components/catalog/ProductCard";
 
 import type { Product } from "@/lib/types/product";
 import { buttonVariants } from "@/components/ui/button";
+import { site } from "@/lib/site";
 
 interface DiamondDetailPageProps {
   params: Promise<{ slug: string }>;
+}
+
+const getCachedProduct = cache(getProduct);
+
+function absoluteImageUrl(url: string): string {
+  try {
+    return new URL(url, site.url).toString();
+  } catch {
+    return new URL("/Keian_Luxandor_logo2.png", site.url).toString();
+  }
+}
+
+export async function generateMetadata({ params }: DiamondDetailPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  try {
+    const product = await getCachedProduct(slug);
+    if (!product) {
+      return { title: "Diamond Not Found", robots: { index: false, follow: false } };
+    }
+
+    const title = product.name;
+    const description = product.description?.trim() ||
+      (product.diamond
+        ? `${product.diamond.carat} ct ${product.diamond.shape.toLowerCase()} diamond, ${product.diamond.color} colour, ${product.diamond.clarity} clarity.`
+        : `Certified diamond: ${product.name}.`);
+    const canonical = new URL(`/diamond/${encodeURIComponent(product.slug)}`, site.url).toString();
+    const imageUrl = product.images[0]?.url ? absoluteImageUrl(product.images[0].url) : undefined;
+
+    return {
+      title,
+      description,
+      alternates: { canonical },
+      openGraph: {
+        type: "website",
+        title,
+        description,
+        url: canonical,
+        siteName: site.name,
+        ...(imageUrl ? { images: [{ url: imageUrl, alt: product.images[0]?.altText || product.name }] } : {}),
+      },
+      twitter: {
+        card: imageUrl ? "summary_large_image" : "summary",
+        title,
+        description,
+        ...(imageUrl ? { images: [imageUrl] } : {}),
+      },
+    };
+  } catch {
+    return { title: "Diamond", robots: { index: false, follow: false } };
+  }
 }
 
 function SectionEyebrow({ children }: { children: ReactNode }) {
@@ -243,7 +296,7 @@ async function DiamondDetailContent({
   let product: Product | null;
 
   try {
-    product = await getProduct(slug);
+    product = await getCachedProduct(slug);
   } catch (error) {
     return (
       <ProductLoadError

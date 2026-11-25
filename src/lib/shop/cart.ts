@@ -10,6 +10,7 @@ import { mainVariant } from "@/lib/catalog/product";
 import { showToast } from "@/lib/stores";
 
 const localCartStore = createLocalStore<string[]>("kl_guest_cart_v1", []);
+const unresolvedCartStore = createLocalStore<string[]>("kl_guest_cart_unresolved_v1", []);
 
 export interface CartSnapshot {
   items: Array<Pick<Cart["items"][number], "variantId"> & Partial<Cart["items"][number]>>;
@@ -92,30 +93,63 @@ export async function removeFromCart(variantId: string) {
 /**
  * Move browser-only guest selections into the signed-in server cart.
  */
-export async function syncGuestCartToServer(): Promise<{ migrated: number; failed: number }> {
+export interface GuestCartMigrationResult {
+  migrated: number;
+  failed: number;
+  failedIds: string[];
+}
+
+let migrationPromise: Promise<GuestCartMigrationResult> | null = null;
+
+export function getUnresolvedGuestCartIds(): string[] {
+  return [...new Set(unresolvedCartStore.read())];
+}
+
+export function removeUnresolvedGuestCartItem(variantId: string): void {
+  unresolvedCartStore.set(unresolvedCartStore.read().filter((id) => id !== variantId));
+  localCartStore.set(localCartStore.read().filter((id) => id !== variantId));
+}
+
+export async function syncGuestCartToServer(): Promise<GuestCartMigrationResult> {
   if (sessionStore.get().status !== "authenticated") {
-    return { migrated: 0, failed: 0 };
+    return { migrated: 0, failed: 0, failedIds: getUnresolvedGuestCartIds() };
   }
 
-  const guestIds = localCartStore.read();
-  let migrated = 0;
-  let failed = 0;
+  if (migrationPromise) return migrationPromise;
 
-  for (const variantId of guestIds) {
-    try {
-      await addCartItem(variantId);
-      migrated += 1;
-    } catch {
-      failed += 1;
+  migrationPromise = (async () => {
+    const guestIds = [...new Set([
+      ...localCartStore.read(),
+      ...unresolvedCartStore.read(),
+    ])];
+    let migrated = 0;
+    const failedIds: string[] = [];
+
+    for (const variantId of guestIds) {
+      try {
+        await addCartItem(variantId);
+        migrated += 1;
+      } catch {
+        if (!failedIds.includes(variantId)) failedIds.push(variantId);
+      }
     }
-  }
 
-  if (guestIds.length > 0) {
-    localCartStore.set([]);
-  }
+    const successfulIds = guestIds.filter((id) => !failedIds.includes(id));
+    if (successfulIds.length > 0) {
+      const successful = new Set(successfulIds);
+      localCartStore.set(localCartStore.read().filter((id) => !successful.has(id)));
+    }
+    unresolvedCartStore.set(failedIds);
 
-  await fetchServerCart();
-  return { migrated, failed };
+    await fetchServerCart();
+    return { migrated, failed: failedIds.length, failedIds };
+  })();
+
+  try {
+    return await migrationPromise;
+  } finally {
+    migrationPromise = null;
+  }
 }
 
 // Stable cached reference for guest cart snapshots to prevent infinite re-render loops

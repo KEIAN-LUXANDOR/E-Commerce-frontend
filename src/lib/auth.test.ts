@@ -136,8 +136,25 @@ describe("account form checks", () => {
   });
 
   it("cleans up Indian phone numbers", () => {
-    expect(normalisePhone("+91 98765 43210")).toBe("9876543210");
-    expect(normalisePhone("09876543210")).toBe("9876543210");
+    expect(normalisePhone("+91 98765 43210", "IN")).toBe("+919876543210");
+    expect(normalisePhone("09876543210", "IN")).toBe("+919876543210");
+  });
+
+  it("normalizes international phone numbers with country selection", () => {
+    expect(normalisePhone("+1 (212) 555-0123", "US")).toBe("+12125550123");
+    expect(normalisePhone("(212) 555-0123", "US")).toBe("+12125550123");
+    expect(normalisePhone("98765 43210", "IN")).toBe("+919876543210");
+    expect(normalisePhone("020 7946 0958", "GB")).toBe("+442079460958");
+  });
+
+  it("rejects invalid optional phone numbers", () => {
+    expect(validateRegister({
+      fullName: "Riya Shah",
+      email: "riya@example.com",
+      phone: "12345",
+      countryCode: "US",
+      password: "Secret@123",
+    }).phone).toBeTruthy();
   });
 
   it("never sends people to another website after login", () => {

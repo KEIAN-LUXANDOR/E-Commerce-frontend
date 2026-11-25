@@ -16,6 +16,12 @@ const nextConfig: NextConfig = {
   async redirects() {
     return [
       {
+        source: "/:path*",
+        destination: "https://keianluxandor.in/:path*",
+        permanent: true,
+        has: [{ type: "host", value: "www.keianluxandor.in" }],
+      },
+      {
         source: "/store",
         destination: "/diamonds",
         permanent: true,

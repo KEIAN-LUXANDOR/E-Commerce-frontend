@@ -5,7 +5,8 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { register, resendVerification } from "@/lib/api/auth";
 import { ApiError } from "@/lib/api/client";
-import { normaliseEmail, validateRegister, type FieldErrors } from "@/lib/validators";
+import { normaliseEmail, normalisePhone, validateRegister, type FieldErrors } from "@/lib/validators";
+import { MARKET_GROUPS, type MarketCountryCode } from "@/lib/market/countries";
 import { Button } from "@/components/ui/button";
 
 export function RegisterForm() {
@@ -13,6 +14,7 @@ export function RegisterForm() {
   const [password, setPassword] = useState("");
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
+  const [phoneCountry, setPhoneCountry] = useState<MarketCountryCode>("US");
   const [error, setError] = useState("");
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
   const [loading, setLoading] = useState(false);
@@ -30,6 +32,7 @@ export function RegisterForm() {
       password,
       fullName: fullName.trim(),
       phone: phone.trim(),
+      countryCode: phoneCountry,
     });
 
     // Check for client-side validation errors
@@ -41,11 +44,12 @@ export function RegisterForm() {
     setLoading(true);
 
     try {
+      const normalizedPhone = phone.trim() ? normalisePhone(phone, phoneCountry) : "";
       await register({
         fullName: fullName.trim(),
         email: normalizedEmail,
         password,
-        phone: phone.trim() ? phone.trim() : undefined,
+        phone: normalizedPhone || undefined,
       });
       setRegistered(true);
     } catch (err: unknown) {
@@ -166,17 +170,38 @@ export function RegisterForm() {
           <label htmlFor="phone" className="block text-xs font-semibold text-ink uppercase tracking-wider mb-1.5">
             Mobile Number (Optional)
           </label>
-          <input
-            id="phone"
-            type="tel"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className={`w-full h-12 rounded-lg border bg-surface px-4 text-sm text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-loupe/20 transition-all ${
-              fieldErrors.phone ? "border-out focus:border-out" : "border-line focus:border-ink"
-            }`}
-            placeholder="10-digit Indian mobile number"
-          />
-          {fieldErrors.phone && <p className="mt-1 text-xs text-out">{fieldErrors.phone}</p>}
+          <div className="grid grid-cols-[minmax(110px,150px)_1fr] gap-2">
+            <label htmlFor="phone-country" className="sr-only">Phone country</label>
+            <select
+              id="phone-country"
+              value={phoneCountry}
+              onChange={(event) => setPhoneCountry(event.target.value as MarketCountryCode)}
+              className="h-12 rounded-lg border border-line bg-surface px-3 text-sm text-ink focus:outline-none focus:ring-2 focus:ring-loupe/20"
+            >
+              {MARKET_GROUPS.map((group) => (
+                <optgroup key={group.label} label={group.label}>
+                  {group.countries.map((country) => (
+                    <option key={country.code} value={country.code}>{country.name}</option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+            <input
+              id="phone"
+              type="tel"
+              inputMode="tel"
+              autoComplete="tel"
+              value={phone}
+              onChange={(event) => setPhone(event.target.value)}
+              aria-invalid={Boolean(fieldErrors.phone)}
+              aria-describedby={fieldErrors.phone ? "phone-error" : undefined}
+              className={`h-12 min-w-0 rounded-lg border bg-surface px-4 text-sm text-ink placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-loupe/20 transition-all ${
+                fieldErrors.phone ? "border-out focus:border-out" : "border-line focus:border-ink"
+              }`}
+              placeholder="+1 (212) 555-0123"
+            />
+          </div>
+          {fieldErrors.phone && <p id="phone-error" role="alert" className="mt-1 text-xs text-out">{fieldErrors.phone}</p>}
         </div>
 
         <div>
