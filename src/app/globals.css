@@ -72,6 +72,28 @@
   --font-sans: "Jost Variable", "Jost", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
 }
 
+.auth-squircle {
+  border-radius: 32px;
+  corner-shape: squircle;
+}
+
+.auth-shell input,
+.auth-shell select,
+.auth-shell button {
+  border-radius: 14px;
+  corner-shape: squircle;
+}
+
+.home-squircle {
+  border-radius: 28px;
+  corner-shape: squircle;
+}
+
+.home-squircle-sm {
+  border-radius: 18px;
+  corner-shape: squircle;
+}
+
 /* ============================================================
    Explicit Utility Classes — Dual Palette Turbopack Safe
    ============================================================ */

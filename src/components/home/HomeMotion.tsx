@@ -139,7 +139,7 @@ export function FindYourDiamond() {
               <Reveal key={s.value} delay={i * 40}>
                 <Link
                   href={`/diamonds?shape=${s.value}`}
-                  className="group flex min-h-[156px] flex-col items-center justify-between rounded-2xl border border-line bg-white p-4 text-center transition-all duration-300 hover:-translate-y-1 hover:border-ink/40 hover:shadow-[0_12px_30px_-12px_rgba(43,45,49,0.20)]"
+                  className="home-squircle-sm group flex min-h-[156px] flex-col items-center justify-between border border-line bg-white p-4 text-center transition-all duration-300 hover:-translate-y-1 hover:border-ink/40 hover:shadow-[0_12px_30px_-12px_rgba(43,45,49,0.20)]"
                 >
                   <ShapeIcon shape={s.value} className="my-auto size-11 text-ink transition-transform duration-300 group-hover:scale-110" />
                   <span>
@@ -156,7 +156,7 @@ export function FindYourDiamond() {
           <div role="tabpanel" id="find-panel-size" aria-labelledby="find-tab-size" className="grid gap-4 md:grid-cols-3">
             {SIZES.map((t, i) => (
               <Reveal key={t.title} delay={i * 80}>
-                <SpotlightCard className="h-full rounded-3xl border border-line bg-white">
+                <SpotlightCard className="home-squircle h-full border border-line bg-white">
                   <Link href={t.href} className="group relative flex h-full min-h-[220px] flex-col justify-between p-7">
                     {t.badge && <span className="absolute right-5 top-5 rounded-full border border-line bg-sand px-2.5 py-1 text-[11px] font-semibold uppercase tracking-[0.14em] text-ink">{t.badge}</span>}
                     <span>
@@ -184,7 +184,7 @@ export function FindYourDiamond() {
               <Reveal key={b.label} delay={i * 60}>
                 <Link
                   href={budgetHref(b.min, b.max)}
-                  className="group flex h-full flex-col justify-between rounded-2xl border border-line bg-white p-5 transition-all duration-300 hover:-translate-y-1 hover:border-ink/40 hover:shadow-[0_12px_30px_-12px_rgba(43,45,49,0.20)]"
+                  className="home-squircle-sm group flex h-full flex-col justify-between border border-line bg-white p-5 transition-all duration-300 hover:-translate-y-1 hover:border-ink/40 hover:shadow-[0_12px_30px_-12px_rgba(43,45,49,0.20)]"
                 >
                   <span className="font-serif text-[20px] leading-tight text-ink">{b.label}</span>
                   <span className="mt-6 inline-flex items-center gap-1.5 text-[11px] font-semibold uppercase tracking-[0.14em] text-slate group-hover:text-ink">

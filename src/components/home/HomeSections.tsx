@@ -268,7 +268,7 @@ export function OriginCompare({
       <div className="max-w-7xl mx-auto px-6 lg:px-12">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
           {/* Natural diamonds — clean white */}
-          <div className="spotlight-card relative bg-stone p-8 sm:p-12 flex flex-col justify-between min-h-[360px] border border-line overflow-hidden group hover:border-bronze transition-colors duration-300">
+          <div className="home-squircle spotlight-card relative bg-stone p-8 sm:p-12 flex flex-col justify-between min-h-[360px] border border-line overflow-hidden group hover:border-bronze transition-colors duration-300">
             {/* Decorative circle */}
             <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full border border-[var(--color-line-dark)] opacity-20 pointer-events-none" />
             <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full border border-bronze opacity-10 pointer-events-none" />
@@ -302,7 +302,7 @@ export function OriginCompare({
           </div>
 
           {/* Lab-Grown Diamonds — deep navy */}
-          <div className="spotlight-card relative bg-champagne p-8 sm:p-12 flex flex-col justify-between min-h-[360px] overflow-hidden group hover:shadow-lg transition-shadow duration-300">
+          <div className="home-squircle spotlight-card relative bg-champagne p-8 sm:p-12 flex flex-col justify-between min-h-[360px] overflow-hidden group hover:shadow-lg transition-shadow duration-300">
             {/* Decorative circles on dark bg */}
             <div className="absolute -right-16 -top-16 w-56 h-56 rounded-full border border-bronze/20 pointer-events-none" />
             <div className="absolute -right-8 -top-8 w-32 h-32 rounded-full border border-bronze/20 pointer-events-none" />
@@ -693,7 +693,7 @@ export function HomeFAQ() {
             <details
               key={f.q}
               name="home-faq"
-              className="group border border-line bg-white px-5 transition-colors duration-200 hover:border-[var(--brand-accent)] open:border-l-2 open:border-l-[var(--brand-accent)] animate-fade-up"
+              className="home-squircle-sm group border border-line bg-white px-5 transition-colors duration-200 hover:border-[var(--brand-accent)] open:border-l-2 open:border-l-[var(--brand-accent)] animate-fade-up"
               style={{ animationDelay: `${i * 60}ms` }}
             >
               <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-5 text-left font-serif text-[18px] font-normal [&::-webkit-details-marker]:hidden">
@@ -1014,7 +1014,7 @@ export function ClientReviews() {
           {reviews.map((r, i) => (
             <div
               key={r.name}
-              className="bg-white/50 border border-bronze/20 p-6 hover:border-bronze/40 hover:bg-white/70 transition-all duration-300 flex flex-col animate-fade-up"
+              className="home-squircle-sm bg-white/50 border border-bronze/20 p-6 hover:border-bronze/40 hover:bg-white/70 transition-all duration-300 flex flex-col animate-fade-up"
               style={{ animationDelay: `${i * 100}ms` }}
             >
               {/* Large opening quote */}
@@ -1105,7 +1105,7 @@ export function GemologistConciergeBand() {
           </div>
         </div>
 
-        <div className="border-beam rounded-2xl border border-bronze/20 bg-white/50 p-6 space-y-5">
+        <div className="home-squircle-sm border-beam border border-bronze/20 bg-white/50 p-6 space-y-5">
           {[
             {
               icon: ShieldCheck,

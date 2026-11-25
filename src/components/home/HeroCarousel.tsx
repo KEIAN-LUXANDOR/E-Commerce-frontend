@@ -287,7 +287,7 @@ export function HeroCarousel({ banners }: { banners: Banner[] }) {
 
         <div className="order-1 flex justify-center md:order-2 md:justify-end">
           <figure className="relative w-full max-w-[35rem]">
-            <div className="relative aspect-[5/4] overflow-hidden rounded-[1.65rem] border border-white/80 bg-[#202722] shadow-[0_28px_72px_-35px_rgba(31,45,37,0.5)] sm:rounded-[2rem]">
+            <div className="home-squircle relative aspect-[5/4] overflow-hidden border border-white/80 bg-[#202722] shadow-[0_28px_72px_-35px_rgba(31,45,37,0.5)]">
               <HeroFilm key={visual.src} visual={visual} priority={activeIndex === 0} />
               <div
                 aria-hidden="true"

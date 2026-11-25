@@ -11,7 +11,7 @@ export function EditorialMonographBanner() {
           {/* Photoshooted Campaign Asset Area */}
           <div className="relative group">
             <div
-              className="relative aspect-[16/10] sm:aspect-[16/11] w-full overflow-hidden rounded-3xl border border-line-dark/30 shadow-xl bg-stone"
+              className="home-squircle relative aspect-[16/10] sm:aspect-[16/11] w-full overflow-hidden border border-line-dark/30 shadow-xl bg-stone"
               style={{ position: "relative" }}
             >
               <Image

@@ -22,7 +22,7 @@ export function HomeProductCard({ product, compact = false }: ProductCardProps) 
   const crossedOutPrice = compareAtPaise(variant);
 
   return (
-    <article className="group relative flex flex-col border border-line bg-surface transition-colors hover:border-ink">
+    <article className="home-squircle-sm group relative flex flex-col overflow-hidden border border-line bg-surface transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-1 hover:border-ink/40 hover:shadow-[0_16px_36px_-20px_rgba(43,45,49,0.28)]">
       <div className="absolute top-2 right-2 z-10">
         <SaveButton productId={product.id} />
       </div>
