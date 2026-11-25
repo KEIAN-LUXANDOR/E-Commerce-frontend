@@ -1,5 +1,4 @@
 import { Suspense } from "react";
-import { connection } from "next/server";
 import Link from "next/link";
 import { getProducts } from "@/lib/api/products";
 import { parseShopParams, toApiSearch } from "@/lib/catalog/query";
@@ -42,7 +41,6 @@ const POPULAR_SEARCH_SUGGESTIONS = [
 ];
 
 async function SearchResultsPage({ searchParams }: SearchPageProps) {
-  await connection();
   const rawSearch = await searchParams;
   
   const rawQ = typeof rawSearch.q === "string" ? rawSearch.q.trim() : "";

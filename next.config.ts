@@ -11,8 +11,6 @@ const turbopackRoot = existsSync(join(frontendRoot, "node_modules", "next", "pac
 
 const nextConfig: NextConfig = {
   agentRules: false,
-  cacheComponents: true,
-  partialPrefetching: true,
   async redirects() {
     return [
       {
