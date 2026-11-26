@@ -33,6 +33,8 @@ dist/
 
 # Testing
 coverage/
+.test-report/
+TEST_REPORT.md
 
 # Environment variables and secrets
 .env
